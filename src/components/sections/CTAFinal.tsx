@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, MessageCircle } from 'lucide-react'
 import { useContent } from '../../lib/ContentContext'
+import { renderRich } from '../../lib/renderRich'
 
 const HLS_SRC = 'https://stream.mux.com/01yW6GoUz01OTXk5w1Rt1MHkJWlCGIwj46SUONJZ4DJUE.m3u8'
 
@@ -74,7 +75,7 @@ export default function CTAFinal() {
             </h2>
 
             <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto">
-              {desc}
+              {renderRich(desc, 'font-semibold text-white/90')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">

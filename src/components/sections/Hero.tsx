@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { renderRich } from '../../lib/renderRich'
 
 function parseHeading(raw: string): { text: string; accent: boolean }[] {
   const parts: { text: string; accent: boolean }[] = []
@@ -25,8 +26,8 @@ function parseHeading(raw: string): { text: string; accent: boolean }[] {
 export default function Hero() {
   const c = useContent('hero')
   const heading     = c.heading      || 'Desarrollo de Apps y Tiendas {{Shopify}}'
-  const desc        = c.description  || 'Construimos apps Shopify a medida, integraciones con sistemas externos y tiendas Shopify completas para merchants que necesitan más de lo que ofrece el App Store.'
-  const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el ecosistema Shopify. No hacemos WordPress, no hacemos apps móviles: desarrollamos apps Shopify, custom apps, checkout extensions y themes 2.0 con Remix, TypeScript y PostgreSQL. Ya tenemos apps en producción con merchants reales pagando suscripción mensual.'
+  const desc        = c.description  || 'Construimos **apps Shopify a medida**, **integraciones con sistemas externos** y **tiendas Shopify completas** para merchants que necesitan más de lo que ofrece el App Store. Desde **apps publicadas en el Shopify App Store** hasta **soluciones privadas conectadas a tu ERP o CRM**, desarrollamos exactamente lo que tu operación requiere.'
+  const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el **ecosistema Shopify**. No hacemos WordPress, no hacemos apps móviles, no somos generalistas: desarrollamos **apps Shopify**, **custom apps**, **checkout extensions**, **integraciones API** y **themes Shopify 2.0** con un stack moderno basado en **Remix, TypeScript, Node.js y PostgreSQL**. Ya tenemos apps en producción con merchants reales pagando suscripción mensual — no estamos aprendiendo con tu proyecto.'
   const cta         = c.cta_label    || 'Solicitar propuesta gratuita'
   const href        = c.cta_href     || '#contacto'
   const cta2        = c.cta2_label   || 'Ver apps publicadas'
@@ -34,7 +35,6 @@ export default function Hero() {
   const video       = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
   const headingStyle = getSizeStyle(c.heading_size)
-  const descStyle    = getSizeStyle(c.description_size)
 
   const parts = parseHeading(heading)
   let cumulativeDelay = 0
@@ -73,22 +73,20 @@ export default function Hero() {
             </div>
             <div className="col-span-12 md:col-span-5 flex flex-col gap-3 md:pb-2">
               <motion.p
-                className="text-sm md:text-base leading-[1.5] text-white"
-                style={descStyle}
+                className="text-sm md:text-base leading-[1.5] text-white/90"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
-                {desc}
+                {renderRich(desc, 'font-semibold text-white')}
               </motion.p>
               <motion.p
-                className="text-xs md:text-sm leading-relaxed"
-                style={{ color: 'rgba(255,255,255,0.5)' }}
+                className="text-xs md:text-sm leading-relaxed text-white/50"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
               >
-                {supportText}
+                {renderRich(supportText, 'font-semibold text-white/70')}
               </motion.p>
               <motion.div
                 className="flex flex-wrap items-center gap-3 pt-1"
@@ -113,8 +111,7 @@ export default function Hero() {
                 </a>
               </motion.div>
               <motion.p
-                className="text-[11px] font-mono"
-                style={{ color: 'rgba(255,255,255,0.35)' }}
+                className="text-[11px] font-mono text-white/35"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}

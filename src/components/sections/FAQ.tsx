@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { renderRich } from '../../lib/renderRich'
 
 const DEFAULT_FAQS = [
   {
@@ -81,7 +82,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5">{a}</p>
+            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5">{renderRich(a, 'font-semibold text-[#9BA8BE]')}</p>
           </motion.div>
         )}
       </AnimatePresence>
