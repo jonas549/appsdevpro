@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ExternalLink } from 'lucide-react'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 function CalendifyMockup() {
   return (
@@ -68,6 +68,8 @@ export default function Apps() {
 
   const heading    = c.heading    || 'Apps que ya están resolviendo problemas reales'
   const subheading = c.subheading || 'Publicadas en el Shopify App Store, en producción, con merchants reales.'
+  const headingStyle    = getSizeStyle(c.heading_size)
+  const subheadingStyle = getSizeStyle(c.subheading_size)
 
   const apps = [1, 2].map((n, i) => ({
     mockup: MOCKUPS[i],
@@ -82,10 +84,10 @@ export default function Apps() {
     <section id="apps" className="bg-[#F2F5FB] py-28 md:py-36">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4" style={headingStyle}>
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.05} />
           </h2>
-          <p className="text-[#4B5563] text-sm md:text-base max-w-xl mx-auto">{subheading}</p>
+          <p className="text-[#4B5563] text-sm md:text-base max-w-xl mx-auto" style={subheadingStyle}>{subheading}</p>
         </div>
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {apps.map((app, i) => (

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 const DEFAULT_FAQS = [
   { q: '¿Cuánto cuesta desarrollar una app Shopify?', a: 'Desde $2,000 USD para apps privadas simples hasta $15,000+ para apps públicas con backend completo. El precio depende del alcance y la complejidad. Te damos presupuesto en 48hs.' },
@@ -50,6 +50,8 @@ export default function FAQ() {
   const subheading = c.subheading || 'Respondemos las dudas más comunes. Si tienes una pregunta específica, escríbenos directamente.'
   const contactLabel = c.contact_label || 'Hacer una pregunta →'
   const contactHref  = c.contact_href  || 'mailto:hola@appsdevpro.com'
+  const headingStyle    = getSizeStyle(c.heading_size)
+  const subheadingStyle = getSizeStyle(c.subheading_size)
 
   const faqs = [1, 2, 3, 4, 5, 6].map((n) => ({
     q: c[`q${n}`] || DEFAULT_FAQS[n - 1]?.q || '',
@@ -61,8 +63,8 @@ export default function FAQ() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
           <div className="md:col-span-4 md:sticky md:top-24 self-start">
-            <h2 className="text-3xl font-bold text-primary mb-4 leading-tight">{heading}</h2>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8">{subheading}</p>
+            <h2 className="text-3xl font-bold text-primary mb-4 leading-tight" style={headingStyle}>{heading}</h2>
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8" style={subheadingStyle}>{subheading}</p>
             <a
               href={contactHref}
               className="inline-flex items-center gap-2 border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-primary text-sm font-medium px-5 py-2.5 rounded-full transition-all duration-200"

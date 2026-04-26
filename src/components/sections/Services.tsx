@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Zap, Lock, Link, ShoppingCart, Layout, ArrowRight } from 'lucide-react'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 const CARD_ICONS = [<Lock size={18} />, <Link size={18} />, <ShoppingCart size={18} />, <Layout size={18} />]
 const CARD_DEFAULTS = [
@@ -24,6 +24,11 @@ export default function Services() {
   const mainDesc   = c.main_desc  || 'Construimos tu app Shopify de principio a fin: arquitectura, frontend, backend, base de datos y publicación en el App Store. Apps que escalan con tu negocio.'
   const mainTags   = (c.main_tags || 'Remix,React,Node.js,PostgreSQL').split(',')
 
+  const headingStyle    = getSizeStyle(c.heading_size)
+  const subheadingStyle = getSizeStyle(c.subheading_size)
+  const mainTitleStyle  = getSizeStyle(c.main_title_size)
+  const mainDescStyle   = getSizeStyle(c.main_desc_size)
+
   const cards = [1, 2, 3, 4].map((n, i) => ({
     id:    c[`card${n}_id`]    || CARD_DEFAULTS[i].id,
     icon:  CARD_ICONS[i],
@@ -37,10 +42,10 @@ export default function Services() {
       <div className="noise-overlay" />
       <div className="relative max-w-7xl mx-auto px-6">
         <div className="mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-3" style={headingStyle}>
             <WordsPullUp text={heading} stagger={0.05} />
           </h2>
-          <p className="text-[#7B8DB0] text-sm md:text-base">{subheading}</p>
+          <p className="text-[#7B8DB0] text-sm md:text-base" style={subheadingStyle}>{subheading}</p>
         </div>
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Featured card */}
@@ -57,8 +62,8 @@ export default function Services() {
                 <span className="text-accent"><Zap size={22} /></span>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-accent">{mainLabel}</span>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">{mainTitle}</h3>
-              <p className="text-[#7B8DB0] text-sm leading-relaxed mb-6">{mainDesc}</p>
+              <h3 className="text-2xl font-bold text-white mb-4" style={mainTitleStyle}>{mainTitle}</h3>
+              <p className="text-[#7B8DB0] text-sm leading-relaxed mb-6" style={mainDescStyle}>{mainDesc}</p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {mainTags.map((t) => (
                   <span key={t} className="font-mono text-[11px] text-accent border border-accent/30 bg-accent/5 px-3 py-1 rounded-full">{t}</span>

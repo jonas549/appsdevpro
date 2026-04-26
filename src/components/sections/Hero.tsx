@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 export default function Hero() {
   const c = useContent('hero')
@@ -12,6 +12,7 @@ export default function Hero() {
   const cta   = c.cta_label    || 'Solicitar propuesta'
   const href  = c.cta_href     || '#contacto'
   const video = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
+  const descStyle = getSizeStyle(c.description_size)
 
   return (
     <section className="h-screen p-4 md:p-6">
@@ -32,7 +33,7 @@ export default function Hero() {
             <div className="col-span-12 md:col-span-4 flex flex-col gap-4 md:pb-2">
               <motion.p
                 className="text-xs sm:text-sm md:text-base"
-                style={{ lineHeight: 1.2, color: '#FFFFFF' }}
+                style={{ lineHeight: 1.2, color: '#FFFFFF', ...descStyle }}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}

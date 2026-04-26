@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Layers, Plug, ShoppingCart } from 'lucide-react'
 import WordsPullUpMultiStyle from '../animations/WordsPullUpMultiStyle'
 import AnimatedLetter from '../animations/AnimatedLetter'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 const SOLUTION_ICONS = [<Layers size={18} />, <Plug size={18} />, <ShoppingCart size={18} />]
 
@@ -12,6 +12,9 @@ export default function ProblemSolution() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const p = useContent('problem')
   const s = useContent('solution')
+
+  const solutionHeadingStyle = getSizeStyle(s.heading_size)
+  const problemDescStyle     = getSizeStyle(p.description_size)
 
   const problemLabel   = p.label       || 'El Problema'
   const problemHeading = p.heading     || 'Las apps genéricas del marketplace no resuelven tu problema específico'
@@ -40,13 +43,15 @@ export default function ProblemSolution() {
                 stagger={0.05}
               />
             </h2>
-            <AnimatedLetter text={problemDesc} className="text-[#7B8DB0] text-sm md:text-base leading-[1.8]" />
+            <div style={problemDescStyle}>
+              <AnimatedLetter text={problemDesc} className="text-[#7B8DB0] text-sm md:text-base leading-[1.8]" />
+            </div>
           </div>
           <div ref={ref}>
             <div className="flex items-center gap-2 mb-6">
               <span className="font-mono text-[11px] uppercase tracking-widest text-accent">● {solutionLabel}</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-8 text-primary">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-8 text-primary" style={solutionHeadingStyle}>
               {solutionHeading}
             </h2>
             <div className="flex flex-col gap-4">

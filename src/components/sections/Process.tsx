@@ -1,7 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
 const DEFAULTS = [
   { num: '01', title: 'Reunión inicial',     desc: 'Entendemos tu problema, tus sistemas actuales y el objetivo del proyecto. Sin compromiso.' },
@@ -18,6 +18,8 @@ export default function Process() {
 
   const heading    = c.heading    || 'Un proceso claro, sin sorpresas'
   const subheading = c.subheading || 'Desde la primera reunión hasta el lanzamiento, sabes exactamente qué esperar.'
+  const headingStyle    = getSizeStyle(c.heading_size)
+  const subheadingStyle = getSizeStyle(c.subheading_size)
 
   const steps = [1, 2, 3, 4, 5].map((n, i) => ({
     num:   c[`step${n}_num`]   || DEFAULTS[i].num,
@@ -29,10 +31,10 @@ export default function Process() {
     <section id="proceso" className="bg-[#F2F5FB] py-28 md:py-36">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4" style={headingStyle}>
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.06} />
           </h2>
-          <p className="text-[#4B5563] text-sm md:text-base">{subheading}</p>
+          <p className="text-[#4B5563] text-sm md:text-base" style={subheadingStyle}>{subheading}</p>
         </div>
         <div ref={ref} className="relative">
           <div className="hidden md:block absolute top-[2.1rem] left-0 right-0 h-px bg-[#E5E7EB]" />
