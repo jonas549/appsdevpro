@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-/src/generated/prisma
 
 # Environment variables (never commit these)
 .env
