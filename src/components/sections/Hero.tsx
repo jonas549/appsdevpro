@@ -4,15 +4,43 @@ import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
+// Parses "text {{accent}} more text" → [{text, accent}]
+function parseHeading(raw: string): { text: string; accent: boolean }[] {
+  const parts: { text: string; accent: boolean }[] = []
+  const re = /\{\{(.+?)\}\}/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = re.exec(raw)) !== null) {
+    if (m.index > last) {
+      const t = raw.slice(last, m.index).replace(/\s+$/, '')
+      if (t) parts.push({ text: t, accent: false })
+    }
+    parts.push({ text: m[1], accent: true })
+    last = re.lastIndex
+  }
+  const tail = raw.slice(last).replace(/^\s+/, '')
+  if (tail) parts.push({ text: tail, accent: false })
+  return parts.length ? parts : [{ text: raw, accent: false }]
+}
+
 export default function Hero() {
   const c = useContent('hero')
-  const line1 = c.heading_line1 || 'Desarrollo de Apps y tiendas'
-  const line2 = c.heading_line2 || 'Shopify'
-  const desc  = c.description  || 'Desde apps publicadas en el App Store hasta integraciones a medida con tu ERP o CRM.'
-  const cta   = c.cta_label    || 'Solicitar propuesta'
-  const href  = c.cta_href     || '#contacto'
-  const video = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
-  const descStyle = getSizeStyle(c.description_size)
+  const heading = c.heading     || 'Desarrollo de Apps y tiendas {{Shopify}}'
+  const desc    = c.description || 'Desde apps publicadas en el App Store hasta integraciones a medida con tu ERP o CRM.'
+  const cta     = c.cta_label   || 'Solicitar propuesta'
+  const href    = c.cta_href    || '#contacto'
+  const video   = c.video_url   || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
+
+  const headingStyle = getSizeStyle(c.heading_size)
+  const descStyle    = getSizeStyle(c.description_size)
+
+  const parts = parseHeading(heading)
+  let cumulativeDelay = 0
+  const timedParts = parts.map(p => {
+    const delay = cumulativeDelay
+    cumulativeDelay += p.text.split(/\s+/).filter(Boolean).length * 0.08
+    return { ...p, delay }
+  })
 
   return (
     <section className="h-screen p-4 md:p-6">
@@ -24,10 +52,21 @@ export default function Hero() {
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-8 pb-6 md:pb-10">
           <div className="grid grid-cols-12 gap-4 items-end">
             <div className="col-span-12 md:col-span-8">
-              <h1 className="select-none" style={{ fontSize: '70px', fontWeight: 800, lineHeight: '0.9', letterSpacing: '-0.04em' }}>
-                <WordsPullUp text={line1} wordClassName="text-[#EDF0FF]" stagger={0.08} />
-                <br />
-                <WordsPullUp text={line2} wordClassName="text-[#4361EE]" stagger={0.08} delay={0.18} />
+              <h1
+                className="select-none"
+                style={{ fontSize: '70px', fontWeight: 800, lineHeight: '0.9', letterSpacing: '-0.04em', ...headingStyle }}
+              >
+                {timedParts.map((p, i) => (
+                  <span key={i}>
+                    {i > 0 && ' '}
+                    <WordsPullUp
+                      text={p.text}
+                      wordClassName={p.accent ? 'text-[#4361EE]' : 'text-[#EDF0FF]'}
+                      stagger={0.08}
+                      delay={p.delay}
+                    />
+                  </span>
+                ))}
               </h1>
             </div>
             <div className="col-span-12 md:col-span-4 flex flex-col gap-4 md:pb-2">

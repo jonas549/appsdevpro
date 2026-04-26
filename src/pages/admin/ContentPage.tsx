@@ -51,8 +51,7 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Título principal',
         fields: [
-          { section: 'hero', key: 'heading_line1', label: 'Línea 1', type: 'input', withSize: true },
-          { section: 'hero', key: 'heading_line2', label: 'Línea 2 (acento azul)', type: 'input', withSize: true },
+          { section: 'hero', key: 'heading', label: 'Título (usa {{palabra}} para el color acento)', type: 'input', withSize: true },
         ],
       },
       {

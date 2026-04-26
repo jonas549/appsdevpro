@@ -7,8 +7,7 @@ const prisma = new PrismaClient({ adapter })
 
 const siteContent = [
   // ── Hero ──────────────────────────────────────────────────────────────────
-  { section: "hero", key: "heading_line1", value: "Desarrollo de Apps y tiendas" },
-  { section: "hero", key: "heading_line2", value: "Shopify" },
+  { section: "hero", key: "heading", value: "Desarrollo de Apps y tiendas {{Shopify}}" },
   { section: "hero", key: "description", value: "Desde apps publicadas en el App Store hasta integraciones a medida con tu ERP o CRM." },
   { section: "hero", key: "cta_label", value: "Solicitar propuesta" },
   { section: "hero", key: "cta_href", value: "#contacto" },
