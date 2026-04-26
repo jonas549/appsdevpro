@@ -1,59 +1,64 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ArrowRight, MessageSquare } from 'lucide-react'
+import { useContent } from '../../lib/ContentContext'
+
+const DEFAULT_VIDEO =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260330_145725_08886141-ed95-4a8e-8d6d-b75eaadce638.mp4'
 
 export default function CTABanner() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const c = useContent('ctabanner')
+
+  const heading = c.heading    || '¿Tu tienda Shopify necesita algo que no existe en el App Store?'
+  const desc    = c.desc       || 'Si tienes un requerimiento que ninguna app del Shopify App Store cubre — hablemos. Sin compromiso, sin venta agresiva, sin formulario de 20 campos. En menos de 48 horas te enviamos una propuesta técnica detallada con arquitectura recomendada, stack técnico, plazo realista y presupuesto cerrado.'
+  const cta1    = c.cta1_label || 'Escríbenos ahora'
+  const cta2    = c.cta2_label || 'Agendar reunión'
+  const video   = c.video_url  || DEFAULT_VIDEO
 
   return (
-    <section className="bg-[#07090F] py-16 px-4 md:px-6">
-      <motion.div
-        ref={ref}
-        initial={{ y: 30, opacity: 0 }}
-        animate={isInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative max-w-6xl mx-auto bg-[#1F2937] rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 min-h-[280px]"
-        style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)' }}
-      >
-        {/* Glows */}
-        <div className="absolute left-0 top-0 bottom-0 w-1/2 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 0% 50%, rgba(119,117,214,0.35) 0%, transparent 70%)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 100% 50%, rgba(67,97,238,0.18) 0%, transparent 70%)' }} />
+    <section className="relative overflow-hidden py-28 md:py-36">
+      <video
+        src={video}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+      <div className="noise-overlay opacity-[0.06] mix-blend-overlay pointer-events-none" />
 
-        {/* Left — text */}
-        <div className="relative z-10 p-8 md:p-10 flex flex-col justify-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
-            ¿Tu tienda Shopify necesita una solución a medida?
-          </h2>
-          <p className="text-[#9CA3AF] text-sm leading-relaxed mb-8">
-            Si tienes un requerimiento que ninguna app cubre — hablemos. Sin compromiso. Propuesta técnica en 48 horas.
+      <div ref={ref} className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6 tracking-tight">
+            {heading}
+          </h3>
+          <p className="text-white/70 text-base leading-relaxed mb-10 max-w-xl mx-auto">
+            {desc}
           </p>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#contacto"
-              className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors duration-200"
+              className="flex items-center gap-2 bg-[#4361EE] hover:bg-[#3451D1] text-white font-semibold text-base px-7 py-3.5 rounded-full transition-colors duration-200 shadow-[0_0_30px_rgba(67,97,238,0.4)]"
             >
-              <MessageSquare size={15} />
-              Escríbenos ahora
+              <MessageSquare size={16} />
+              {cta1}
             </a>
             <a
               href="#proceso"
-              className="flex items-center gap-2 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200"
+              className="flex items-center gap-2 border border-white/25 bg-white/[0.06] hover:bg-white/[0.12] text-white font-medium text-base px-7 py-3.5 rounded-full transition-all duration-200"
             >
-              Agendar reunión <ArrowRight size={14} />
+              {cta2} <ArrowRight size={15} />
             </a>
           </div>
-        </div>
-
-        {/* Right — screenshot */}
-        <div className="relative hidden md:block overflow-hidden">
-          <img
-            src="https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
-            alt="App screenshot"
-            className="absolute inset-0 w-full h-full object-cover object-left-top rounded-tl-xl opacity-90"
-          />
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   )
 }

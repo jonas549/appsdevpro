@@ -4,7 +4,6 @@ import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
 
-// Parses "text {{accent}} more text" → [{text, accent}]
 function parseHeading(raw: string): { text: string; accent: boolean }[] {
   const parts: { text: string; accent: boolean }[] = []
   const re = /\{\{(.+?)\}\}/g
@@ -25,11 +24,14 @@ function parseHeading(raw: string): { text: string; accent: boolean }[] {
 
 export default function Hero() {
   const c = useContent('hero')
-  const heading = c.heading     || 'Desarrollo de Apps y tiendas {{Shopify}}'
-  const desc    = c.description || 'Desde apps publicadas en el App Store hasta integraciones a medida con tu ERP o CRM.'
-  const cta     = c.cta_label   || 'Solicitar propuesta'
-  const href    = c.cta_href    || '#contacto'
-  const video   = c.video_url   || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
+  const heading     = c.heading      || 'Desarrollo de Apps y Tiendas {{Shopify}}'
+  const desc        = c.description  || 'Construimos apps Shopify a medida, integraciones con sistemas externos y tiendas Shopify completas para merchants que necesitan más de lo que ofrece el App Store.'
+  const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el ecosistema Shopify. No hacemos WordPress, no hacemos apps móviles: desarrollamos apps Shopify, custom apps, checkout extensions y themes 2.0 con Remix, TypeScript y PostgreSQL. Ya tenemos apps en producción con merchants reales pagando suscripción mensual.'
+  const cta         = c.cta_label    || 'Solicitar propuesta gratuita'
+  const href        = c.cta_href     || '#contacto'
+  const cta2        = c.cta2_label   || 'Ver apps publicadas'
+  const microcopy   = c.microcopy    || 'Respuesta técnica en 48 horas · Sin compromiso · Atención en español e inglés'
+  const video       = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
   const headingStyle = getSizeStyle(c.heading_size)
   const descStyle    = getSizeStyle(c.description_size)
@@ -47,14 +49,14 @@ export default function Hero() {
       <div className="relative h-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#07090F]">
         <video src={video} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
         <div className="noise-overlay opacity-[0.07] mix-blend-overlay pointer-events-none z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60 z-10 pointer-events-none" />
         <Navbar />
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-8 pb-6 md:pb-10">
           <div className="grid grid-cols-12 gap-4 items-end">
-            <div className="col-span-12 md:col-span-8">
+            <div className="col-span-12 md:col-span-7">
               <h1
                 className="select-none"
-                style={{ fontSize: '70px', fontWeight: 800, lineHeight: '0.9', letterSpacing: '-0.04em', ...headingStyle }}
+                style={{ fontSize: 'clamp(44px, 5.5vw, 76px)', fontWeight: 800, lineHeight: '0.92', letterSpacing: '-0.04em', ...headingStyle }}
               >
                 {timedParts.map((p, i) => (
                   <span key={i}>
@@ -69,31 +71,56 @@ export default function Hero() {
                 ))}
               </h1>
             </div>
-            <div className="col-span-12 md:col-span-4 flex flex-col gap-4 md:pb-2">
+            <div className="col-span-12 md:col-span-5 flex flex-col gap-3 md:pb-2">
               <motion.p
-                className="text-xs sm:text-sm md:text-base"
-                style={{ lineHeight: 1.2, color: '#FFFFFF', ...descStyle }}
+                className="text-sm md:text-base leading-[1.5] text-white"
+                style={descStyle}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 {desc}
               </motion.p>
-              <motion.div
+              <motion.p
+                className="text-xs md:text-sm leading-relaxed"
+                style={{ color: 'rgba(255,255,255,0.5)' }}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.7, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {supportText}
+              </motion.p>
+              <motion.div
+                className="flex flex-wrap items-center gap-3 pt-1"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
                 <a
                   href={href}
                   className="group inline-flex items-center gap-2 hover:gap-3 transition-all duration-300 bg-[#4361EE] rounded-full pl-5 pr-1.5 py-1.5"
                 >
-                  <span className="text-white font-medium text-sm sm:text-base whitespace-nowrap">{cta}</span>
-                  <span className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                  <span className="text-white font-medium text-sm whitespace-nowrap">{cta}</span>
+                  <span className="bg-black rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                     <ArrowRight size={16} style={{ color: '#EDF0FF' }} />
                   </span>
                 </a>
+                <a
+                  href="#apps"
+                  className="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap"
+                >
+                  {cta2}
+                </a>
               </motion.div>
+              <motion.p
+                className="text-[11px] font-mono"
+                style={{ color: 'rgba(255,255,255,0.35)' }}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {microcopy}
+              </motion.p>
             </div>
           </div>
         </div>

@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 import { Check, Loader2, ChevronDown, ChevronRight, Save } from "lucide-react"
 import AdminLayout from "../../components/admin/AdminLayout"
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 type FieldType = 'input' | 'textarea' | 'url'
 
 interface FieldDef {
@@ -27,8 +25,6 @@ interface SectionDef {
 
 type Values = Record<string, string>
 
-// ── Section configuration ─────────────────────────────────────────────────────
-
 const SIZE_OPTS = [
   { value: '',   label: '— tamaño —' },
   { value: 'h1', label: 'H1 — Grande' },
@@ -38,6 +34,7 @@ const SIZE_OPTS = [
 ]
 
 const SECTIONS: SectionDef[] = [
+  // ── Hero ──────────────────────────────────────────────────────────────────
   {
     id: 'hero',
     label: 'Hero',
@@ -49,68 +46,107 @@ const SECTIONS: SectionDef[] = [
         ],
       },
       {
-        label: 'Título principal',
+        label: 'Título principal (H1)',
         fields: [
           { section: 'hero', key: 'heading', label: 'Título (usa {{palabra}} para el color acento)', type: 'input', withSize: true },
         ],
       },
       {
-        label: 'Descripción',
+        label: 'Subtítulo destacado',
         fields: [
-          { section: 'hero', key: 'description', label: 'Texto', type: 'textarea', withSize: true },
+          { section: 'hero', key: 'description', label: 'Párrafo principal', type: 'textarea', withSize: true },
         ],
       },
       {
-        label: 'Botón CTA',
+        label: 'Párrafo de apoyo',
+        fields: [
+          { section: 'hero', key: 'support_text', label: 'Texto secundario (más pequeño)', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'Botón primario',
         fields: [
           { section: 'hero', key: 'cta_label', label: 'Texto del botón', type: 'input' },
-          { section: 'hero', key: 'cta_href', label: 'Enlace (href)', type: 'url' },
+          { section: 'hero', key: 'cta_href',  label: 'Enlace (href)', type: 'url' },
+        ],
+      },
+      {
+        label: 'Botón secundario',
+        fields: [
+          { section: 'hero', key: 'cta2_label', label: 'Texto del enlace secundario', type: 'input' },
+        ],
+      },
+      {
+        label: 'Microcopy',
+        fields: [
+          { section: 'hero', key: 'microcopy', label: 'Línea de confianza bajo los botones', type: 'input' },
         ],
       },
     ],
   },
+
+  // ── Problema / Solución ───────────────────────────────────────────────────
   {
     id: 'problem_solution',
     label: 'Problema / Solución',
     groups: [
       {
-        label: 'Columna izquierda — El Problema',
+        label: 'El Problema — Encabezado',
         fields: [
-          { section: 'problem', key: 'label', label: 'Etiqueta', type: 'input' },
+          { section: 'problem', key: 'label',   label: 'Etiqueta', type: 'input' },
           { section: 'problem', key: 'heading', label: 'Título', type: 'input', withSize: true },
-          { section: 'problem', key: 'description', label: 'Párrafo', type: 'textarea' },
         ],
       },
       {
-        label: 'Columna derecha — La Solución',
+        label: 'El Problema — Párrafo 1',
         fields: [
-          { section: 'solution', key: 'label', label: 'Etiqueta', type: 'input' },
+          { section: 'problem', key: 'description', label: 'Primer párrafo', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'El Problema — Párrafo 2',
+        fields: [
+          { section: 'problem', key: 'description_2', label: 'Segundo párrafo (consecuencias)', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'El Problema — Párrafo 3',
+        fields: [
+          { section: 'problem', key: 'description_3', label: 'Tercer párrafo (dónde entramos)', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'La Solución — Encabezado',
+        fields: [
+          { section: 'solution', key: 'label',   label: 'Etiqueta', type: 'input' },
           { section: 'solution', key: 'heading', label: 'Título', type: 'input', withSize: true },
         ],
       },
       {
-        label: 'Card 1',
+        label: 'Pilar 1',
         fields: [
           { section: 'solution', key: 'item1_title', label: 'Título', type: 'input' },
-          { section: 'solution', key: 'item1_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'solution', key: 'item1_desc',  label: 'Descripción', type: 'textarea' },
         ],
       },
       {
-        label: 'Card 2',
+        label: 'Pilar 2',
         fields: [
           { section: 'solution', key: 'item2_title', label: 'Título', type: 'input' },
-          { section: 'solution', key: 'item2_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'solution', key: 'item2_desc',  label: 'Descripción', type: 'textarea' },
         ],
       },
       {
-        label: 'Card 3',
+        label: 'Pilar 3',
         fields: [
           { section: 'solution', key: 'item3_title', label: 'Título', type: 'input' },
-          { section: 'solution', key: 'item3_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'solution', key: 'item3_desc',  label: 'Descripción', type: 'textarea' },
         ],
       },
     ],
   },
+
+  // ── Servicios ─────────────────────────────────────────────────────────────
   {
     id: 'services',
     label: 'Servicios',
@@ -118,84 +154,117 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Encabezado de sección',
         fields: [
-          { section: 'services', key: 'heading', label: 'Título', type: 'input', withSize: true },
+          { section: 'services', key: 'heading',    label: 'Título (usa {{Shopify}} para el acento)', type: 'input', withSize: true },
           { section: 'services', key: 'subheading', label: 'Subtítulo', type: 'input' },
         ],
       },
       {
-        label: 'Servicio principal — Desarrollo de Apps',
+        label: 'Servicio 01 — Desarrollo de Apps (tarjeta destacada)',
         fields: [
           { section: 'services', key: 'main_label', label: 'Etiqueta', type: 'input' },
           { section: 'services', key: 'main_title', label: 'Título', type: 'input', withSize: true },
-          { section: 'services', key: 'main_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'services', key: 'main_tags', label: 'Tags (separados por coma)', type: 'input' },
+          { section: 'services', key: 'main_desc',  label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'main_tags',  label: 'Tags (separados por coma)', type: 'input' },
         ],
       },
       {
-        label: 'Tarjeta 1 — Apps Privadas',
+        label: 'Servicio 02 — Apps Privadas',
         fields: [
           { section: 'services', key: 'card1_title', label: 'Título', type: 'input' },
-          { section: 'services', key: 'card1_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'services', key: 'card1_tag', label: 'Tag', type: 'input' },
+          { section: 'services', key: 'card1_desc',  label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card1_tag',   label: 'Tag', type: 'input' },
         ],
       },
       {
-        label: 'Tarjeta 2 — Integraciones',
+        label: 'Servicio 03 — Integraciones y APIs',
         fields: [
           { section: 'services', key: 'card2_title', label: 'Título', type: 'input' },
-          { section: 'services', key: 'card2_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'services', key: 'card2_tag', label: 'Tag', type: 'input' },
+          { section: 'services', key: 'card2_desc',  label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card2_tag',   label: 'Tag', type: 'input' },
         ],
       },
       {
-        label: 'Tarjeta 3 — Checkout Extensions',
+        label: 'Servicio 04 — Checkout Extensions',
         fields: [
           { section: 'services', key: 'card3_title', label: 'Título', type: 'input' },
-          { section: 'services', key: 'card3_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'services', key: 'card3_tag', label: 'Tag', type: 'input' },
+          { section: 'services', key: 'card3_desc',  label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card3_tag',   label: 'Tag', type: 'input' },
         ],
       },
       {
-        label: 'Tarjeta 4 — Themes + Consultoría',
+        label: 'Servicio 05 — Themes + Consultoría',
         fields: [
           { section: 'services', key: 'card4_title', label: 'Título', type: 'input' },
-          { section: 'services', key: 'card4_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'services', key: 'card4_tag', label: 'Tag', type: 'input' },
+          { section: 'services', key: 'card4_desc',  label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card4_tag',   label: 'Tag', type: 'input' },
         ],
       },
     ],
   },
+
+  // ── Apps propias ──────────────────────────────────────────────────────────
   {
     id: 'apps',
-    label: 'Apps',
+    label: 'Apps propias',
     groups: [
       {
         label: 'Encabezado de sección',
         fields: [
-          { section: 'apps', key: 'heading', label: 'Título', type: 'input', withSize: true },
-          { section: 'apps', key: 'subheading', label: 'Subtítulo', type: 'input' },
+          { section: 'apps', key: 'heading',    label: 'Título', type: 'input', withSize: true },
+          { section: 'apps', key: 'subheading', label: 'Subtítulo', type: 'textarea' },
         ],
       },
       {
-        label: 'App 1 — Calendify Delivery',
+        label: 'App 1 — Calendify Delivery (activa)',
         fields: [
-          { section: 'apps', key: 'app1_badge', label: 'Badge', type: 'input' },
-          { section: 'apps', key: 'app1_title', label: 'Título', type: 'input' },
-          { section: 'apps', key: 'app1_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'apps', key: 'app1_tags', label: 'Tags (separados por coma)', type: 'input' },
+          { section: 'apps', key: 'app1_status',    label: 'Estado (active / upcoming)', type: 'input' },
+          { section: 'apps', key: 'app1_badge',     label: 'Texto del badge', type: 'input' },
+          { section: 'apps', key: 'app1_title',     label: 'Título', type: 'input' },
+          { section: 'apps', key: 'app1_desc',      label: 'Descripción', type: 'textarea' },
+          { section: 'apps', key: 'app1_tags',      label: 'Tags (separados por coma)', type: 'input' },
+          { section: 'apps', key: 'app1_cta',       label: 'Texto del CTA', type: 'input' },
+          { section: 'apps', key: 'app1_store_url', label: 'URL App Store', type: 'url' },
         ],
       },
       {
-        label: 'App 2 — Descuentify',
+        label: 'App 2 — Descuentify (próximamente)',
         fields: [
-          { section: 'apps', key: 'app2_badge', label: 'Badge', type: 'input' },
-          { section: 'apps', key: 'app2_title', label: 'Título', type: 'input' },
-          { section: 'apps', key: 'app2_desc', label: 'Descripción', type: 'textarea' },
-          { section: 'apps', key: 'app2_tags', label: 'Tags (separados por coma)', type: 'input' },
+          { section: 'apps', key: 'app2_status',    label: 'Estado (active / upcoming)', type: 'input' },
+          { section: 'apps', key: 'app2_badge',     label: 'Texto del badge', type: 'input' },
+          { section: 'apps', key: 'app2_title',     label: 'Título', type: 'input' },
+          { section: 'apps', key: 'app2_desc',      label: 'Descripción', type: 'textarea' },
+          { section: 'apps', key: 'app2_tags',      label: 'Tags (separados por coma)', type: 'input' },
+          { section: 'apps', key: 'app2_cta',       label: 'Texto del CTA', type: 'input' },
+          { section: 'apps', key: 'app2_store_url', label: 'URL App Store (dejar vacío si no hay)', type: 'url' },
         ],
       },
     ],
   },
+
+  // ── CTA Banner intermedio ─────────────────────────────────────────────────
+  {
+    id: 'ctabanner',
+    label: 'CTA Intermedio (entre Apps y Proceso)',
+    groups: [
+      {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'ctabanner', key: 'video_url', label: 'URL del video', type: 'url' },
+        ],
+      },
+      {
+        label: 'Contenido',
+        fields: [
+          { section: 'ctabanner', key: 'heading',    label: 'Título (H3)', type: 'input' },
+          { section: 'ctabanner', key: 'desc',       label: 'Párrafo', type: 'textarea' },
+          { section: 'ctabanner', key: 'cta1_label', label: 'Botón primario', type: 'input' },
+          { section: 'ctabanner', key: 'cta2_label', label: 'Botón secundario', type: 'input' },
+        ],
+      },
+    ],
+  },
+
+  // ── Proceso ───────────────────────────────────────────────────────────────
   {
     id: 'process',
     label: 'Proceso',
@@ -203,8 +272,8 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Encabezado',
         fields: [
-          { section: 'process', key: 'heading', label: 'Título', type: 'input', withSize: true },
-          { section: 'process', key: 'subheading', label: 'Subtítulo', type: 'input' },
+          { section: 'process', key: 'heading',    label: 'Título', type: 'input', withSize: true },
+          { section: 'process', key: 'subheading', label: 'Subtítulo', type: 'textarea' },
         ],
       },
       ...[1, 2, 3, 4, 5].map(n => ({
@@ -217,20 +286,22 @@ const SECTIONS: SectionDef[] = [
       })),
     ],
   },
+
+  // ── FAQ ───────────────────────────────────────────────────────────────────
   {
     id: 'faq',
-    label: 'FAQ',
+    label: 'FAQ (11 preguntas)',
     groups: [
       {
         label: 'Encabezado',
         fields: [
-          { section: 'faq', key: 'heading',       label: 'Título',                     type: 'input',    withSize: true },
-          { section: 'faq', key: 'subheading',    label: 'Subtítulo',                  type: 'textarea' },
-          { section: 'faq', key: 'contact_label', label: 'Texto del enlace contacto',  type: 'input' },
-          { section: 'faq', key: 'contact_href',  label: 'Enlace contacto (href)',      type: 'url' },
+          { section: 'faq', key: 'heading',       label: 'Título',                    type: 'input',    withSize: true },
+          { section: 'faq', key: 'subheading',    label: 'Subtítulo',                 type: 'textarea' },
+          { section: 'faq', key: 'contact_label', label: 'Texto del enlace contacto', type: 'input' },
+          { section: 'faq', key: 'contact_href',  label: 'Enlace contacto (href)',    type: 'url' },
         ],
       },
-      ...[1, 2, 3, 4, 5, 6].map(n => ({
+      ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(n => ({
         label: `Pregunta ${n}`,
         fields: [
           { section: 'faq', key: `q${n}`, label: 'Pregunta',  type: 'input'    as FieldType },
@@ -239,9 +310,42 @@ const SECTIONS: SectionDef[] = [
       })),
     ],
   },
-]
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+  // ── CTA Final ─────────────────────────────────────────────────────────────
+  {
+    id: 'ctafinal',
+    label: 'CTA Final',
+    groups: [
+      {
+        label: 'Contenido',
+        fields: [
+          { section: 'ctafinal', key: 'label',      label: 'Etiqueta (pill superior)', type: 'input' },
+          { section: 'ctafinal', key: 'heading',    label: 'Título (H2)',              type: 'input' },
+          { section: 'ctafinal', key: 'desc',       label: 'Párrafo',                 type: 'textarea' },
+          { section: 'ctafinal', key: 'cta1_label', label: 'Botón primario',          type: 'input' },
+          { section: 'ctafinal', key: 'cta2_label', label: 'Botón secundario',        type: 'input' },
+          { section: 'ctafinal', key: 'microcopy',  label: 'Microcopy inferior',      type: 'input' },
+        ],
+      },
+    ],
+  },
+
+  // ── Footer ────────────────────────────────────────────────────────────────
+  {
+    id: 'footer',
+    label: 'Footer',
+    groups: [
+      {
+        label: 'Información de marca',
+        fields: [
+          { section: 'footer', key: 'description', label: 'Descripción de la empresa', type: 'textarea' },
+          { section: 'footer', key: 'email',       label: 'Email de contacto',          type: 'input' },
+          { section: 'footer', key: 'copyright',   label: 'Texto de copyright',         type: 'input' },
+        ],
+      },
+    ],
+  },
+]
 
 function fk(section: string, key: string) {
   return `${section}/${key}`
@@ -257,8 +361,6 @@ function getAllKeys(cfg: SectionDef): { section: string; key: string }[] {
   }
   return result
 }
-
-// ── ContentPage ───────────────────────────────────────────────────────────────
 
 export default function ContentPage() {
   const [values, setValues]           = useState<Values>({})
@@ -341,8 +443,6 @@ export default function ContentPage() {
   )
 }
 
-// ── SectionBlock ──────────────────────────────────────────────────────────────
-
 function SectionBlock({
   cfg, values, update, dirty, saving, justSaved, onSave,
 }: {
@@ -379,7 +479,6 @@ function SectionBlock({
 
   return (
     <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-xl overflow-hidden">
-      {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
         <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left">
           {open
@@ -390,7 +489,6 @@ function SectionBlock({
         <SaveBtn />
       </div>
 
-      {/* Body */}
       {open && (
         <div className="px-5 py-5 flex flex-col gap-7">
           {cfg.groups.map(group => (
@@ -412,8 +510,6 @@ function SectionBlock({
               </div>
             </div>
           ))}
-
-          {/* Bottom save */}
           <div className="flex pt-2 border-t border-white/[0.04]">
             <SaveBtn bottom />
           </div>
@@ -422,8 +518,6 @@ function SectionBlock({
     </div>
   )
 }
-
-// ── FieldRow ──────────────────────────────────────────────────────────────────
 
 function FieldRow({
   field, value, sizeValue, onChange, onSizeChange,
@@ -454,7 +548,7 @@ function FieldRow({
         <textarea
           value={value}
           onChange={e => onChange(e.target.value)}
-          rows={3}
+          rows={4}
           className={`${base} resize-y leading-relaxed`}
         />
       ) : (
