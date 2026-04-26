@@ -1,295 +1,471 @@
-import { useEffect, useState, useCallback } from "react"
-import { useSearchParams } from "react-router-dom"
-import { Check, Loader2, ChevronDown, ChevronRight } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Check, Loader2, ChevronDown, ChevronRight, Save } from "lucide-react"
 import AdminLayout from "../../components/admin/AdminLayout"
 
-interface Entry { id: string; section: string; key: string; value: string }
+// ── Types ─────────────────────────────────────────────────────────────────────
 
-const SECTION_NAMES: Record<string, string> = {
-  hero: 'Hero',
-  problem: 'Problema',
-  solution: 'Solución',
-  services: 'Servicios',
-  apps: 'Apps',
-  process: 'Proceso',
-  faq: 'FAQ',
+type FieldType = 'input' | 'textarea' | 'url'
+
+interface FieldDef {
+  section: string
+  key: string
+  label: string
+  type: FieldType
+  withSize?: boolean
 }
 
-const LABELS: Record<string, Record<string, string>> = {
-  hero: {
-    heading_line1: 'Título — Línea 1',
-    heading_line2: 'Título — Línea 2',
-    description: 'Descripción',
-    cta_label: 'Botón — Texto',
-    cta_href: 'Botón — Enlace',
-    video_url: 'URL del video',
-  },
-  problem: {
-    label: 'Etiqueta de sección',
-    heading: 'Título',
-    description: 'Descripción',
-  },
-  solution: {
-    label: 'Etiqueta de sección',
-    heading: 'Título',
-    item1_title: 'Item 1 — Título', item1_desc: 'Item 1 — Descripción',
-    item2_title: 'Item 2 — Título', item2_desc: 'Item 2 — Descripción',
-    item3_title: 'Item 3 — Título', item3_desc: 'Item 3 — Descripción',
-  },
-  services: {
-    heading: 'Título', subheading: 'Subtítulo',
-    main_label: 'Principal — Etiqueta',
-    main_title: 'Principal — Título',
-    main_desc: 'Principal — Descripción',
-    main_tags: 'Principal — Tags',
-    card1_id: 'Tarjeta 1 — ID', card1_title: 'Tarjeta 1 — Título', card1_desc: 'Tarjeta 1 — Descripción', card1_tag: 'Tarjeta 1 — Tag',
-    card2_id: 'Tarjeta 2 — ID', card2_title: 'Tarjeta 2 — Título', card2_desc: 'Tarjeta 2 — Descripción', card2_tag: 'Tarjeta 2 — Tag',
-    card3_id: 'Tarjeta 3 — ID', card3_title: 'Tarjeta 3 — Título', card3_desc: 'Tarjeta 3 — Descripción', card3_tag: 'Tarjeta 3 — Tag',
-    card4_id: 'Tarjeta 4 — ID', card4_title: 'Tarjeta 4 — Título', card4_desc: 'Tarjeta 4 — Descripción', card4_tag: 'Tarjeta 4 — Tag',
-  },
-  apps: {
-    heading: 'Título', subheading: 'Subtítulo',
-    app1_badge: 'App 1 — Badge', app1_title: 'App 1 — Título', app1_desc: 'App 1 — Descripción', app1_tags: 'App 1 — Tags',
-    app2_badge: 'App 2 — Badge', app2_title: 'App 2 — Título', app2_desc: 'App 2 — Descripción', app2_tags: 'App 2 — Tags',
-  },
-  process: {
-    heading: 'Título', subheading: 'Subtítulo',
-    step1_num: 'Paso 1 — Número', step1_title: 'Paso 1 — Título', step1_desc: 'Paso 1 — Descripción',
-    step2_num: 'Paso 2 — Número', step2_title: 'Paso 2 — Título', step2_desc: 'Paso 2 — Descripción',
-    step3_num: 'Paso 3 — Número', step3_title: 'Paso 3 — Título', step3_desc: 'Paso 3 — Descripción',
-    step4_num: 'Paso 4 — Número', step4_title: 'Paso 4 — Título', step4_desc: 'Paso 4 — Descripción',
-    step5_num: 'Paso 5 — Número', step5_title: 'Paso 5 — Título', step5_desc: 'Paso 5 — Descripción',
-  },
-  faq: {
-    heading: 'Título', subheading: 'Subtítulo',
-    contact_label: 'Contacto — Texto',
-    contact_href: 'Contacto — Enlace',
-    q1: 'Pregunta 1', a1: 'Respuesta 1',
-    q2: 'Pregunta 2', a2: 'Respuesta 2',
-    q3: 'Pregunta 3', a3: 'Respuesta 3',
-    q4: 'Pregunta 4', a4: 'Respuesta 4',
-    q5: 'Pregunta 5', a5: 'Respuesta 5',
-    q6: 'Pregunta 6', a6: 'Respuesta 6',
-  },
+interface GroupDef {
+  label: string
+  fields: FieldDef[]
 }
 
-function getLabel(section: string, key: string): string {
-  return LABELS[section]?.[key]
-    ?? key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+interface SectionDef {
+  id: string
+  label: string
+  groups: GroupDef[]
 }
+
+type Values = Record<string, string>
+
+// ── Section configuration ─────────────────────────────────────────────────────
 
 const SIZE_OPTS = [
-  { value: '', label: '— tamaño —' },
-  { value: 'h1', label: 'H1 — Título grande' },
-  { value: 'h2', label: 'H2 — Título mediano' },
+  { value: '',   label: '— tamaño —' },
+  { value: 'h1', label: 'H1 — Grande' },
+  { value: 'h2', label: 'H2 — Mediano' },
   { value: 'h3', label: 'H3 — Subtítulo' },
   { value: 'p',  label: 'Párrafo' },
 ]
 
-const NO_SIZE_FRAGMENTS = ['url', 'href', 'tags', 'num', 'id', 'badge']
-const showSizeControl = (key: string) =>
-  !NO_SIZE_FRAGMENTS.some(f => key.toLowerCase().includes(f))
+const SECTIONS: SectionDef[] = [
+  {
+    id: 'hero',
+    label: 'Hero',
+    groups: [
+      {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'hero', key: 'video_url', label: 'URL del video', type: 'url' },
+        ],
+      },
+      {
+        label: 'Título principal',
+        fields: [
+          { section: 'hero', key: 'heading_line1', label: 'Línea 1', type: 'input', withSize: true },
+          { section: 'hero', key: 'heading_line2', label: 'Línea 2 (acento azul)', type: 'input', withSize: true },
+        ],
+      },
+      {
+        label: 'Descripción',
+        fields: [
+          { section: 'hero', key: 'description', label: 'Texto', type: 'textarea', withSize: true },
+        ],
+      },
+      {
+        label: 'Botón CTA',
+        fields: [
+          { section: 'hero', key: 'cta_label', label: 'Texto del botón', type: 'input' },
+          { section: 'hero', key: 'cta_href', label: 'Enlace (href)', type: 'url' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'problem_solution',
+    label: 'Problema / Solución',
+    groups: [
+      {
+        label: 'Columna izquierda — El Problema',
+        fields: [
+          { section: 'problem', key: 'label', label: 'Etiqueta', type: 'input' },
+          { section: 'problem', key: 'heading', label: 'Título', type: 'input', withSize: true },
+          { section: 'problem', key: 'description', label: 'Párrafo', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'Columna derecha — La Solución',
+        fields: [
+          { section: 'solution', key: 'label', label: 'Etiqueta', type: 'input' },
+          { section: 'solution', key: 'heading', label: 'Título', type: 'input', withSize: true },
+        ],
+      },
+      {
+        label: 'Card 1',
+        fields: [
+          { section: 'solution', key: 'item1_title', label: 'Título', type: 'input' },
+          { section: 'solution', key: 'item1_desc', label: 'Descripción', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'Card 2',
+        fields: [
+          { section: 'solution', key: 'item2_title', label: 'Título', type: 'input' },
+          { section: 'solution', key: 'item2_desc', label: 'Descripción', type: 'textarea' },
+        ],
+      },
+      {
+        label: 'Card 3',
+        fields: [
+          { section: 'solution', key: 'item3_title', label: 'Título', type: 'input' },
+          { section: 'solution', key: 'item3_desc', label: 'Descripción', type: 'textarea' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'services',
+    label: 'Servicios',
+    groups: [
+      {
+        label: 'Encabezado de sección',
+        fields: [
+          { section: 'services', key: 'heading', label: 'Título', type: 'input', withSize: true },
+          { section: 'services', key: 'subheading', label: 'Subtítulo', type: 'input' },
+        ],
+      },
+      {
+        label: 'Servicio principal — Desarrollo de Apps',
+        fields: [
+          { section: 'services', key: 'main_label', label: 'Etiqueta', type: 'input' },
+          { section: 'services', key: 'main_title', label: 'Título', type: 'input', withSize: true },
+          { section: 'services', key: 'main_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'main_tags', label: 'Tags (separados por coma)', type: 'input' },
+        ],
+      },
+      {
+        label: 'Tarjeta 1 — Apps Privadas',
+        fields: [
+          { section: 'services', key: 'card1_title', label: 'Título', type: 'input' },
+          { section: 'services', key: 'card1_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card1_tag', label: 'Tag', type: 'input' },
+        ],
+      },
+      {
+        label: 'Tarjeta 2 — Integraciones',
+        fields: [
+          { section: 'services', key: 'card2_title', label: 'Título', type: 'input' },
+          { section: 'services', key: 'card2_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card2_tag', label: 'Tag', type: 'input' },
+        ],
+      },
+      {
+        label: 'Tarjeta 3 — Checkout Extensions',
+        fields: [
+          { section: 'services', key: 'card3_title', label: 'Título', type: 'input' },
+          { section: 'services', key: 'card3_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card3_tag', label: 'Tag', type: 'input' },
+        ],
+      },
+      {
+        label: 'Tarjeta 4 — Themes + Consultoría',
+        fields: [
+          { section: 'services', key: 'card4_title', label: 'Título', type: 'input' },
+          { section: 'services', key: 'card4_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'services', key: 'card4_tag', label: 'Tag', type: 'input' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'apps',
+    label: 'Apps',
+    groups: [
+      {
+        label: 'Encabezado de sección',
+        fields: [
+          { section: 'apps', key: 'heading', label: 'Título', type: 'input', withSize: true },
+          { section: 'apps', key: 'subheading', label: 'Subtítulo', type: 'input' },
+        ],
+      },
+      {
+        label: 'App 1 — Calendify Delivery',
+        fields: [
+          { section: 'apps', key: 'app1_badge', label: 'Badge', type: 'input' },
+          { section: 'apps', key: 'app1_title', label: 'Título', type: 'input' },
+          { section: 'apps', key: 'app1_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'apps', key: 'app1_tags', label: 'Tags (separados por coma)', type: 'input' },
+        ],
+      },
+      {
+        label: 'App 2 — Descuentify',
+        fields: [
+          { section: 'apps', key: 'app2_badge', label: 'Badge', type: 'input' },
+          { section: 'apps', key: 'app2_title', label: 'Título', type: 'input' },
+          { section: 'apps', key: 'app2_desc', label: 'Descripción', type: 'textarea' },
+          { section: 'apps', key: 'app2_tags', label: 'Tags (separados por coma)', type: 'input' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'process',
+    label: 'Proceso',
+    groups: [
+      {
+        label: 'Encabezado',
+        fields: [
+          { section: 'process', key: 'heading', label: 'Título', type: 'input', withSize: true },
+          { section: 'process', key: 'subheading', label: 'Subtítulo', type: 'input' },
+        ],
+      },
+      ...[1, 2, 3, 4, 5].map(n => ({
+        label: `Paso ${n}`,
+        fields: [
+          { section: 'process', key: `step${n}_num`,   label: 'Número',      type: 'input'    as FieldType },
+          { section: 'process', key: `step${n}_title`, label: 'Título',      type: 'input'    as FieldType },
+          { section: 'process', key: `step${n}_desc`,  label: 'Descripción', type: 'textarea' as FieldType },
+        ],
+      })),
+    ],
+  },
+  {
+    id: 'faq',
+    label: 'FAQ',
+    groups: [
+      {
+        label: 'Encabezado',
+        fields: [
+          { section: 'faq', key: 'heading',       label: 'Título',                     type: 'input',    withSize: true },
+          { section: 'faq', key: 'subheading',    label: 'Subtítulo',                  type: 'textarea' },
+          { section: 'faq', key: 'contact_label', label: 'Texto del enlace contacto',  type: 'input' },
+          { section: 'faq', key: 'contact_href',  label: 'Enlace contacto (href)',      type: 'url' },
+        ],
+      },
+      ...[1, 2, 3, 4, 5, 6].map(n => ({
+        label: `Pregunta ${n}`,
+        fields: [
+          { section: 'faq', key: `q${n}`, label: 'Pregunta',  type: 'input'    as FieldType },
+          { section: 'faq', key: `a${n}`, label: 'Respuesta', type: 'textarea' as FieldType },
+        ],
+      })),
+    ],
+  },
+]
 
-const LONG_KEYS = ['description', 'desc', 'content', 'excerpt', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6']
-const isLong = (key: string) => LONG_KEYS.some(k => key.toLowerCase().includes(k))
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
-function EntryRow({
-  entry, token, onSaved, sizeValue, onSizeSaved,
-}: {
-  entry: Entry; token: string; onSaved: (id: string, v: string) => void
-  sizeValue: string; onSizeSaved: (sizeKey: string, size: string) => void
-}) {
-  const [value, setValue] = useState(entry.value)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const dirty = value !== entry.value
+function fk(section: string, key: string) {
+  return `${section}/${key}`
+}
 
-  async function save() {
-    setSaving(true)
-    try {
-      await fetch("/api/content", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ section: entry.section, key: entry.key, value }),
-      })
-      onSaved(entry.id, value)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    } finally {
-      setSaving(false)
+function getAllKeys(cfg: SectionDef): { section: string; key: string }[] {
+  const result: { section: string; key: string }[] = []
+  for (const g of cfg.groups) {
+    for (const f of g.fields) {
+      result.push({ section: f.section, key: f.key })
+      if (f.withSize) result.push({ section: f.section, key: f.key + '_size' })
     }
   }
-
-  async function saveSize(size: string) {
-    const sizeKey = entry.key + '_size'
-    await fetch("/api/content", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ section: entry.section, key: sizeKey, value: size }),
-    })
-    onSizeSaved(sizeKey, size)
-  }
-
-  return (
-    <div className="flex flex-col gap-2 py-4 border-b border-white/[0.04] last:border-0">
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <span className="text-[16px] font-medium text-white">{getLabel(entry.section, entry.key)}</span>
-        <div className="flex items-center gap-2">
-          {showSizeControl(entry.key) && (
-            <select
-              value={sizeValue}
-              onChange={e => saveSize(e.target.value)}
-              className="bg-[#07090F] border border-white/[0.08] rounded-lg px-2 py-1 text-[14px] text-[#A5B0CC] focus:outline-none focus:border-[#4361EE] transition-colors cursor-pointer"
-            >
-              {SIZE_OPTS.map(o => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          )}
-          {(dirty || saved) && (
-            <button
-              onClick={save}
-              disabled={saving || !dirty}
-              className={`flex items-center gap-1.5 text-[13px] font-medium px-3 py-1.5 rounded-full transition-all ${
-                saved
-                  ? "bg-[#10B981]/15 text-[#10B981]"
-                  : "bg-[#4361EE]/15 text-[#4361EE] hover:bg-[#4361EE]/25"
-              }`}
-            >
-              {saving ? <Loader2 size={12} className="animate-spin" /> : saved ? <Check size={12} /> : null}
-              {saving ? "Guardando…" : saved ? "Guardado" : "Guardar"}
-            </button>
-          )}
-        </div>
-      </div>
-      {isLong(entry.key) ? (
-        <textarea
-          value={value}
-          onChange={e => setValue(e.target.value)}
-          rows={3}
-          className="w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-3 py-2 text-[16px] text-white focus:outline-none focus:border-[#4361EE] transition-colors resize-y font-sans leading-relaxed"
-        />
-      ) : (
-        <input
-          value={value}
-          onChange={e => setValue(e.target.value)}
-          className="w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-3 py-2 text-[16px] text-white focus:outline-none focus:border-[#4361EE] transition-colors"
-        />
-      )}
-    </div>
-  )
+  return result
 }
 
-function SectionCard({
-  section, entries, token, onSaved, defaultOpen,
-}: {
-  section: string; entries: Entry[]; token: string
-  onSaved: (id: string, v: string) => void; defaultOpen: boolean
-}) {
-  const [open, setOpen] = useState(defaultOpen)
-
-  const [sizeMap, setSizeMap] = useState<Record<string, string>>(() =>
-    Object.fromEntries(
-      entries.filter(e => e.key.endsWith('_size')).map(e => [e.key, e.value])
-    )
-  )
-
-  const displayEntries = entries.filter(e => !e.key.endsWith('_size'))
-  const sectionName = SECTION_NAMES[section] ?? (section.charAt(0).toUpperCase() + section.slice(1))
-
-  return (
-    <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-xl overflow-hidden">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          {open
-            ? <ChevronDown size={15} className="text-[#4361EE]" />
-            : <ChevronRight size={15} className="text-[#7B8DB0]" />}
-          <span className="text-[17px] font-semibold text-white">{sectionName}</span>
-          <span className="text-[14px] text-[#A5B0CC]">{displayEntries.length} campos</span>
-        </div>
-      </button>
-      {open && (
-        <div className="px-5 pb-2 border-t border-white/[0.04]">
-          {displayEntries.map(e => (
-            <EntryRow
-              key={e.id}
-              entry={e}
-              token={token}
-              onSaved={onSaved}
-              sizeValue={sizeMap[e.key + '_size'] ?? ''}
-              onSizeSaved={(sizeKey, size) =>
-                setSizeMap(prev => ({ ...prev, [sizeKey]: size }))
-              }
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+// ── ContentPage ───────────────────────────────────────────────────────────────
 
 export default function ContentPage() {
-  const [entries, setEntries] = useState<Entry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [params] = useSearchParams()
-  const filterSection = params.get("section")
+  const [values, setValues]           = useState<Values>({})
+  const [savedValues, setSavedValues] = useState<Values>({})
+  const [loading, setLoading]         = useState(true)
+  const [savingId, setSavingId]       = useState<string | null>(null)
+  const [savedId, setSavedId]         = useState<string | null>(null)
   const token = localStorage.getItem("admin_token") || ""
 
   useEffect(() => {
     fetch("/api/content", { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
-      .then(data => { setEntries(data); setLoading(false) })
+      .then((data: { section: string; key: string; value: string }[]) => {
+        const map: Values = {}
+        for (const { section, key, value } of data) map[fk(section, key)] = value
+        setValues(map)
+        setSavedValues(map)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [token])
 
-  const handleSaved = useCallback((id: string, value: string) => {
-    setEntries(prev => prev.map(e => e.id === id ? { ...e, value } : e))
-  }, [])
+  function update(section: string, key: string, value: string) {
+    setValues(prev => ({ ...prev, [fk(section, key)]: value }))
+  }
 
-  const grouped = entries.reduce<Record<string, Entry[]>>((acc, e) => {
-    if (!acc[e.section]) acc[e.section] = []
-    acc[e.section].push(e)
-    return acc
-  }, {})
+  function isDirty(cfg: SectionDef) {
+    return getAllKeys(cfg).some(({ section, key }) => values[fk(section, key)] !== savedValues[fk(section, key)])
+  }
 
-  const sections = filterSection
-    ? Object.keys(grouped).filter(s => s === filterSection)
-    : Object.keys(grouped)
+  async function save(cfg: SectionDef) {
+    setSavingId(cfg.id)
+    const dirty = getAllKeys(cfg).filter(({ section, key }) =>
+      values[fk(section, key)] !== savedValues[fk(section, key)]
+    )
+    await Promise.all(dirty.map(({ section, key }) =>
+      fetch("/api/content", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ section, key, value: values[fk(section, key)] ?? "" }),
+      })
+    ))
+    setSavedValues(prev => {
+      const next = { ...prev }
+      dirty.forEach(({ section, key }) => { next[fk(section, key)] = values[fk(section, key)] ?? "" })
+      return next
+    })
+    setSavingId(null)
+    setSavedId(cfg.id)
+    setTimeout(() => setSavedId(id => id === cfg.id ? null : id), 2500)
+  }
 
-  return (
-    <AdminLayout title="Contenido del sitio">
-      {loading ? (
+  if (loading) {
+    return (
+      <AdminLayout title="Contenido del sitio">
         <div className="flex items-center gap-2 text-white text-base">
           <Loader2 size={18} className="animate-spin" /> Cargando…
         </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {filterSection && (
-            <p className="text-[15px] text-[#A5B0CC] mb-2">
-              Sección:{" "}
-              <span className="text-[#4361EE] font-semibold">
-                {SECTION_NAMES[filterSection] ?? filterSection}
-              </span>
-            </p>
-          )}
-          {sections.map((section, i) => (
-            <SectionCard
-              key={section}
-              section={section}
-              entries={grouped[section]}
-              token={token}
-              onSaved={handleSaved}
-              defaultOpen={i === 0}
-            />
+      </AdminLayout>
+    )
+  }
+
+  return (
+    <AdminLayout title="Contenido del sitio">
+      <div className="flex flex-col gap-4">
+        {SECTIONS.map(cfg => (
+          <SectionBlock
+            key={cfg.id}
+            cfg={cfg}
+            values={values}
+            update={update}
+            dirty={isDirty(cfg)}
+            saving={savingId === cfg.id}
+            justSaved={savedId === cfg.id}
+            onSave={() => save(cfg)}
+          />
+        ))}
+      </div>
+    </AdminLayout>
+  )
+}
+
+// ── SectionBlock ──────────────────────────────────────────────────────────────
+
+function SectionBlock({
+  cfg, values, update, dirty, saving, justSaved, onSave,
+}: {
+  cfg: SectionDef
+  values: Values
+  update: (section: string, key: string, v: string) => void
+  dirty: boolean
+  saving: boolean
+  justSaved: boolean
+  onSave: () => void
+}) {
+  const [open, setOpen] = useState(true)
+
+  const SaveBtn = ({ bottom }: { bottom?: boolean }) => (
+    <button
+      onClick={onSave}
+      disabled={saving || !dirty}
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[14px] font-semibold transition-all ${
+        justSaved
+          ? "bg-[#10B981]/15 text-[#10B981]"
+          : dirty
+          ? "bg-[#4361EE] text-white hover:bg-[#3451d1]"
+          : "bg-white/[0.04] text-[#7B8DB0] cursor-not-allowed"
+      } ${bottom ? "ml-auto" : ""}`}
+    >
+      {saving
+        ? <Loader2 size={14} className="animate-spin" />
+        : justSaved
+        ? <Check size={14} />
+        : <Save size={14} />}
+      {saving ? "Guardando…" : justSaved ? "Guardado" : dirty ? "Guardar cambios" : "Sin cambios"}
+    </button>
+  )
+
+  return (
+    <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-xl overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+        <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left">
+          {open
+            ? <ChevronDown size={15} className="text-[#4361EE]" />
+            : <ChevronRight size={15} className="text-[#7B8DB0]" />}
+          <span className="text-[17px] font-semibold text-white">{cfg.label}</span>
+        </button>
+        <SaveBtn />
+      </div>
+
+      {/* Body */}
+      {open && (
+        <div className="px-5 py-5 flex flex-col gap-7">
+          {cfg.groups.map(group => (
+            <div key={group.label}>
+              <p className="text-[12px] font-semibold text-[#4361EE] uppercase tracking-widest mb-3">
+                {group.label}
+              </p>
+              <div className="flex flex-col gap-4">
+                {group.fields.map(field => (
+                  <FieldRow
+                    key={fk(field.section, field.key)}
+                    field={field}
+                    value={values[fk(field.section, field.key)] ?? ""}
+                    sizeValue={values[fk(field.section, field.key + "_size")] ?? ""}
+                    onChange={v => update(field.section, field.key, v)}
+                    onSizeChange={v => update(field.section, field.key + "_size", v)}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
-          {sections.length === 0 && (
-            <p className="text-[#A5B0CC] text-[15px]">No hay contenido en la base de datos todavía.</p>
-          )}
+
+          {/* Bottom save */}
+          <div className="flex pt-2 border-t border-white/[0.04]">
+            <SaveBtn bottom />
+          </div>
         </div>
       )}
-    </AdminLayout>
+    </div>
+  )
+}
+
+// ── FieldRow ──────────────────────────────────────────────────────────────────
+
+function FieldRow({
+  field, value, sizeValue, onChange, onSizeChange,
+}: {
+  field: FieldDef
+  value: string
+  sizeValue: string
+  onChange: (v: string) => void
+  onSizeChange: (v: string) => void
+}) {
+  const base = "w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-3 py-2.5 text-[16px] text-white focus:outline-none focus:border-[#4361EE] transition-colors"
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <label className="text-[15px] font-medium text-white">{field.label}</label>
+        {field.withSize && (
+          <select
+            value={sizeValue}
+            onChange={e => onSizeChange(e.target.value)}
+            className="bg-[#07090F] border border-white/[0.08] rounded-lg px-2 py-1 text-[13px] text-[#A5B0CC] focus:outline-none focus:border-[#4361EE] transition-colors cursor-pointer"
+          >
+            {SIZE_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        )}
+      </div>
+      {field.type === "textarea" ? (
+        <textarea
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          rows={3}
+          className={`${base} resize-y leading-relaxed`}
+        />
+      ) : (
+        <input
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={field.type === "url" ? "https://…" : ""}
+          className={base}
+        />
+      )}
+    </div>
   )
 }

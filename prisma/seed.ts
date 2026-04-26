@@ -105,17 +105,13 @@ const siteContent = [
 ]
 
 async function main() {
-  console.log("Seeding database...")
+  console.log("Clearing existing site content...")
+  await prisma.siteContent.deleteMany({})
 
-  for (const item of siteContent) {
-    await prisma.siteContent.upsert({
-      where: { section_key: { section: item.section, key: item.key } },
-      update: { value: item.value },
-      create: item,
-    })
-  }
+  console.log("Seeding fresh site content...")
+  await prisma.siteContent.createMany({ data: siteContent })
 
-  console.log(`Seeded ${siteContent.length} content entries.`)
+  console.log(`✓ Seeded ${siteContent.length} content entries.`)
 }
 
 main()
