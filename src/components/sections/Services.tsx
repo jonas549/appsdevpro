@@ -1,7 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Zap, Lock, Link, ShoppingCart, Layout, ArrowRight } from 'lucide-react'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 const FALLBACK_VIDEO_SERVICES =
@@ -31,25 +31,25 @@ const CARD_DEFAULTS = [
   {
     id: '02',
     title: 'Apps Privadas (Custom Apps)',
-    desc: 'Desarrollamos <strong>apps privadas Shopify</strong> para merchants que necesitan funcionalidad exclusiva sin pasar por el review del App Store. Ideales para <strong>integraciones internas con sistemas sensibles</strong>, <strong>automatizaciones específicas</strong> de tu operación o <strong>lógica de negocio propietaria</strong>. Sin proceso de review, scope completo de permisos disponible y tiempos más cortos.',
+    desc: 'Desarrollamos <strong>apps privadas Shopify</strong> para merchants que necesitan funcionalidad exclusiva sin pasar por el review del App Store.',
     tag: 'Custom App · Sin marketplace',
   },
   {
     id: '03',
     title: 'Integraciones, APIs y Webhooks',
-    desc: 'Conectamos <strong>Shopify con cualquier sistema externo</strong> mediante APIs robustas y webhooks confiables. Sincronización bidireccional con <strong>ERP, CRM, WMS, facturación electrónica latinoamericana</strong> y herramientas de BI. Implementamos <strong>idempotencia, reintentos exponenciales, dead letter queues y logs auditables</strong>.',
+    desc: 'Conectamos <strong>Shopify con cualquier sistema externo</strong> mediante APIs robustas y webhooks confiables.',
     tag: 'ERP · CRM · Webhooks · REST',
   },
   {
     id: '04',
     title: 'Checkout Extensions y Shopify Plus',
-    desc: 'Desarrollamos <strong>Checkout Extensions</strong> para Shopify Plus: <strong>upsells y cross-sells en el checkout</strong>, <strong>validaciones personalizadas</strong>, <strong>descuentos dinámicos</strong>, <strong>bloques en thank you page</strong> y order status page. Trabajamos con la <strong>nueva arquitectura de checkout extensibility</strong>, no con Script Editor o Checkout.liquid deprecados.',
+    desc: 'Desarrollamos <strong>Checkout Extensions</strong> para Shopify Plus: <strong>upsells y cross-sells en el checkout</strong>, validaciones personalizadas y descuentos dinámicos.',
     tag: 'Shopify Plus · Checkout UI',
   },
   {
     id: '05',
     title: 'Themes Shopify 2.0 + Consultoría Técnica',
-    desc: 'Desarrollamos <strong>themes Shopify 2.0</strong> desde cero con <strong>secciones dinámicas, app blocks compatibles y JSON templates</strong> optimizados para <strong>Core Web Vitals</strong>. También damos <strong>consultoría técnica</strong> para auditar tiendas existentes, optimizar conversión y proponer una hoja de ruta realista.',
+    desc: 'Desarrollamos <strong>themes Shopify 2.0</strong> desde cero con <strong>secciones dinámicas, app blocks y JSON templates</strong> optimizados para <strong>Core Web Vitals</strong>.',
     tag: 'Liquid · Shopify 2.0 · Auditoría',
   },
 ]
@@ -62,16 +62,18 @@ export default function Services() {
   const VIDEO_URL = c.video_url || FALLBACK_VIDEO_SERVICES
 
   const headingRaw = c.heading    || 'Todo lo que necesitas para desarrollar y escalar en {{Shopify}}'
-  const subheading = c.subheading || '<strong>Especialistas en el ecosistema Shopify</strong>. Sin generalistas, sin proyectos paralelos en otras plataformas, sin "también hacemos WordPress".'
+  const subheading = c.subheading || '<strong>Especialistas en el ecosistema Shopify</strong>. Sin generalistas, sin proyectos paralelos en otras plataformas.'
   const mainLabel  = c.main_label || 'Servicio principal'
   const mainTitle  = c.main_title || 'Desarrollo de Apps Shopify'
-  const mainDesc   = c.main_desc  || 'Construimos tu <strong>app Shopify</strong> de principio a fin: <strong>arquitectura técnica, frontend con React y Polaris, backend con Node.js y Remix, base de datos PostgreSQL, autenticación OAuth con Shopify, billing recurrente, webhooks, jobs en background y publicación final en el App Store</strong>. Apps que escalan con tu negocio, actualizadas al ritmo de las versiones trimestrales de la API de Shopify. Cada app incluye documentación técnica, repositorio Git, pipeline de CI/CD y tests automatizados.'
+  const mainDesc   = c.main_desc  || 'Construimos tu <strong>app Shopify</strong> de principio a fin: arquitectura técnica, frontend con React y Polaris, backend con Node.js y Remix, base de datos PostgreSQL, autenticación OAuth con Shopify, billing recurrente y publicación en el App Store.'
   const mainTags   = (c.main_tags || 'Remix,React,Node.js,PostgreSQL,Polaris,GraphQL Admin API').split(',')
 
-  const headingStyle    = getSizeStyle(c.heading_size)
-  const subheadingStyle = getSizeStyle(c.subheading_size)
-  const mainTitleStyle  = getSizeStyle(c.main_title_size)
-  const mainDescStyle   = getSizeStyle(c.main_desc_size)
+  // Estilos por campo desde DB
+  const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
+  const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
+  const mainLabelStyle  = getFieldStyle(c.main_label_size, c.main_label_px, c.main_label_color)
+  const mainTitleStyle  = getFieldStyle(c.main_title_size, c.main_title_px, c.main_title_color)
+  const mainDescStyle   = getFieldStyle(c.main_desc_size,  c.main_desc_px,  c.main_desc_color)
 
   const headingParts = parseAccent(headingRaw)
 
@@ -81,6 +83,9 @@ export default function Services() {
     title: c[`card${n}_title`] || CARD_DEFAULTS[i].title,
     desc:  c[`card${n}_desc`]  || CARD_DEFAULTS[i].desc,
     tag:   c[`card${n}_tag`]   || CARD_DEFAULTS[i].tag,
+    titleStyle: getFieldStyle(c[`card${n}_title_size`], c[`card${n}_title_px`], c[`card${n}_title_color`]),
+    descStyle:  getFieldStyle(c[`card${n}_desc_size`],  c[`card${n}_desc_px`],  c[`card${n}_desc_color`]),
+    tagStyle:   getFieldStyle(c[`card${n}_tag_size`],   c[`card${n}_tag_px`],   c[`card${n}_tag_color`]),
   }))
 
   return (
@@ -125,7 +130,7 @@ export default function Services() {
             <div>
               <div className="flex items-center gap-2 mb-5">
                 <span className="text-[#4361EE]"><Zap size={22} /></span>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#4361EE]">{mainLabel}</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[#4361EE]" style={mainLabelStyle}>{mainLabel}</span>
               </div>
               <h3 className="text-2xl font-bold text-white mb-4" style={mainTitleStyle}>{mainTitle}</h3>
               <p
@@ -164,12 +169,13 @@ export default function Services() {
                   <span className="text-[#4361EE]">{card.icon}</span>
                   <span className="font-mono text-[10px] text-[#7B8DB0] opacity-40">{card.id}</span>
                 </div>
-                <h3 className="font-bold text-[#EDF0FF] text-base mb-2">{card.title}</h3>
+                <h3 className="font-bold text-[#EDF0FF] text-base mb-2" style={card.titleStyle}>{card.title}</h3>
                 <p
                   className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                  style={card.descStyle}
                   dangerouslySetInnerHTML={{ __html: safeHtml(card.desc) }}
                 />
-                <span className="font-mono text-[11px] text-[#4361EE] bg-[#4361EE]/5 border border-[#4361EE]/20 px-2.5 py-1 rounded-full">
+                <span className="font-mono text-[11px] text-[#4361EE] bg-[#4361EE]/5 border border-[#4361EE]/20 px-2.5 py-1 rounded-full" style={card.tagStyle}>
                   {card.tag}
                 </span>
               </div>

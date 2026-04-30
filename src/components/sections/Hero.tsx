@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 function parseHeading(raw: string): { text: string; accent: boolean }[] {
@@ -25,16 +25,23 @@ function parseHeading(raw: string): { text: string; accent: boolean }[] {
 
 export default function Hero() {
   const c = useContent('hero')
+
   const heading     = c.heading      || 'Desarrollo de Apps y Tiendas {{Shopify}}'
-  const desc        = c.description  || 'Construimos **apps Shopify a medida**, **integraciones con sistemas externos** y **tiendas Shopify completas** para merchants que necesitan más de lo que ofrece el App Store. Desde **apps publicadas en el Shopify App Store** hasta **soluciones privadas conectadas a tu ERP o CRM**, desarrollamos exactamente lo que tu operación requiere.'
-  const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el **ecosistema Shopify**. No hacemos WordPress, no hacemos apps móviles, no somos generalistas: desarrollamos **apps Shopify**, **custom apps**, **checkout extensions**, **integraciones API** y **themes Shopify 2.0** con un stack moderno basado en **Remix, TypeScript, Node.js y PostgreSQL**. Ya tenemos apps en producción con merchants reales pagando suscripción mensual — no estamos aprendiendo con tu proyecto.'
+  const desc        = c.description  || 'Construimos <strong>apps Shopify a medida</strong>, <strong>integraciones con sistemas externos</strong> y <strong>tiendas Shopify completas</strong> para merchants que necesitan más de lo que ofrece el App Store.'
+  const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el <strong>ecosistema Shopify</strong>. No hacemos WordPress, no hacemos apps móviles — desarrollamos <strong>apps Shopify</strong>, <strong>checkout extensions</strong>, <strong>integraciones API</strong> y <strong>themes Shopify 2.0</strong>.'
   const cta         = c.cta_label    || 'Solicitar propuesta gratuita'
   const href        = c.cta_href     || '#contacto'
   const cta2        = c.cta2_label   || 'Ver apps publicadas'
   const microcopy   = c.microcopy    || 'Respuesta técnica en 48 horas · Sin compromiso · Atención en español e inglés'
   const video       = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
-  const headingStyle = getSizeStyle(c.heading_size)
+  // Estilos por campo desde DB
+  const headingStyle    = getFieldStyle(c.heading_size,     c.heading_px,     c.heading_color)
+  const descStyle       = getFieldStyle(c.description_size, c.description_px, c.description_color)
+  const supportStyle    = getFieldStyle(c.support_text_size, c.support_text_px, c.support_text_color)
+  const ctaLabelStyle   = getFieldStyle(c.cta_label_size,   c.cta_label_px,   c.cta_label_color)
+  const cta2LabelStyle  = getFieldStyle(c.cta2_label_size,  c.cta2_label_px,  c.cta2_label_color)
+  const microcopyStyle  = getFieldStyle(c.microcopy_size,   c.microcopy_px,   c.microcopy_color)
 
   const parts = parseHeading(heading)
   let cumulativeDelay = 0
@@ -74,6 +81,7 @@ export default function Hero() {
             <div className="col-span-12 md:col-span-5 flex flex-col gap-3 md:pb-2">
               <motion.p
                 className="text-sm md:text-base leading-[1.5] text-white/90 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
+                style={descStyle}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -81,6 +89,7 @@ export default function Hero() {
               />
               <motion.p
                 className="text-xs md:text-sm leading-relaxed text-white/50 [&_strong]:font-semibold [&_strong]:text-white/70 [&_em]:italic"
+                style={supportStyle}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
@@ -96,7 +105,7 @@ export default function Hero() {
                   href={href}
                   className="group inline-flex items-center gap-2 hover:gap-3 transition-all duration-300 bg-[#4361EE] rounded-full pl-5 pr-1.5 py-1.5"
                 >
-                  <span className="text-white font-medium text-sm whitespace-nowrap">{cta}</span>
+                  <span className="text-white font-medium text-sm whitespace-nowrap" style={ctaLabelStyle}>{cta}</span>
                   <span className="bg-black rounded-full w-9 h-9 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                     <ArrowRight size={16} style={{ color: '#EDF0FF' }} />
                   </span>
@@ -104,12 +113,14 @@ export default function Hero() {
                 <a
                   href="#apps"
                   className="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap"
+                  style={cta2LabelStyle}
                 >
                   {cta2}
                 </a>
               </motion.div>
               <motion.p
                 className="text-[11px] font-mono text-white/35"
+                style={microcopyStyle}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}

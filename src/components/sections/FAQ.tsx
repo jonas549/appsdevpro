@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 const DEFAULT_FAQS = [
@@ -97,8 +97,9 @@ export default function FAQ() {
   const subheading   = c.subheading    || 'Las preguntas más comunes que recibimos de merchants antes de empezar un proyecto. Si la tuya no está acá, escríbenos directamente y te respondemos en menos de 24 horas hábiles.'
   const contactLabel = c.contact_label || 'Hacer una pregunta →'
   const contactHref  = c.contact_href  || 'mailto:hola@appsdevpro.com'
-  const headingStyle    = getSizeStyle(c.heading_size)
-  const subheadingStyle = getSizeStyle(c.subheading_size)
+  const headingStyle      = getFieldStyle(c.heading_size,      c.heading_px,      c.heading_color)
+  const subheadingStyle   = getFieldStyle(c.subheading_size,   c.subheading_px,   c.subheading_color)
+  const contactLabelStyle = getFieldStyle(c.contact_label_size, c.contact_label_px, c.contact_label_color)
 
   const faqs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((n) => ({
     q: c[`q${n}`] || DEFAULT_FAQS[n - 1]?.q || '',
@@ -116,6 +117,7 @@ export default function FAQ() {
             <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic" style={subheadingStyle} dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }} />
             <a
               href={contactHref}
+              style={contactLabelStyle}
               className="inline-flex items-center gap-2 border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-[#EDF0FF] text-sm font-medium px-5 py-2.5 rounded-full transition-all duration-200"
             >
               {contactLabel}

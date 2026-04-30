@@ -1,4 +1,4 @@
-import { useContent } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 export default function Footer() {
@@ -8,6 +8,10 @@ export default function Footer() {
   const desc      = c.description || 'Agencia especializada en desarrollo de aplicaciones para Shopify y Shopify Plus. Transformamos necesidades técnicas en soluciones reales.'
   const email     = c.email       || 'hola@appsdevpro.com'
   const copyright = c.copyright   || `© ${year} Apps Developers Pro. Todos los derechos reservados.`
+
+  const descStyle      = getFieldStyle(c.description_size, c.description_px, c.description_color)
+  const emailStyle     = getFieldStyle(c.email_size,       c.email_px,       c.email_color)
+  const copyrightStyle = getFieldStyle(c.copyright_size,   c.copyright_px,   c.copyright_color)
 
   const services = [
     { label: 'Desarrollo de Apps Shopify',   href: '#servicios' },
@@ -43,9 +47,10 @@ export default function Footer() {
                 Apps<span className="text-[#4361EE]">Dev</span>Pro
               </span>
             </div>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE]" dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE]" style={descStyle} dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
             <a
               href={`mailto:${email}`}
+              style={emailStyle}
               className="text-[#4361EE] text-sm hover:underline underline-offset-2"
             >
               {email}
@@ -97,7 +102,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[#7B8DB0] text-xs font-mono">{copyright}</p>
+          <p className="text-[#7B8DB0] text-xs font-mono" style={copyrightStyle}>{copyright}</p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-[#7B8DB0] text-xs hover:text-[#EDF0FF] transition-colors">Privacidad</a>
             <a href="#" className="text-[#7B8DB0] text-xs hover:text-[#EDF0FF] transition-colors">Términos</a>

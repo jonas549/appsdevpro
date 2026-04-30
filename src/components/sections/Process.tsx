@@ -1,7 +1,7 @@
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useState, useRef } from 'react'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 const DEFAULTS = [
@@ -40,13 +40,15 @@ export default function Process() {
 
   const heading    = c.heading    || 'Un proceso de desarrollo claro, sin sorpresas y con entregas verificables'
   const subheading = c.subheading || 'Desde la primera reunión hasta el lanzamiento en producción, sabes exactamente qué esperar en cada etapa, qué entregable recibes y en qué plazo.'
-  const headingStyle    = getSizeStyle(c.heading_size)
-  const subheadingStyle = getSizeStyle(c.subheading_size)
+  const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
+  const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
 
   const steps = [1, 2, 3, 4, 5].map((n, i) => ({
-    num:   c[`step${n}_num`]   || DEFAULTS[i].num,
-    title: c[`step${n}_title`] || DEFAULTS[i].title,
-    desc:  c[`step${n}_desc`]  || DEFAULTS[i].desc,
+    num:        c[`step${n}_num`]   || DEFAULTS[i].num,
+    title:      c[`step${n}_title`] || DEFAULTS[i].title,
+    desc:       c[`step${n}_desc`]  || DEFAULTS[i].desc,
+    titleStyle: getFieldStyle(c[`step${n}_title_size`], c[`step${n}_title_px`], c[`step${n}_title_color`]),
+    descStyle:  getFieldStyle(c[`step${n}_desc_size`],  c[`step${n}_desc_px`],  c[`step${n}_desc_color`]),
   }))
 
   return (
@@ -115,12 +117,13 @@ export default function Process() {
                   <span className="font-mono text-7xl font-bold text-[#4361EE]/10 leading-none select-none flex-shrink-0 -mt-1">
                     {steps[active].num}
                   </span>
-                  <h3 className="text-xl font-bold text-[#0F172A] leading-snug mt-2">
+                  <h3 className="text-xl font-bold text-[#0F172A] leading-snug mt-2" style={steps[active].titleStyle}>
                     {steps[active].title}
                   </h3>
                 </div>
                 <p
                   className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+                  style={steps[active].descStyle}
                   dangerouslySetInnerHTML={{ __html: safeHtml(steps[active].desc) }}
                 />
 

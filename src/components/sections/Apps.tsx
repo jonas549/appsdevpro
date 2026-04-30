@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ExternalLink, ArrowRight, Lock } from 'lucide-react'
 import WordsPullUp from '../animations/WordsPullUp'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 function CalendifyMockup() {
@@ -117,19 +117,23 @@ export default function Apps() {
 
   const heading    = c.heading    || 'Apps que ya están resolviendo problemas reales en producción'
   const subheading = c.subheading || '<strong>Publicadas en el Shopify App Store</strong>, en <strong>producción</strong> y con <strong>merchants reales pagando suscripción mensual</strong>. No te pedimos que confíes — te mostramos lo que ya construimos y está funcionando.'
-  const headingStyle    = getSizeStyle(c.heading_size)
-  const subheadingStyle = getSizeStyle(c.subheading_size)
+  const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
+  const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
 
   const apps = [1, 2, 3].map((n, i) => ({
-    mockup:    MOCKUPS[i],
-    status:    c[`app${n}_status`]    || APP_DEFAULTS[i].status,
-    badge:     c[`app${n}_badge`]     || APP_DEFAULTS[i].badge,
-    title:     c[`app${n}_title`]     || APP_DEFAULTS[i].title,
-    subtitle:  c[`app${n}_subtitle`]  || APP_DEFAULTS[i].subtitle,
-    desc:      c[`app${n}_desc`]      || APP_DEFAULTS[i].desc,
-    tags:      (c[`app${n}_tags`]     || APP_DEFAULTS[i].tags).split(','),
-    cta:       c[`app${n}_cta`]       || APP_DEFAULTS[i].cta,
-    store_url: c[`app${n}_store_url`] || APP_DEFAULTS[i].store_url,
+    mockup:       MOCKUPS[i],
+    status:       c[`app${n}_status`]    || APP_DEFAULTS[i].status,
+    badge:        c[`app${n}_badge`]     || APP_DEFAULTS[i].badge,
+    title:        c[`app${n}_title`]     || APP_DEFAULTS[i].title,
+    subtitle:     c[`app${n}_subtitle`]  || APP_DEFAULTS[i].subtitle,
+    desc:         c[`app${n}_desc`]      || APP_DEFAULTS[i].desc,
+    tags:         (c[`app${n}_tags`]     || APP_DEFAULTS[i].tags).split(','),
+    cta:          c[`app${n}_cta`]       || APP_DEFAULTS[i].cta,
+    store_url:    c[`app${n}_store_url`] || APP_DEFAULTS[i].store_url,
+    titleStyle:   getFieldStyle(c[`app${n}_title_size`],    c[`app${n}_title_px`],    c[`app${n}_title_color`]),
+    subtitleStyle:getFieldStyle(c[`app${n}_subtitle_size`], c[`app${n}_subtitle_px`], c[`app${n}_subtitle_color`]),
+    descStyle:    getFieldStyle(c[`app${n}_desc_size`],     c[`app${n}_desc_px`],     c[`app${n}_desc_color`]),
+    ctaStyle:     getFieldStyle(c[`app${n}_cta_size`],      c[`app${n}_cta_px`],      c[`app${n}_cta_color`]),
   }))
 
   function getBadgeStyle(status: string) {
@@ -178,9 +182,9 @@ export default function Apps() {
                     <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: badge.dot }} />
                     {app.badge}
                   </span>
-                  <h3 className="text-lg font-bold text-[#0F172A] mb-0.5">{app.title}</h3>
-                  <p className="text-[#6B7280] text-xs mb-3">{app.subtitle}</p>
-                  <div className="text-[#4B5563] text-sm leading-relaxed mb-5 flex-1">
+                  <h3 className="text-lg font-bold text-[#0F172A] mb-0.5" style={app.titleStyle}>{app.title}</h3>
+                  <p className="text-[#6B7280] text-xs mb-3" style={app.subtitleStyle}>{app.subtitle}</p>
+                  <div className="text-[#4B5563] text-sm leading-relaxed mb-5 flex-1" style={app.descStyle}>
                     {app.desc.split('\n\n').map((para, pi) => (
                       <p
                         key={pi}
@@ -209,6 +213,7 @@ export default function Apps() {
                       href={app.store_url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      style={app.ctaStyle}
                       className="flex items-center gap-1.5 font-semibold text-sm hover:gap-2.5 transition-all duration-200 w-fit text-[#4361EE]"
                     >
                       {app.cta} <ExternalLink size={13} />
@@ -216,8 +221,8 @@ export default function Apps() {
                   ) : (
                     <a
                       href="#contacto"
+                      style={{ color: app.status === 'upcoming' ? '#D97706' : '#818CF8', ...app.ctaStyle }}
                       className="flex items-center gap-1.5 font-semibold text-sm hover:gap-2.5 transition-all duration-200 w-fit"
-                      style={{ color: app.status === 'upcoming' ? '#D97706' : '#818CF8' }}
                     >
                       {app.cta} <ArrowRight size={13} />
                     </a>

@@ -351,6 +351,12 @@ const SECTIONS: SectionDef[] = [
     label: 'CTA Final',
     groups: [
       {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'ctafinal', key: 'video_url', label: 'URL del video de fondo (MP4, reemplaza el video por defecto)', type: 'url' },
+        ],
+      },
+      {
         label: 'Contenido',
         fields: [
           { section: 'ctafinal', key: 'label',      label: 'Etiqueta (pill superior)', type: 'input' },
@@ -405,10 +411,11 @@ function getAllKeys(cfg: SectionDef): { section: string; key: string }[] {
   for (const g of cfg.groups) {
     for (const f of g.fields) {
       result.push({ section: f.section, key: f.key })
-      result.push({ section: f.section, key: f.key + '_color' })
-      if (f.withSize) {
+      // Controles de tipografía para todos los campos de texto (no URLs)
+      if (f.type !== 'url') {
         result.push({ section: f.section, key: f.key + '_size' })
         result.push({ section: f.section, key: f.key + '_px' })
+        result.push({ section: f.section, key: f.key + '_color' })
       }
     }
   }
@@ -463,6 +470,8 @@ export default function ContentPage() {
     })
     setSavingId(null)
     setSavedId(cfg.id)
+    // Notifica al ContentProvider del sitio público para refrescar datos
+    window.dispatchEvent(new Event('content-updated'))
     setTimeout(() => setSavedId(id => id === cfg.id ? null : id), 2500)
   }
 
@@ -668,35 +677,32 @@ function FieldRow({
         <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>
           {field.label}
         </label>
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Color picker — shown for all fields */}
-          <ColorPicker value={colorValue} onChange={onColorChange} />
-
-          {/* Typography controls — only for withSize fields */}
-          {field.withSize && (
-            <>
-              <select
-                value={sizeValue}
-                onChange={e => onSizeChange(e.target.value)}
-                className="rounded-lg px-2 py-1 text-[12px] focus:outline-none focus:border-adm-primary-container transition-colors cursor-pointer"
-                style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
-              >
-                {TAG_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-              <input
-                type="number"
-                value={pxValue}
-                onChange={e => onPxChange(e.target.value)}
-                placeholder="px"
-                min={10}
-                max={200}
-                className="w-[60px] rounded-lg px-2 py-1 text-[12px] text-center focus:outline-none focus:border-adm-primary-container transition-colors"
-                style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
-                title="Tamaño en píxeles"
-              />
-            </>
-          )}
-        </div>
+        {/* Controles de tipografía — todos los campos de texto (no URLs) */}
+        {field.type !== 'url' && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <ColorPicker value={colorValue} onChange={onColorChange} />
+            <select
+              value={sizeValue}
+              onChange={e => onSizeChange(e.target.value)}
+              className="rounded-lg px-2 py-1 text-[12px] focus:outline-none focus:border-adm-primary-container transition-colors cursor-pointer"
+              style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
+              title="Etiqueta HTML"
+            >
+              {TAG_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            <input
+              type="number"
+              value={pxValue}
+              onChange={e => onPxChange(e.target.value)}
+              placeholder="px"
+              min={10}
+              max={200}
+              className="w-[60px] rounded-lg px-2 py-1 text-[12px] text-center focus:outline-none focus:border-adm-primary-container transition-colors"
+              style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
+              title="Tamaño en píxeles"
+            />
+          </div>
+        )}
       </div>
 
       {/* Field input */}

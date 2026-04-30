@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Layers, Plug, ShoppingCart } from 'lucide-react'
 import WordsPullUpMultiStyle from '../animations/WordsPullUpMultiStyle'
-import { useContent, getSizeStyle } from '../../lib/ContentContext'
+import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
 const SOLUTION_ICONS = [<Layers size={18} />, <Plug size={18} />, <ShoppingCart size={18} />]
@@ -18,30 +18,36 @@ export default function ProblemSolution() {
 
   const VIDEO_URL = p.video_url || FALLBACK_VIDEO
 
-  const solutionHeadingStyle = getSizeStyle(s.heading_size)
-
   const problemLabel   = p.label         || '● El Problema'
   const problemHeading = p.heading       || 'Las apps genéricas del marketplace no resuelven tu problema específico'
-  const problemDesc1   = p.description   || 'Cada <strong>tienda Shopify</strong> tiene reglas de negocio propias, integraciones con sistemas internos y flujos operativos únicos que no encajan en una app de catálogo. Las <strong>apps de $9 al mes</strong> del Shopify App Store están diseñadas para el caso promedio: descuentos básicos, gestión simple de inventario, integraciones estándar de envío. El problema aparece cuando tu operación crece y empiezas a chocar con los límites de esas apps genéricas: configuraciones que no se pueden personalizar, integraciones que no existen, lógica de negocio que tu equipo termina resolviendo manualmente con planillas de Excel.'
-  const problemDesc2   = p.description_2 || 'La consecuencia es siempre la misma. Tu equipo pierde <strong>horas operativas</strong> repitiendo procesos que deberían estar automatizados. Tu <strong>conversión</strong> se estanca porque el checkout no permite las validaciones que tu negocio requiere. Tu <strong>AOV (ticket promedio)</strong> no crece porque las apps de descuentos no soportan las reglas que necesitas para hacer cross-sell real. Y cuando intentas escalar a otro mercado, descubres que las apps que usas no soportan multi-store, multi-moneda o sincronización con tu ERP. Ahí es donde una <strong>app Shopify a medida</strong> deja de ser un lujo y se convierte en una decisión de negocio.'
-  const problemDesc3   = p.description_3 || 'Nosotros entramos justo en ese punto. Identificamos qué parte de tu operación está siendo limitada por software genérico, diseñamos una <strong>solución Shopify personalizada</strong> que se adapta a tu flujo real, y la construimos con tecnología que escala a la par de tu negocio. No vendemos plantillas ni proyectos enlatados — cada app que entregamos está hecha específicamente para el problema del cliente que la encarga.'
+  const problemDesc1   = p.description   || 'Cada <strong>tienda Shopify</strong> tiene reglas de negocio propias, integraciones con sistemas internos y flujos operativos únicos que no encajan en una app de catálogo.'
+  const problemDesc2   = p.description_2 || 'La consecuencia es siempre la misma. Tu equipo pierde <strong>horas operativas</strong> repitiendo procesos que deberían estar automatizados.'
+  const problemDesc3   = p.description_3 || 'Nosotros entramos justo en ese punto. Diseñamos una <strong>solución Shopify personalizada</strong> que se adapta a tu flujo real.'
 
   const solutionLabel   = s.label   || '● La Solución'
   const solutionHeading = s.heading || 'Construimos exactamente lo que tu tienda Shopify necesita'
 
   const solutions = [1, 2, 3].map((n) => ({
     icon: SOLUTION_ICONS[n - 1],
-    title: s[`item${n}_title`] || [
-      'Apps Shopify a medida para tu flujo de negocio',
-      'Integración de Shopify con tus sistemas internos',
-      'Apps publicadas en el Shopify App Store',
-    ][n - 1],
-    desc: s[`item${n}_desc`] || [
-      'Desarrollamos <strong>apps Shopify personalizadas</strong> desde cero, adaptadas a la lógica específica de tu operación. Trabajamos con el <strong>stack oficial recomendado por Shopify</strong>: <strong>Remix</strong>, <strong>TypeScript</strong>, <strong>PostgreSQL</strong> con Prisma y <strong>Polaris</strong> para que el panel de tu app se vea exactamente como una app nativa de Shopify.',
-      'Tu <strong>tienda Shopify</strong> tiene que conversar con tu <strong>ERP, CRM, WMS, sistemas de facturación electrónica, gateways de pago locales</strong> y cualquier API externa que tu operación requiera. Diseñamos <strong>integraciones robustas</strong> con <strong>webhooks confiables con reintentos automáticos</strong> y arquitectura preparada para escalar.',
-      'Tenemos <strong>apps activas en el Shopify App Store</strong> con merchants reales pagando suscripción mensual. Ya pasamos por todo el proceso de publicación oficial: <strong>billing recurrente</strong>, <strong>OAuth flow validado</strong>, <strong>scope de permisos correcto</strong> y <strong>respuesta a reviewers</strong> durante la aprobación.',
-    ][n - 1],
+    title: s[`item${n}_title`] || ['Apps Shopify a medida', 'Integración con sistemas internos', 'Apps en el Shopify App Store'][n - 1],
+    desc:  s[`item${n}_desc`]  || ['Desarrollamos <strong>apps Shopify personalizadas</strong> desde cero.', 'Conectamos <strong>Shopify con tu ERP, CRM y sistemas externos</strong>.', 'Tenemos <strong>apps activas en el Shopify App Store</strong>.'][n - 1],
   }))
+
+  // Estilos por campo desde DB
+  const problemLabelStyle   = getFieldStyle(p.label_size,         p.label_px,         p.label_color)
+  const problemHeadingStyle = getFieldStyle(p.heading_size,       p.heading_px,       p.heading_color)
+  const desc1Style          = getFieldStyle(p.description_size,   p.description_px,   p.description_color)
+  const desc2Style          = getFieldStyle(p.description_2_size, p.description_2_px, p.description_2_color)
+  const desc3Style          = getFieldStyle(p.description_3_size, p.description_3_px, p.description_3_color)
+  const solutionLabelStyle   = getFieldStyle(s.label_size,   s.label_px,   s.label_color)
+  const solutionHeadingStyle = getFieldStyle(s.heading_size, s.heading_px, s.heading_color)
+
+  const itemStyles = [1, 2, 3].map(n => ({
+    title: getFieldStyle(s[`item${n}_title_size`], s[`item${n}_title_px`], s[`item${n}_title_color`]),
+    desc:  getFieldStyle(s[`item${n}_desc_size`],  s[`item${n}_desc_px`],  s[`item${n}_desc_color`]),
+  }))
+
+  const descStyles = [desc1Style, desc2Style, desc3Style]
 
   return (
     <section id="servicios" className="relative py-28 md:py-36 overflow-hidden">
@@ -58,9 +64,11 @@ export default function ProblemSolution() {
           {/* Left — El Problema */}
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-[#FF8080]">{problemLabel}</span>
+              <span className="font-mono text-[11px] uppercase tracking-widest text-[#FF8080]" style={problemLabelStyle}>
+                {problemLabel}
+              </span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-8 text-[#EDF0FF]">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-8 text-[#EDF0FF]" style={problemHeadingStyle}>
               <WordsPullUpMultiStyle segments={[{ text: problemHeading }]} stagger={0.05} />
             </h2>
             <div className="flex flex-col gap-5">
@@ -68,6 +76,7 @@ export default function ProblemSolution() {
                 <p
                   key={i}
                   className={`text-sm md:text-base leading-[1.8] [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic ${i < 2 ? 'text-[#9BA8BE]' : 'text-[#7B8DB0]'}`}
+                  style={descStyles[i]}
                   dangerouslySetInnerHTML={{ __html: safeHtml(txt) }}
                 />
               ))}
@@ -77,7 +86,9 @@ export default function ProblemSolution() {
           {/* Right — La Solución */}
           <div ref={ref}>
             <div className="flex items-center gap-2 mb-6">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-[#4361EE]">{solutionLabel}</span>
+              <span className="font-mono text-[11px] uppercase tracking-widest text-[#4361EE]" style={solutionLabelStyle}>
+                {solutionLabel}
+              </span>
             </div>
             <h2
               className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-8 text-[#EDF0FF]"
@@ -97,9 +108,10 @@ export default function ProblemSolution() {
                 >
                   <div className="text-[#4361EE] mt-0.5 flex-shrink-0">{sol.icon}</div>
                   <div>
-                    <h3 className="font-semibold text-[#EDF0FF] text-sm mb-1.5">{sol.title}</h3>
+                    <h3 className="font-semibold text-[#EDF0FF] text-sm mb-1.5" style={itemStyles[i].title}>{sol.title}</h3>
                     <p
                       className="text-[#7B8DB0] text-sm leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                      style={itemStyles[i].desc}
                       dangerouslySetInnerHTML={{ __html: safeHtml(sol.desc) }}
                     />
                   </div>
