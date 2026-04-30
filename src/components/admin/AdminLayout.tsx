@@ -30,7 +30,7 @@ export default function AdminLayout({ children, title, headerActions }: AdminLay
     : [{ label: title }]
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-adm-on-surface antialiased">
+    <div className="flex min-h-screen font-sans text-adm-on-surface antialiased" style={{ background: '#F1F5F9' }}>
       {/* Sidebar */}
       <aside className="w-[260px] h-screen fixed left-0 top-0 border-r border-slate-200 bg-white shadow-sm flex flex-col py-6 z-50">
         {/* Brand */}
@@ -52,9 +52,10 @@ export default function AdminLayout({ children, title, headerActions }: AdminLay
               to={to}
               className={({ isActive }) =>
                 isActive
-                  ? "relative flex items-center gap-3 px-4 py-2 text-adm-primary font-semibold before:absolute before:left-0 before:w-[3px] before:h-6 before:bg-adm-primary before:rounded-r-full transition-all"
-                  : "flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-none transition-all duration-200 active:scale-[0.98]"
+                  ? "flex items-center gap-3 px-4 py-2 rounded-lg font-semibold transition-all"
+                  : "flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition-all duration-200 active:scale-[0.98]"
               }
+              style={({ isActive }) => isActive ? { background: '#4361EE', color: '#ffffff' } : {}}
             >
               <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{icon}</span>
               <span className="text-[13px]">{label}</span>

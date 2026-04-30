@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import AdminLayout from "../../components/admin/AdminLayout"
+import RichTextEditor from "../../components/admin/RichTextEditor"
 
 type FieldType = 'input' | 'textarea' | 'url'
 
@@ -9,6 +10,7 @@ interface FieldDef {
   label: string
   type: FieldType
   withSize?: boolean
+  placeholder?: string
 }
 
 interface GroupDef {
@@ -24,13 +26,19 @@ interface SectionDef {
 
 type Values = Record<string, string>
 
-const SIZE_OPTS = [
-  { value: '',   label: '— tamaño —' },
-  { value: 'h1', label: 'H1 — Grande' },
-  { value: 'h2', label: 'H2 — Mediano' },
-  { value: 'h3', label: 'H3 — Subtítulo' },
-  { value: 'p',  label: 'Párrafo' },
+const TAG_OPTS = [
+  { value: '',      label: '— etiqueta —' },
+  { value: 'h1',   label: 'H1' },
+  { value: 'h2',   label: 'H2' },
+  { value: 'h3',   label: 'H3' },
+  { value: 'h4',   label: 'H4' },
+  { value: 'h5',   label: 'H5' },
+  { value: 'p',    label: 'P — Párrafo' },
+  { value: 'span', label: 'Span' },
 ]
+
+const VIDEO_PH_PROBLEM  = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4'
+const VIDEO_PH_SERVICES = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4'
 
 const SECTIONS: SectionDef[] = [
   // ── Hero ──────────────────────────────────────────────────────────────────
@@ -92,7 +100,7 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Video de fondo',
         fields: [
-          { section: 'problem', key: 'video_url', label: 'URL del video de fondo', type: 'url' },
+          { section: 'problem', key: 'video_url', label: 'URL del video de fondo', type: 'url', placeholder: VIDEO_PH_PROBLEM },
         ],
       },
       {
@@ -159,7 +167,7 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Video de fondo',
         fields: [
-          { section: 'services', key: 'video_url', label: 'URL del video de fondo', type: 'url' },
+          { section: 'services', key: 'video_url', label: 'URL del video de fondo', type: 'url', placeholder: VIDEO_PH_SERVICES },
         ],
       },
       {
@@ -380,8 +388,8 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Contacto y redes sociales',
         fields: [
-          { section: 'ctafinal', key: 'email_contact',    label: 'Email de contacto (mailto en CTA Final)', type: 'input' },
-          { section: 'ctafinal', key: 'whatsapp_number',  label: 'Número de WhatsApp (solo dígitos, ej: 5491134567890)', type: 'input' },
+          { section: 'ctafinal', key: 'email_contact',   label: 'Email de contacto (mailto en CTA Final)', type: 'input' },
+          { section: 'ctafinal', key: 'whatsapp_number', label: 'Número de WhatsApp (solo dígitos, ej: 5491134567890)', type: 'input' },
         ],
       },
     ],
@@ -397,7 +405,11 @@ function getAllKeys(cfg: SectionDef): { section: string; key: string }[] {
   for (const g of cfg.groups) {
     for (const f of g.fields) {
       result.push({ section: f.section, key: f.key })
-      if (f.withSize) result.push({ section: f.section, key: f.key + '_size' })
+      result.push({ section: f.section, key: f.key + '_color' })
+      if (f.withSize) {
+        result.push({ section: f.section, key: f.key + '_size' })
+        result.push({ section: f.section, key: f.key + '_px' })
+      }
     }
   }
   return result
@@ -478,6 +490,7 @@ export default function ContentPage() {
             saving={savingId === cfg.id}
             justSaved={savedId === cfg.id}
             onSave={() => save(cfg)}
+            token={token}
           />
         ))}
       </div>
@@ -487,11 +500,12 @@ export default function ContentPage() {
 
 const SECTION_ICONS: Record<string, string> = {
   hero: "web", problem_solution: "compare", services: "category", apps: "token",
-  ctabanner: "campaign", process: "account_tree", faq: "quiz", ctafinal: "flag", footer: "bottom_navigation",
+  ctabanner: "campaign", process: "account_tree", faq: "quiz", ctafinal: "flag",
+  footer: "bottom_navigation", global: "settings",
 }
 
 function SectionBlock({
-  cfg, values, update, dirty, saving, justSaved, onSave,
+  cfg, values, update, dirty, saving, justSaved, onSave, token,
 }: {
   cfg: SectionDef
   values: Values
@@ -500,6 +514,7 @@ function SectionBlock({
   saving: boolean
   justSaved: boolean
   onSave: () => void
+  token: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -525,19 +540,33 @@ function SectionBlock({
   )
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-slate-200">
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm" style={{ border: '1px solid #CBD5E1' }}>
+      {/* Section header */}
+      <div
+        className="flex items-center justify-between px-6 py-4 border-b"
+        style={{ background: '#E2E8F0', borderBottomColor: '#E2E8F0' }}
+      >
         <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left">
-          <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 20 }}>{SECTION_ICONS[cfg.id] ?? "web"}</span>
-          <span className="text-[20px] font-semibold text-slate-900">{cfg.label}</span>
+          <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#64748B' }}>
+            {SECTION_ICONS[cfg.id] ?? "web"}
+          </span>
+          <span className="text-[20px] font-bold" style={{ color: '#1E293B' }}>{cfg.label}</span>
         </button>
         <div className="flex items-center gap-4">
-          {justSaved && <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">Guardado</span>}
-          {dirty && !justSaved && !saving && <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider">Sin guardar</span>}
+          {justSaved && (
+            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">
+              Guardado
+            </span>
+          )}
+          {dirty && !justSaved && !saving && (
+            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider">
+              Sin guardar
+            </span>
+          )}
           <SaveBtn />
           <span
-            className="material-symbols-outlined text-slate-400 cursor-pointer transition-transform"
-            style={{ fontSize: 20, transform: open ? "rotate(180deg)" : "none" }}
+            className="material-symbols-outlined cursor-pointer transition-transform"
+            style={{ fontSize: 20, color: '#64748B', transform: open ? "rotate(180deg)" : "none" }}
             onClick={() => setOpen(o => !o)}
           >expand_more</span>
         </div>
@@ -545,26 +574,32 @@ function SectionBlock({
 
       {open && (
         <div className="p-6 space-y-8">
-          {cfg.groups.map(group => (
+          {cfg.groups.map((group, gi) => (
             <div key={group.label}>
+              {gi > 0 && <div className="mb-6" style={{ borderTop: '2px solid #E2E8F0' }} />}
               <p className="text-[11px] font-semibold text-adm-primary uppercase tracking-widest mb-3">
                 {group.label}
               </p>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-5">
                 {group.fields.map(field => (
                   <FieldRow
                     key={fk(field.section, field.key)}
                     field={field}
                     value={values[fk(field.section, field.key)] ?? ""}
                     sizeValue={values[fk(field.section, field.key + "_size")] ?? ""}
+                    pxValue={values[fk(field.section, field.key + "_px")] ?? ""}
+                    colorValue={values[fk(field.section, field.key + "_color")] ?? ""}
+                    token={token}
                     onChange={v => update(field.section, field.key, v)}
                     onSizeChange={v => update(field.section, field.key + "_size", v)}
+                    onPxChange={v => update(field.section, field.key + "_px", v)}
+                    onColorChange={v => update(field.section, field.key + "_color", v)}
                   />
                 ))}
               </div>
             </div>
           ))}
-          <div className="flex pt-4 border-t border-slate-100">
+          <div className="flex pt-4" style={{ borderTop: '2px solid #E2E8F0' }}>
             <SaveBtn bottom />
           </div>
         </div>
@@ -573,44 +608,112 @@ function SectionBlock({
   )
 }
 
+function ColorPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const displayColor = value || "#0F172A"
+  return (
+    <div className="flex items-center gap-1.5 shrink-0">
+      <div className="relative">
+        <input
+          type="color"
+          value={displayColor}
+          onChange={e => onChange(e.target.value)}
+          className="w-7 h-7 rounded cursor-pointer border-0 p-0.5 bg-transparent"
+          title="Color del texto"
+          style={{ WebkitAppearance: 'none' }}
+        />
+      </div>
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="text-[10px] font-mono text-slate-400 hover:text-slate-600 leading-none"
+          title="Quitar color"
+        >
+          ✕
+        </button>
+      )}
+      {!value && (
+        <span className="text-[10px] text-slate-400 leading-none">sin color</span>
+      )}
+    </div>
+  )
+}
+
 function FieldRow({
-  field, value, sizeValue, onChange, onSizeChange,
+  field, value, sizeValue, pxValue, colorValue, token,
+  onChange, onSizeChange, onPxChange, onColorChange,
 }: {
   field: FieldDef
   value: string
   sizeValue: string
+  pxValue: string
+  colorValue: string
+  token: string
   onChange: (v: string) => void
   onSizeChange: (v: string) => void
+  onPxChange: (v: string) => void
+  onColorChange: (v: string) => void
 }) {
-  const base = "w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-slate-900 focus:outline-none focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 transition-all"
+  const inputBase = [
+    "w-full bg-white rounded-lg px-4 py-2.5 text-[14px]",
+    "focus:outline-none focus:ring-4 focus:ring-adm-primary-container/10 transition-all",
+  ].join(" ")
+  const inputStyle = { border: '1px solid #94A3B8', color: '#0F172A' }
+  const inputFocusClass = "focus:border-adm-primary-container"
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-between gap-2">
-        <label className="text-[12px] font-semibold text-slate-500 uppercase tracking-wide">{field.label}</label>
-        {field.withSize && (
-          <select
-            value={sizeValue}
-            onChange={e => onSizeChange(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-[12px] text-slate-600 focus:outline-none focus:border-adm-primary-container transition-colors cursor-pointer"
-          >
-            {SIZE_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-        )}
+      {/* Label row */}
+      <div className="flex items-center justify-between gap-2 flex-wrap min-h-[28px]">
+        <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>
+          {field.label}
+        </label>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Color picker — shown for all fields */}
+          <ColorPicker value={colorValue} onChange={onColorChange} />
+
+          {/* Typography controls — only for withSize fields */}
+          {field.withSize && (
+            <>
+              <select
+                value={sizeValue}
+                onChange={e => onSizeChange(e.target.value)}
+                className="rounded-lg px-2 py-1 text-[12px] focus:outline-none focus:border-adm-primary-container transition-colors cursor-pointer"
+                style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
+              >
+                {TAG_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+              <input
+                type="number"
+                value={pxValue}
+                onChange={e => onPxChange(e.target.value)}
+                placeholder="px"
+                min={10}
+                max={200}
+                className="w-[60px] rounded-lg px-2 py-1 text-[12px] text-center focus:outline-none focus:border-adm-primary-container transition-colors"
+                style={{ border: '1px solid #94A3B8', color: '#334155', background: '#fff' }}
+                title="Tamaño en píxeles"
+              />
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Field input */}
       {field.type === "textarea" ? (
-        <textarea
+        <RichTextEditor
           value={value}
-          onChange={e => onChange(e.target.value)}
-          rows={4}
-          className={`${base} resize-y leading-relaxed`}
+          onChange={onChange}
+          minHeight={150}
+          token={token}
         />
       ) : (
         <input
           value={value}
           onChange={e => onChange(e.target.value)}
-          placeholder={field.type === "url" ? "https://…" : ""}
-          className={base}
+          placeholder={field.placeholder ?? (field.type === "url" ? "https://…" : "")}
+          className={`${inputBase} ${inputFocusClass}`}
+          style={inputStyle}
         />
       )}
     </div>
