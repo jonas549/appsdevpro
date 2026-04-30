@@ -18,6 +18,8 @@ import DashboardPage from './pages/admin/DashboardPage'
 import ContentPage from './pages/admin/ContentPage'
 import BlogPage from './pages/admin/BlogPage'
 import BlogEditorPage from './pages/admin/BlogEditorPage'
+import BlogListPage from './pages/BlogListPage'
+import BlogPostPage from './pages/BlogPostPage'
 
 function mapRange(inputRange: number[], outputRange: number[], v: number): number {
   if (v <= inputRange[0]) return outputRange[0]
@@ -72,6 +74,8 @@ export default function App() {
       <Routes>
         {/* Public site — wrapped in ContentProvider */}
         <Route path="/" element={<ContentProvider><PublicSite /></ContentProvider>} />
+        <Route path="/blog" element={<BlogListPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
 
         {/* Admin */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />

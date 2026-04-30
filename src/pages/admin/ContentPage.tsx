@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Check, Loader2, ChevronDown, ChevronRight, Save } from "lucide-react"
 import AdminLayout from "../../components/admin/AdminLayout"
 
 type FieldType = 'input' | 'textarea' | 'url'
@@ -91,6 +90,12 @@ const SECTIONS: SectionDef[] = [
     label: 'Problema / Solución',
     groups: [
       {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'problem', key: 'video_url', label: 'URL del video de fondo', type: 'url' },
+        ],
+      },
+      {
         label: 'El Problema — Encabezado',
         fields: [
           { section: 'problem', key: 'label',   label: 'Etiqueta', type: 'input' },
@@ -151,6 +156,12 @@ const SECTIONS: SectionDef[] = [
     id: 'services',
     label: 'Servicios',
     groups: [
+      {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'services', key: 'video_url', label: 'URL del video de fondo', type: 'url' },
+        ],
+      },
       {
         label: 'Encabezado de sección',
         fields: [
@@ -360,6 +371,21 @@ const SECTIONS: SectionDef[] = [
       },
     ],
   },
+
+  // ── Configuración global ───────────────────────────────────────────────────
+  {
+    id: 'global',
+    label: 'Configuración Global',
+    groups: [
+      {
+        label: 'Contacto y redes sociales',
+        fields: [
+          { section: 'ctafinal', key: 'email_contact',    label: 'Email de contacto (mailto en CTA Final)', type: 'input' },
+          { section: 'ctafinal', key: 'whatsapp_number',  label: 'Número de WhatsApp (solo dígitos, ej: 5491134567890)', type: 'input' },
+        ],
+      },
+    ],
+  },
 ]
 
 function fk(section: string, key: string) {
@@ -431,8 +457,9 @@ export default function ContentPage() {
   if (loading) {
     return (
       <AdminLayout title="Contenido del sitio">
-        <div className="flex items-center gap-2 text-white text-base">
-          <Loader2 size={18} className="animate-spin" /> Cargando…
+        <div className="flex items-center gap-3 text-slate-400 py-20 justify-center">
+          <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
+          <span className="text-sm">Cargando contenido…</span>
         </div>
       </AdminLayout>
     )
@@ -440,7 +467,7 @@ export default function ContentPage() {
 
   return (
     <AdminLayout title="Contenido del sitio">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         {SECTIONS.map(cfg => (
           <SectionBlock
             key={cfg.id}
@@ -458,6 +485,11 @@ export default function ContentPage() {
   )
 }
 
+const SECTION_ICONS: Record<string, string> = {
+  hero: "web", problem_solution: "compare", services: "category", apps: "token",
+  ctabanner: "campaign", process: "account_tree", faq: "quiz", ctafinal: "flag", footer: "bottom_navigation",
+}
+
 function SectionBlock({
   cfg, values, update, dirty, saving, justSaved, onSave,
 }: {
@@ -469,46 +501,53 @@ function SectionBlock({
   justSaved: boolean
   onSave: () => void
 }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   const SaveBtn = ({ bottom }: { bottom?: boolean }) => (
     <button
       onClick={onSave}
       disabled={saving || !dirty}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[14px] font-semibold transition-all ${
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all active:scale-[0.98] ${
         justSaved
-          ? "bg-[#10B981]/15 text-[#10B981]"
+          ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
           : dirty
-          ? "bg-[#4361EE] text-white hover:bg-[#3451d1]"
-          : "bg-white/[0.04] text-[#7B8DB0] cursor-not-allowed"
+          ? "bg-adm-primary-container text-white hover:opacity-90 shadow-sm"
+          : "bg-slate-100 text-slate-400 cursor-not-allowed"
       } ${bottom ? "ml-auto" : ""}`}
     >
       {saving
-        ? <Loader2 size={14} className="animate-spin" />
+        ? <span className="material-symbols-outlined animate-spin" style={{ fontSize: 14 }}>progress_activity</span>
         : justSaved
-        ? <Check size={14} />
-        : <Save size={14} />}
+        ? <span className="material-symbols-outlined" style={{ fontSize: 14 }}>check</span>
+        : <span className="material-symbols-outlined" style={{ fontSize: 14 }}>save</span>}
       {saving ? "Guardando…" : justSaved ? "Guardado" : dirty ? "Guardar cambios" : "Sin cambios"}
     </button>
   )
 
   return (
-    <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-xl overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-slate-200">
         <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left">
-          {open
-            ? <ChevronDown size={15} className="text-[#4361EE]" />
-            : <ChevronRight size={15} className="text-[#7B8DB0]" />}
-          <span className="text-[17px] font-semibold text-white">{cfg.label}</span>
+          <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 20 }}>{SECTION_ICONS[cfg.id] ?? "web"}</span>
+          <span className="text-[20px] font-semibold text-slate-900">{cfg.label}</span>
         </button>
-        <SaveBtn />
+        <div className="flex items-center gap-4">
+          {justSaved && <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">Guardado</span>}
+          {dirty && !justSaved && !saving && <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider">Sin guardar</span>}
+          <SaveBtn />
+          <span
+            className="material-symbols-outlined text-slate-400 cursor-pointer transition-transform"
+            style={{ fontSize: 20, transform: open ? "rotate(180deg)" : "none" }}
+            onClick={() => setOpen(o => !o)}
+          >expand_more</span>
+        </div>
       </div>
 
       {open && (
-        <div className="px-5 py-5 flex flex-col gap-7">
+        <div className="p-6 space-y-8">
           {cfg.groups.map(group => (
             <div key={group.label}>
-              <p className="text-[12px] font-semibold text-[#4361EE] uppercase tracking-widest mb-3">
+              <p className="text-[11px] font-semibold text-adm-primary uppercase tracking-widest mb-3">
                 {group.label}
               </p>
               <div className="flex flex-col gap-4">
@@ -525,7 +564,7 @@ function SectionBlock({
               </div>
             </div>
           ))}
-          <div className="flex pt-2 border-t border-white/[0.04]">
+          <div className="flex pt-4 border-t border-slate-100">
             <SaveBtn bottom />
           </div>
         </div>
@@ -543,17 +582,17 @@ function FieldRow({
   onChange: (v: string) => void
   onSizeChange: (v: string) => void
 }) {
-  const base = "w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-3 py-2.5 text-[16px] text-white focus:outline-none focus:border-[#4361EE] transition-colors"
+  const base = "w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-[14px] text-slate-900 focus:outline-none focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 transition-all"
 
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between gap-2">
-        <label className="text-[15px] font-medium text-white">{field.label}</label>
+        <label className="text-[12px] font-semibold text-slate-500 uppercase tracking-wide">{field.label}</label>
         {field.withSize && (
           <select
             value={sizeValue}
             onChange={e => onSizeChange(e.target.value)}
-            className="bg-[#07090F] border border-white/[0.08] rounded-lg px-2 py-1 text-[13px] text-[#A5B0CC] focus:outline-none focus:border-[#4361EE] transition-colors cursor-pointer"
+            className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-[12px] text-slate-600 focus:outline-none focus:border-adm-primary-container transition-colors cursor-pointer"
           >
             {SIZE_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>

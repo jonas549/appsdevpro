@@ -89,6 +89,9 @@ export const BlogPostScalarFieldEnum = {
   slug: 'slug',
   content: 'content',
   excerpt: 'excerpt',
+  featured_image: 'featured_image',
+  meta_title: 'meta_title',
+  meta_description: 'meta_description',
   published: 'published',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -121,4 +124,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

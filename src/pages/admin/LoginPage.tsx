@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
-import { Zap } from "lucide-react"
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -35,56 +34,59 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07090F] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4 font-sans">
       <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2.5 mb-8">
-          <div className="w-9 h-9 rounded-xl bg-[#4361EE] flex items-center justify-center">
-            <Zap size={18} className="text-white" />
+        {/* Brand */}
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <div className="w-9 h-9 bg-adm-primary-container rounded flex items-center justify-center">
+            <span className="material-symbols-outlined text-white" style={{ fontSize: 20 }}>developer_mode_tv</span>
           </div>
-          <span className="text-[#EDF0FF] font-bold text-lg">AppsDevPro</span>
+          <div>
+            <span className="text-slate-900 font-bold text-lg leading-tight block">AppsDevPro</span>
+            <span className="text-slate-500 text-xs">Admin Dashboard</span>
+          </div>
         </div>
 
         {/* Card */}
-        <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-2xl p-8">
-          <h2 className="text-[#EDF0FF] text-xl font-semibold mb-1">Panel de administración</h2>
-          <p className="text-[#7B8DB0] text-sm mb-6">Ingresa con tu cuenta de administrador.</p>
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+          <h2 className="text-slate-900 text-xl font-semibold mb-1">Iniciar sesión</h2>
+          <p className="text-slate-500 text-sm mb-6">Ingresa con tu cuenta de administrador.</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Email</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Email</label>
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 required
                 autoFocus
-                className="w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-[#EDF0FF] placeholder-[#4B5563] focus:outline-none focus:border-[#4361EE] transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 transition-all"
                 placeholder="admin@ejemplo.com"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Contraseña</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Contraseña</label>
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full bg-[#07090F] border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-[#EDF0FF] placeholder-[#4B5563] focus:outline-none focus:border-[#4361EE] transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 transition-all"
                 placeholder="••••••••"
               />
             </div>
 
             {error && (
-              <p className="text-red-400 text-xs bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">{error}</p>
+              <p className="text-red-600 text-xs bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="mt-1 bg-[#4361EE] hover:bg-[#3451d1] disabled:opacity-50 text-white font-medium text-sm rounded-lg py-2.5 transition-colors"
+              className="mt-1 bg-adm-primary-container hover:opacity-90 disabled:opacity-50 text-white font-semibold text-sm rounded-lg py-2.5 transition-all active:scale-[0.98]"
             >
-              {loading ? "Iniciando..." : "Iniciar sesión"}
+              {loading ? "Iniciando sesión..." : "Iniciar sesión"}
             </button>
           </form>
         </div>

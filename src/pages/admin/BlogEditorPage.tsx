@@ -1,12 +1,24 @@
-import { useEffect, useState, type FormEvent } from "react"
+import { useEffect, useState, useRef, type FormEvent } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { ArrowLeft, Loader2, Globe, FileText } from "lucide-react"
 import AdminLayout from "../../components/admin/AdminLayout"
+import RichTextEditor from "../../components/admin/RichTextEditor"
 
-interface PostForm { title: string; slug: string; excerpt: string; content: string; published: boolean }
+interface PostForm {
+  title: string; slug: string; excerpt: string; content: string; published: boolean
+  featured_image: string; meta_title: string; meta_description: string
+}
 
 function toSlug(s: string) {
-  return s.toLowerCase().replace(/[áàä]/g,"a").replace(/[éèë]/g,"e").replace(/[íìï]/g,"i").replace(/[óòö]/g,"o").replace(/[úùü]/g,"u").replace(/ñ/g,"n").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")
+  return s.toLowerCase()
+    .replace(/[áàä]/g, "a").replace(/[éèë]/g, "e").replace(/[íìï]/g, "i")
+    .replace(/[óòö]/g, "o").replace(/[úùü]/g, "u").replace(/ñ/g, "n")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+}
+
+function charCount(val: string, max: number) {
+  const n = val.length
+  const cls = n > max ? "text-red-500" : n > max * 0.85 ? "text-amber-500" : "text-slate-400"
+  return <span className={`text-[11px] ${cls}`}>{n}/{max}</span>
 }
 
 export default function BlogEditorPage() {
@@ -15,18 +27,26 @@ export default function BlogEditorPage() {
   const navigate = useNavigate()
   const token = localStorage.getItem("admin_token") || ""
 
-  const [form, setForm] = useState<PostForm>({ title: "", slug: "", excerpt: "", content: "", published: false })
+  const empty: PostForm = { title: "", slug: "", excerpt: "", content: "", published: false, featured_image: "", meta_title: "", meta_description: "" }
+  const [form, setForm] = useState<PostForm>(empty)
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [slugManual, setSlugManual] = useState(false)
+  const [uploadingFeatured, setUploadingFeatured] = useState(false)
+  const featuredInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (isNew) return
     fetch(`/api/blog/${id}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
-      .then(data => { setForm(data); setLoading(false); setSlugManual(true) })
+      .then(data => {
+        setForm({ ...empty, ...data, featured_image: data.featured_image ?? "", meta_title: data.meta_title ?? "", meta_description: data.meta_description ?? "" })
+        setLoading(false)
+        setSlugManual(true)
+      })
       .catch(() => setLoading(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isNew, token])
 
   function set<K extends keyof PostForm>(key: K, value: PostForm[K]) {
@@ -35,6 +55,23 @@ export default function BlogEditorPage() {
       if (key === "title" && !slugManual) next.slug = toSlug(value as string)
       return next
     })
+  }
+
+  async function uploadFeaturedImage(file: File) {
+    setUploadingFeatured(true)
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const base64 = reader.result as string
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ data: base64, folder: "blog/featured" }),
+      })
+      const json = await res.json() as { url?: string }
+      if (json.url) set("featured_image", json.url)
+      setUploadingFeatured(false)
+    }
+    reader.readAsDataURL(file)
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -61,94 +98,220 @@ export default function BlogEditorPage() {
 
   if (loading) {
     return (
-      <AdminLayout title="Editor de post">
-        <div className="flex items-center gap-2 text-[#7B8DB0] text-sm">
-          <Loader2 size={16} className="animate-spin" /> Cargando post...
+      <AdminLayout title="Editar post">
+        <div className="flex items-center gap-3 text-slate-400 py-20 justify-center">
+          <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
+          <span className="text-sm">Cargando post...</span>
         </div>
       </AdminLayout>
     )
   }
 
-  return (
-    <AdminLayout title={isNew ? "Nuevo post" : "Editar post"}>
-      <button onClick={() => navigate("/admin/blog")} className="flex items-center gap-1.5 text-sm text-[#7B8DB0] hover:text-[#EDF0FF] mb-6 transition-colors">
-        <ArrowLeft size={14} /> Volver al blog
+  const publishToggle = (
+    <div className="flex items-center gap-3">
+      <span className="text-[13px] font-medium text-slate-600">Publicar</span>
+      <button
+        type="button"
+        onClick={() => set("published", !form.published)}
+        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${form.published ? "bg-adm-primary-container" : "bg-slate-300"}`}
+      >
+        <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform shadow-sm ${form.published ? "translate-x-5" : "translate-x-1"}`} />
       </button>
+    </div>
+  )
 
-      <form onSubmit={handleSubmit} className="max-w-2xl flex flex-col gap-5">
-        {/* Title */}
-        <div>
-          <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Título *</label>
-          <input
-            value={form.title}
-            onChange={e => set("title", e.target.value)}
-            required
-            className="w-full bg-[#0C0F1A] border border-white/[0.08] rounded-lg px-4 py-2.5 text-[#EDF0FF] focus:outline-none focus:border-[#4361EE] transition-colors"
-            placeholder="Título del post"
-          />
-        </div>
+  return (
+    <AdminLayout
+      title={isNew ? "Nuevo post" : "Editar post"}
+      headerActions={
+        <>
+          {publishToggle}
+          <button
+            type="button"
+            onClick={() => navigate("/admin/blog")}
+            className="px-4 py-1.5 text-slate-900 bg-white border border-slate-200 rounded-lg text-[13px] font-medium hover:bg-slate-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="post-form"
+            disabled={saving}
+            className="px-4 py-1.5 text-white bg-adm-primary rounded-lg text-[13px] font-medium shadow-sm hover:brightness-90 transition-all disabled:opacity-50 flex items-center gap-2"
+          >
+            {saving && <span className="material-symbols-outlined animate-spin" style={{ fontSize: 14 }}>progress_activity</span>}
+            {saving ? "Guardando..." : "Guardar cambios"}
+          </button>
+        </>
+      }
+    >
+      <form id="post-form" onSubmit={handleSubmit}>
+        <div className="grid grid-cols-12 gap-8">
+          {/* Left — editor */}
+          <div className="col-span-8 space-y-8">
+            {/* Title + slug */}
+            <section className="space-y-4">
+              <input
+                value={form.title}
+                onChange={e => set("title", e.target.value)}
+                required
+                className="w-full text-[32px] font-bold tracking-tight bg-transparent border-none focus:ring-0 outline-none placeholder:text-slate-300 p-0 text-slate-900"
+                placeholder="Título de la publicación"
+              />
+              <div className="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 max-w-fit">
+                <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 18 }}>link</span>
+                <span className="text-[12px] text-slate-500 font-medium">appsdevpro.com/blog/</span>
+                <input
+                  value={form.slug}
+                  onChange={e => { setSlugManual(true); set("slug", e.target.value) }}
+                  required
+                  className="bg-transparent border-none focus:ring-0 outline-none p-0 text-[12px] font-medium text-adm-primary w-auto min-w-[200px]"
+                  placeholder="mi-post"
+                />
+              </div>
+            </section>
 
-        {/* Slug */}
-        <div>
-          <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Slug *</label>
-          <input
-            value={form.slug}
-            onChange={e => { setSlugManual(true); set("slug", e.target.value) }}
-            required
-            className="w-full bg-[#0C0F1A] border border-white/[0.08] rounded-lg px-4 py-2.5 text-[#EDF0FF] font-mono text-sm focus:outline-none focus:border-[#4361EE] transition-colors"
-            placeholder="mi-post"
-          />
-        </div>
+            {/* Rich text editor */}
+            <RichTextEditor
+              value={form.content}
+              onChange={v => set("content", v)}
+              placeholder="Escribe el contenido del post aquí..."
+              minHeight={500}
+              token={token}
+            />
 
-        {/* Excerpt */}
-        <div>
-          <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Extracto *</label>
-          <textarea
-            value={form.excerpt}
-            onChange={e => set("excerpt", e.target.value)}
-            required
-            rows={2}
-            className="w-full bg-[#0C0F1A] border border-white/[0.08] rounded-lg px-4 py-2.5 text-[#EDF0FF] focus:outline-none focus:border-[#4361EE] transition-colors resize-y"
-            placeholder="Breve descripción para SEO y listado"
-          />
-        </div>
+            {/* SEO */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[20px] font-semibold text-slate-900">Configuración SEO</h3>
+                {form.meta_title && form.meta_description && (
+                  <span className="text-xs text-adm-primary bg-blue-50 px-2 py-0.5 rounded font-medium">Optimizado</span>
+                )}
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Meta Título</label>
+                    {charCount(form.meta_title, 60)}
+                  </div>
+                  <input
+                    value={form.meta_title}
+                    onChange={e => set("meta_title", e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all"
+                    placeholder={form.title || "Título para buscadores..."}
+                  />
+                  <p className="text-[11px] text-slate-400">Recomendado: 60 caracteres</p>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Meta Descripción</label>
+                    {charCount(form.meta_description, 160)}
+                  </div>
+                  <textarea
+                    value={form.meta_description}
+                    onChange={e => set("meta_description", e.target.value)}
+                    rows={3}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    placeholder={form.excerpt || "Descripción para buscadores..."}
+                  />
+                  <p className="text-[11px] text-slate-400">Recomendado: 160 caracteres</p>
+                </div>
+                {/* Excerpt */}
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Extracto (listado del blog)</label>
+                  <textarea
+                    value={form.excerpt}
+                    onChange={e => set("excerpt", e.target.value)}
+                    required
+                    rows={2}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    placeholder="Breve descripción visible en la lista de posts..."
+                  />
+                </div>
+              </div>
+            </div>
 
-        {/* Content */}
-        <div>
-          <label className="block text-xs font-medium text-[#7B8DB0] mb-1.5">Contenido *</label>
-          <textarea
-            value={form.content}
-            onChange={e => set("content", e.target.value)}
-            required
-            rows={16}
-            className="w-full bg-[#0C0F1A] border border-white/[0.08] rounded-lg px-4 py-3 text-[#EDF0FF] text-sm font-mono leading-relaxed focus:outline-none focus:border-[#4361EE] transition-colors resize-y"
-            placeholder="Escribe el contenido del post aquí (Markdown soportado)..."
-          />
-        </div>
-
-        {/* Published toggle */}
-        <label className="flex items-center gap-3 cursor-pointer">
-          <div className="relative">
-            <input type="checkbox" className="sr-only" checked={form.published} onChange={e => set("published", e.target.checked)} />
-            <div className={`w-10 h-5 rounded-full transition-colors ${form.published ? "bg-[#4361EE]" : "bg-white/[0.1]"}`} />
-            <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${form.published ? "translate-x-5" : ""}`} />
+            {error && (
+              <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>
+            )}
           </div>
-          <span className="flex items-center gap-1.5 text-sm text-[#7B8DB0]">
-            {form.published ? <Globe size={14} className="text-[#10B981]" /> : <FileText size={14} />}
-            {form.published ? "Publicado" : "Borrador"}
-          </span>
-        </label>
 
-        {error && <p className="text-red-400 text-xs bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">{error}</p>}
+          {/* Right — sidebar */}
+          <div className="col-span-4 space-y-6">
+            {/* Featured image */}
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Imagen Destacada</h3>
+              </div>
+              <div className="p-4">
+                {form.featured_image ? (
+                  <div className="relative group rounded-lg overflow-hidden border border-slate-200">
+                    <img src={form.featured_image} alt="Featured" className="w-full aspect-square object-cover" />
+                    <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => featuredInputRef.current?.click()}
+                        className="bg-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-md"
+                      >
+                        Cambiar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => set("featured_image", "")}
+                        className="bg-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-md text-red-600"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => featuredInputRef.current?.click()}
+                    disabled={uploadingFeatured}
+                    className="w-full aspect-square bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center group cursor-pointer hover:border-adm-primary transition-colors disabled:opacity-50"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-adm-primary mb-4 group-hover:scale-110 transition-transform">
+                      {uploadingFeatured
+                        ? <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
+                        : <span className="material-symbols-outlined" style={{ fontSize: 24 }}>upload_file</span>}
+                    </div>
+                    <p className="text-[13px] font-semibold text-slate-900">{uploadingFeatured ? "Subiendo..." : "Subir imagen"}</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Recomendado: 1200×630px (JPG, PNG)</p>
+                  </button>
+                )}
+                <input
+                  ref={featuredInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) uploadFeaturedImage(f); e.target.value = "" }}
+                />
+              </div>
+            </div>
 
-        <button
-          type="submit"
-          disabled={saving}
-          className="bg-[#4361EE] hover:bg-[#3451d1] disabled:opacity-50 text-white font-medium text-sm rounded-lg py-2.5 transition-colors flex items-center justify-center gap-2"
-        >
-          {saving && <Loader2 size={14} className="animate-spin" />}
-          {saving ? "Guardando..." : isNew ? "Crear post" : "Guardar cambios"}
-        </button>
+            {/* Publish status info */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+              <h3 className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Estado de publicación</h3>
+              <div className={`flex items-center gap-3 p-3 rounded-lg ${form.published ? "bg-emerald-50 border border-emerald-100" : "bg-slate-50 border border-slate-200"}`}>
+                <span className={`material-symbols-outlined ${form.published ? "text-emerald-600" : "text-slate-400"}`} style={{ fontSize: 20 }}>
+                  {form.published ? "public" : "draft"}
+                </span>
+                <div>
+                  <p className={`text-[13px] font-semibold ${form.published ? "text-emerald-700" : "text-slate-700"}`}>
+                    {form.published ? "Publicado" : "Borrador"}
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    {form.published ? "Visible para los visitantes" : "Solo visible en el admin"}
+                  </p>
+                </div>
+              </div>
+              <div className="pt-2">
+                {publishToggle}
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
     </AdminLayout>
   )

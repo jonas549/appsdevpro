@@ -30,6 +30,9 @@ export type BlogPostMinAggregateOutputType = {
   slug: string | null
   content: string | null
   excerpt: string | null
+  featured_image: string | null
+  meta_title: string | null
+  meta_description: string | null
   published: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +44,9 @@ export type BlogPostMaxAggregateOutputType = {
   slug: string | null
   content: string | null
   excerpt: string | null
+  featured_image: string | null
+  meta_title: string | null
+  meta_description: string | null
   published: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +58,9 @@ export type BlogPostCountAggregateOutputType = {
   slug: number
   content: number
   excerpt: number
+  featured_image: number
+  meta_title: number
+  meta_description: number
   published: number
   createdAt: number
   updatedAt: number
@@ -65,6 +74,9 @@ export type BlogPostMinAggregateInputType = {
   slug?: true
   content?: true
   excerpt?: true
+  featured_image?: true
+  meta_title?: true
+  meta_description?: true
   published?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +88,9 @@ export type BlogPostMaxAggregateInputType = {
   slug?: true
   content?: true
   excerpt?: true
+  featured_image?: true
+  meta_title?: true
+  meta_description?: true
   published?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +102,9 @@ export type BlogPostCountAggregateInputType = {
   slug?: true
   content?: true
   excerpt?: true
+  featured_image?: true
+  meta_title?: true
+  meta_description?: true
   published?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +189,9 @@ export type BlogPostGroupByOutputType = {
   slug: string
   content: string
   excerpt: string
+  featured_image: string | null
+  meta_title: string | null
+  meta_description: string | null
   published: boolean
   createdAt: Date
   updatedAt: Date
@@ -203,6 +224,9 @@ export type BlogPostWhereInput = {
   slug?: Prisma.StringFilter<"BlogPost"> | string
   content?: Prisma.StringFilter<"BlogPost"> | string
   excerpt?: Prisma.StringFilter<"BlogPost"> | string
+  featured_image?: Prisma.StringNullableFilter<"BlogPost"> | string | null
+  meta_title?: Prisma.StringNullableFilter<"BlogPost"> | string | null
+  meta_description?: Prisma.StringNullableFilter<"BlogPost"> | string | null
   published?: Prisma.BoolFilter<"BlogPost"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BlogPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlogPost"> | Date | string
@@ -214,6 +238,9 @@ export type BlogPostOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  featured_image?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_title?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_description?: Prisma.SortOrderInput | Prisma.SortOrder
   published?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -228,6 +255,9 @@ export type BlogPostWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"BlogPost"> | string
   content?: Prisma.StringFilter<"BlogPost"> | string
   excerpt?: Prisma.StringFilter<"BlogPost"> | string
+  featured_image?: Prisma.StringNullableFilter<"BlogPost"> | string | null
+  meta_title?: Prisma.StringNullableFilter<"BlogPost"> | string | null
+  meta_description?: Prisma.StringNullableFilter<"BlogPost"> | string | null
   published?: Prisma.BoolFilter<"BlogPost"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BlogPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlogPost"> | Date | string
@@ -239,6 +269,9 @@ export type BlogPostOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  featured_image?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_title?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_description?: Prisma.SortOrderInput | Prisma.SortOrder
   published?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -256,6 +289,9 @@ export type BlogPostScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"BlogPost"> | string
   content?: Prisma.StringWithAggregatesFilter<"BlogPost"> | string
   excerpt?: Prisma.StringWithAggregatesFilter<"BlogPost"> | string
+  featured_image?: Prisma.StringNullableWithAggregatesFilter<"BlogPost"> | string | null
+  meta_title?: Prisma.StringNullableWithAggregatesFilter<"BlogPost"> | string | null
+  meta_description?: Prisma.StringNullableWithAggregatesFilter<"BlogPost"> | string | null
   published?: Prisma.BoolWithAggregatesFilter<"BlogPost"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BlogPost"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BlogPost"> | Date | string
@@ -267,6 +303,9 @@ export type BlogPostCreateInput = {
   slug: string
   content: string
   excerpt: string
+  featured_image?: string | null
+  meta_title?: string | null
+  meta_description?: string | null
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -278,6 +317,9 @@ export type BlogPostUncheckedCreateInput = {
   slug: string
   content: string
   excerpt: string
+  featured_image?: string | null
+  meta_title?: string | null
+  meta_description?: string | null
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -289,6 +331,9 @@ export type BlogPostUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  featured_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -300,6 +345,9 @@ export type BlogPostUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  featured_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +359,9 @@ export type BlogPostCreateManyInput = {
   slug: string
   content: string
   excerpt: string
+  featured_image?: string | null
+  meta_title?: string | null
+  meta_description?: string | null
   published?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -322,6 +373,9 @@ export type BlogPostUpdateManyMutationInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  featured_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,6 +387,9 @@ export type BlogPostUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  featured_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -344,6 +401,9 @@ export type BlogPostCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  featured_image?: Prisma.SortOrder
+  meta_title?: Prisma.SortOrder
+  meta_description?: Prisma.SortOrder
   published?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -355,6 +415,9 @@ export type BlogPostMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  featured_image?: Prisma.SortOrder
+  meta_title?: Prisma.SortOrder
+  meta_description?: Prisma.SortOrder
   published?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -366,9 +429,16 @@ export type BlogPostMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   content?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  featured_image?: Prisma.SortOrder
+  meta_title?: Prisma.SortOrder
+  meta_description?: Prisma.SortOrder
   published?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -383,6 +453,9 @@ export type BlogPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   slug?: boolean
   content?: boolean
   excerpt?: boolean
+  featured_image?: boolean
+  meta_title?: boolean
+  meta_description?: boolean
   published?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -394,6 +467,9 @@ export type BlogPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   slug?: boolean
   content?: boolean
   excerpt?: boolean
+  featured_image?: boolean
+  meta_title?: boolean
+  meta_description?: boolean
   published?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -405,6 +481,9 @@ export type BlogPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   slug?: boolean
   content?: boolean
   excerpt?: boolean
+  featured_image?: boolean
+  meta_title?: boolean
+  meta_description?: boolean
   published?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -416,12 +495,15 @@ export type BlogPostSelectScalar = {
   slug?: boolean
   content?: boolean
   excerpt?: boolean
+  featured_image?: boolean
+  meta_title?: boolean
+  meta_description?: boolean
   published?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BlogPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "excerpt" | "published" | "createdAt" | "updatedAt", ExtArgs["result"]["blogPost"]>
+export type BlogPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "content" | "excerpt" | "featured_image" | "meta_title" | "meta_description" | "published" | "createdAt" | "updatedAt", ExtArgs["result"]["blogPost"]>
 
 export type $BlogPostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BlogPost"
@@ -432,6 +514,9 @@ export type $BlogPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     slug: string
     content: string
     excerpt: string
+    featured_image: string | null
+    meta_title: string | null
+    meta_description: string | null
     published: boolean
     createdAt: Date
     updatedAt: Date
@@ -863,6 +948,9 @@ export interface BlogPostFieldRefs {
   readonly slug: Prisma.FieldRef<"BlogPost", 'String'>
   readonly content: Prisma.FieldRef<"BlogPost", 'String'>
   readonly excerpt: Prisma.FieldRef<"BlogPost", 'String'>
+  readonly featured_image: Prisma.FieldRef<"BlogPost", 'String'>
+  readonly meta_title: Prisma.FieldRef<"BlogPost", 'String'>
+  readonly meta_description: Prisma.FieldRef<"BlogPost", 'String'>
   readonly published: Prisma.FieldRef<"BlogPost", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"BlogPost", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BlogPost", 'DateTime'>

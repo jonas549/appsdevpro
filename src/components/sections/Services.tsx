@@ -4,7 +4,7 @@ import { Zap, Lock, Link, ShoppingCart, Layout, ArrowRight } from 'lucide-react'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
 import { renderRich } from '../../lib/renderRich'
 
-const VIDEO_URL =
+const FALLBACK_VIDEO_SERVICES =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4'
 
 function parseAccent(raw: string): { text: string; accent: boolean }[] {
@@ -58,6 +58,8 @@ export default function Services() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
   const c = useContent('services')
+
+  const VIDEO_URL = c.video_url || FALLBACK_VIDEO_SERVICES
 
   const headingRaw = c.heading    || 'Todo lo que necesitas para desarrollar y escalar en {{Shopify}}'
   const subheading = c.subheading || '**Especialistas en el ecosistema Shopify**. Sin generalistas, sin proyectos paralelos en otras plataformas, sin "también hacemos WordPress".'

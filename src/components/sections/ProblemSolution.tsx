@@ -7,7 +7,7 @@ import { renderRich } from '../../lib/renderRich'
 
 const SOLUTION_ICONS = [<Layers size={18} />, <Plug size={18} />, <ShoppingCart size={18} />]
 
-const VIDEO_URL =
+const FALLBACK_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4'
 
 export default function ProblemSolution() {
@@ -15,6 +15,8 @@ export default function ProblemSolution() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const p = useContent('problem')
   const s = useContent('solution')
+
+  const VIDEO_URL = p.video_url || FALLBACK_VIDEO
 
   const solutionHeadingStyle = getSizeStyle(s.heading_size)
 

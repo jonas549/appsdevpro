@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Plus, Globe, FileText, Trash2, Loader2 } from "lucide-react"
 import AdminLayout from "../../components/admin/AdminLayout"
 
-interface Post { id: string; title: string; slug: string; excerpt: string; published: boolean; createdAt: string }
+interface Post {
+  id: string; title: string; slug: string; excerpt: string
+  published: boolean; createdAt: string; featured_image?: string
+}
+
+const PAGE_SIZE = 10
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [search, setSearch] = useState("")
+  const [filter, setFilter] = useState<"all" | "published" | "draft">("all")
+  const [page, setPage] = useState(1)
   const navigate = useNavigate()
   const token = localStorage.getItem("admin_token") || ""
 
@@ -27,79 +34,171 @@ export default function BlogPage() {
     setDeleting(null)
   }
 
-  async function togglePublish(post: Post) {
-    const res = await fetch(`/api/blog/${post.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ published: !post.published }),
-    })
-    const updated = await res.json() as Post
-    setPosts(prev => prev.map(p => p.id === post.id ? updated : p))
+  const filtered = posts.filter(p => {
+    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase())
+    const matchFilter = filter === "all" || (filter === "published" ? p.published : !p.published)
+    return matchSearch && matchFilter
+  })
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })
   }
 
+  const tabCls = (active: boolean) =>
+    `text-sm transition-colors ${active ? "text-slate-900 font-semibold" : "text-slate-500 hover:text-adm-primary"}`
+
   return (
-    <AdminLayout title="Blog">
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-[#7B8DB0]">{posts.length} post{posts.length !== 1 ? "s" : ""}</p>
-        <button
-          onClick={() => navigate("/admin/blog/new")}
-          className="flex items-center gap-2 bg-[#4361EE] hover:bg-[#3451d1] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          <Plus size={15} /> Nuevo post
-        </button>
+    <AdminLayout
+      title="Blog"
+      headerActions={
+        <>
+          <button className="px-4 py-2 text-slate-600 bg-white border border-slate-200 rounded-lg text-sm hover:bg-slate-50 transition-all">
+            Guardar cambios
+          </button>
+          <button
+            onClick={() => navigate("/admin/blog/new")}
+            className="px-4 py-2 bg-adm-primary-container text-white rounded-lg text-sm font-semibold flex items-center gap-2 hover:opacity-90 transition-all active:scale-[0.98]"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
+            Nuevo post
+          </button>
+        </>
+      }
+    >
+      {/* Filters & search */}
+      <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
+        <div className="relative w-full md:w-96 group">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-adm-primary transition-colors" style={{ fontSize: 20 }}>search</span>
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-adm-primary-container/20 focus:border-adm-primary-container transition-all outline-none"
+            placeholder="Buscar publicaciones..."
+          />
+        </div>
+        <nav className="flex items-center gap-6 border-l border-slate-200 pl-6">
+          {(["all", "published", "draft"] as const).map(f => (
+            <button key={f} onClick={() => { setFilter(f); setPage(1) }} className={tabCls(filter === f)}>
+              {f === "all" ? "Todos" : f === "published" ? "Publicados" : "Borradores"}
+            </button>
+          ))}
+        </nav>
       </div>
 
-      {loading ? (
-        <div className="flex items-center gap-2 text-[#7B8DB0] text-sm">
-          <Loader2 size={16} className="animate-spin" /> Cargando...
-        </div>
-      ) : posts.length === 0 ? (
-        <div className="text-center py-20 text-[#7B8DB0]">
-          <FileText size={32} className="mx-auto mb-3 opacity-30" />
-          <p className="text-sm">No hay posts aún.</p>
-          <button onClick={() => navigate("/admin/blog/new")} className="mt-4 text-[#4361EE] text-sm hover:underline">
-            Crear el primero →
-          </button>
-        </div>
-      ) : (
-        <div className="bg-[#0C0F1A] border border-white/[0.06] rounded-xl overflow-hidden">
-          {posts.map((post, i) => (
-            <div
-              key={post.id}
-              className={`flex items-center gap-4 px-5 py-4 ${i > 0 ? "border-t border-white/[0.04]" : ""}`}
-            >
-              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${post.published ? "bg-[#10B981]" : "bg-[#7B8DB0]/40"}`} />
-              <div className="flex-1 min-w-0">
-                <Link to={`/admin/blog/${post.id}`} className="text-sm font-medium text-[#EDF0FF] hover:text-[#4361EE] transition-colors truncate block">
-                  {post.title}
-                </Link>
-                <p className="text-xs text-[#7B8DB0] font-mono truncate">{post.slug}</p>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  onClick={() => togglePublish(post)}
-                  title={post.published ? "Despublicar" : "Publicar"}
-                  className={`flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-full transition-colors ${
-                    post.published
-                      ? "text-[#10B981] bg-[#10B981]/10 hover:bg-[#10B981]/20"
-                      : "text-[#7B8DB0] bg-white/[0.04] hover:bg-white/[0.08]"
-                  }`}
-                >
-                  <Globe size={11} />
-                  {post.published ? "publicado" : "borrador"}
+      {/* Table */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center gap-3 py-20 text-slate-400">
+            <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
+            <span className="text-sm">Cargando...</span>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 py-20 text-slate-400">
+            <span className="material-symbols-outlined" style={{ fontSize: 40 }}>article</span>
+            <p className="text-sm">{search ? "No hay resultados para tu búsqueda." : "No hay posts todavía."}</p>
+            <button onClick={() => navigate("/admin/blog/new")} className="text-adm-primary text-sm font-medium hover:underline">Crear el primero →</button>
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Título</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Estado</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Fecha</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {paginated.map(post => (
+                    <tr key={post.id} className="hover:bg-slate-50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded bg-slate-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                            {post.featured_image
+                              ? <img src={post.featured_image} alt="" className="w-full h-full object-cover" />
+                              : <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 20 }}>image</span>}
+                          </div>
+                          <Link to={`/admin/blog/${post.id}`} className="text-[14px] font-medium text-slate-900 hover:text-adm-primary transition-colors line-clamp-2">
+                            {post.title}
+                          </Link>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {post.published
+                          ? <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">Publicado</span>
+                          : <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">Borrador</span>}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-500">{formatDate(post.createdAt)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Link to={`/admin/blog/${post.id}`} className="p-2 text-slate-400 hover:text-adm-primary transition-colors">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
+                          </Link>
+                          <button
+                            onClick={() => deletePost(post.id)}
+                            disabled={deleting === post.id}
+                            className="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-50"
+                          >
+                            {deleting === post.id
+                              ? <span className="material-symbols-outlined animate-spin" style={{ fontSize: 18 }}>progress_activity</span>
+                              : <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
+              <p className="text-xs text-slate-500 font-medium">
+                Mostrando {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)} de {filtered.length} publicaciones
+              </p>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30">
+                  <span className="material-symbols-outlined" style={{ fontSize: 20 }}>chevron_left</span>
                 </button>
-                <button
-                  onClick={() => deletePost(post.id)}
-                  disabled={deleting === post.id}
-                  className="p-1.5 text-[#7B8DB0] hover:text-red-400 transition-colors rounded-md hover:bg-red-400/[0.06]"
-                >
-                  {deleting === post.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                <span className="text-xs font-bold text-slate-900">{page}</span>
+                <span className="text-xs text-slate-400">/</span>
+                <span className="text-xs text-slate-400">{totalPages}</span>
+                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30">
+                  <span className="material-symbols-outlined" style={{ fontSize: 20 }}>chevron_right</span>
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </>
+        )}
+      </div>
+
+      {/* Bottom stats */}
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { icon: "visibility", color: "blue", label: "Vistas Totales", value: "—", sub: "Conecta analytics para ver datos" },
+          { icon: "timer", color: "emerald", label: "Tiempo de Lectura", value: "—", sub: "Basado en posts publicados" },
+          { icon: "chat_bubble", color: "purple", label: "Posts Totales", value: posts.length.toString(), sub: `${posts.filter(p => p.published).length} publicados · ${posts.filter(p => !p.published).length} borradores` },
+        ].map(s => (
+          <div key={s.label} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-full bg-${s.color}-50 flex items-center justify-center text-${s.color}-600`}>
+                <span className="material-symbols-outlined" style={{ fontSize: 24 }}>{s.icon}</span>
+              </div>
+              <div>
+                <p className="text-slate-500 text-[11px] font-medium uppercase tracking-wider">{s.label}</p>
+                <h3 className="text-2xl font-bold text-slate-900">{s.value}</h3>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-slate-50">
+              <p className="text-xs text-slate-500">{s.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </AdminLayout>
   )
 }

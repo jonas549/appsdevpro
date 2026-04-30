@@ -1,16 +1,22 @@
-import { NavLink, useNavigate } from "react-router-dom"
-import { LayoutDashboard, FileText, BookOpen, LogOut, Zap } from "lucide-react"
+import { NavLink, useNavigate, useLocation } from "react-router-dom"
 import type { ReactNode } from "react"
 
 const nav = [
-  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/content",   label: "Contenido",  icon: FileText },
-  { to: "/admin/blog",      label: "Blog",        icon: BookOpen },
+  { to: "/admin/dashboard", label: "Dashboard",    icon: "dashboard" },
+  { to: "/admin/content",   label: "Contenido",    icon: "inventory_2" },
+  { to: "/admin/blog",      label: "Blog",         icon: "article" },
+  { to: "/admin/settings",  label: "Configuración",icon: "settings" },
 ]
 
-export default function AdminLayout({ children, title }: { children: ReactNode; title: string }) {
+interface AdminLayoutProps {
+  children: ReactNode
+  title: string
+  headerActions?: ReactNode
+}
+
+export default function AdminLayout({ children, title, headerActions }: AdminLayoutProps) {
   const navigate = useNavigate()
-  const email = localStorage.getItem("admin_email") || ""
+  const location = useLocation()
 
   function logout() {
     localStorage.removeItem("admin_token")
@@ -18,64 +24,87 @@ export default function AdminLayout({ children, title }: { children: ReactNode; 
     navigate("/admin/login")
   }
 
+  // Breadcrumb
+  const breadcrumb = location.pathname.startsWith("/admin/blog/")
+    ? [{ label: "Blog", href: "/admin/blog" }, { label: title }]
+    : [{ label: title }]
+
   return (
-    <div className="flex h-screen bg-[#07090F] text-[#EDF0FF] overflow-hidden">
+    <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-adm-on-surface antialiased">
       {/* Sidebar */}
-      <aside className="w-60 flex-shrink-0 flex flex-col border-r border-white/[0.06] bg-[#0C0F1A]">
+      <aside className="w-[260px] h-screen fixed left-0 top-0 border-r border-slate-200 bg-white shadow-sm flex flex-col py-6 z-50">
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-white/[0.06]">
-          <div className="w-7 h-7 rounded-lg bg-[#4361EE] flex items-center justify-center">
-            <Zap size={14} className="text-white" />
+        <div className="px-6 mb-8 flex items-center gap-3">
+          <div className="w-8 h-8 bg-adm-primary-container rounded flex items-center justify-center">
+            <span className="material-symbols-outlined text-white" style={{ fontSize: 18 }}>developer_mode_tv</span>
           </div>
-          <span className="font-semibold text-sm tracking-tight">AppsDevPro</span>
-          <span className="ml-auto text-[10px] font-mono text-[#4361EE] bg-[#4361EE]/10 px-2 py-0.5 rounded-full">Admin</span>
+          <div>
+            <h1 className="text-[15px] font-bold tracking-tight text-slate-900 leading-tight">AppsDevPro</h1>
+            <p className="text-[11px] text-slate-500">Admin Dashboard</p>
+          </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
-          {nav.map(({ to, label, icon: Icon }) => (
+        <nav className="flex-1 px-3 space-y-0.5">
+          {nav.map(({ to, label, icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                  isActive
-                    ? "bg-[#4361EE]/15 text-[#4361EE]"
-                    : "text-[#7B8DB0] hover:bg-white/[0.04] hover:text-[#EDF0FF]"
-                }`
+                isActive
+                  ? "relative flex items-center gap-3 px-4 py-2 text-adm-primary font-semibold before:absolute before:left-0 before:w-[3px] before:h-6 before:bg-adm-primary before:rounded-r-full transition-all"
+                  : "flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-none transition-all duration-200 active:scale-[0.98]"
               }
             >
-              <Icon size={16} />
-              {label}
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{icon}</span>
+              <span className="text-[13px]">{label}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="px-3 py-4 border-t border-white/[0.06]">
-          <div className="px-3 py-2 mb-1">
-            <p className="text-[11px] text-[#7B8DB0] truncate">{email}</p>
-          </div>
+        {/* Bottom */}
+        <div className="mt-auto px-3 border-t border-slate-100 pt-4 space-y-0.5">
+          <a className="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-all duration-200 active:scale-[0.98]" href="#">
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>account_circle</span>
+            <span className="text-[13px]">Perfil</span>
+          </a>
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#7B8DB0] hover:text-red-400 hover:bg-red-400/[0.06] transition-all duration-150"
+            className="w-full flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 active:scale-[0.98]"
           >
-            <LogOut size={16} />
-            Cerrar sesión
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>logout</span>
+            <span className="text-[13px]">Cerrar Sesión</span>
           </button>
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="px-8 py-5 border-b border-white/[0.06] flex items-center">
-          <h1 className="text-lg font-semibold">{title}</h1>
+      <div className="ml-[260px] flex-1 flex flex-col min-h-screen">
+        {/* Top bar */}
+        <header className="fixed top-0 right-0 left-[260px] h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 z-40 flex items-center justify-between px-8">
+          <div className="flex items-center gap-2">
+            {breadcrumb.length > 1 ? (
+              <>
+                <NavLink to={breadcrumb[0].href!} className="text-slate-500 text-[14px] hover:text-adm-primary transition-colors">
+                  {breadcrumb[0].label}
+                </NavLink>
+                <span className="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+                <span className="text-slate-900 text-[14px] font-semibold">{breadcrumb[1].label}</span>
+              </>
+            ) : (
+              <span className="text-slate-900 text-[20px] font-semibold tracking-tight">{title}</span>
+            )}
+          </div>
+          {headerActions && (
+            <div className="flex items-center gap-3">{headerActions}</div>
+          )}
         </header>
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto px-8 py-6">
-          {children}
+        {/* Page content */}
+        <main className="pt-16 flex-1">
+          <div className="max-w-[1440px] mx-auto p-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

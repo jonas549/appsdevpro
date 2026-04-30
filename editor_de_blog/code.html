@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#0031c4",
+                        "on-secondary-container": "#5c647a",
+                        "on-tertiary-fixed": "#341100",
+                        "primary-fixed": "#dee1ff",
+                        "surface-tint": "#2e4edc",
+                        "on-tertiary-container": "#fff1eb",
+                        "inverse-primary": "#bac3ff",
+                        "surface-container-high": "#e8e7f3",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#dae2fd",
+                        "surface-dim": "#dad9e5",
+                        "surface": "#fbf8ff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-bright": "#fbf8ff",
+                        "error-container": "#ffdad6",
+                        "background": "#fbf8ff",
+                        "inverse-surface": "#2f3039",
+                        "primary": "#2346d5",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1a1b23",
+                        "tertiary-container": "#ba4e00",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f1effc",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-tertiary-fixed-variant": "#793000",
+                        "surface-variant": "#e2e1ed",
+                        "primary-container": "#4361ee",
+                        "surface-container-low": "#f4f2fe",
+                        "on-primary-fixed": "#001159",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "tertiary-fixed-dim": "#ffb692",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "outline-variant": "#c4c5d7",
+                        "tertiary": "#933c00",
+                        "on-surface-variant": "#444655",
+                        "on-background": "#1a1b23",
+                        "on-primary-container": "#f4f2ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "outline": "#747686",
+                        "surface-container": "#eeedf9",
+                        "surface-container-highest": "#e2e1ed",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#dae2fd",
+                        "secondary": "#565e74",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "0.5rem",
+                        "container-max": "1440px",
+                        "xl": "2rem",
+                        "md": "1rem",
+                        "sidebar-width": "260px",
+                        "lg": "1.5rem",
+                        "xs": "0.25rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display": ["Inter"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h1": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "display": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "caption": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-slate-200 bg-white shadow-sm flex flex-col py-6">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-bold tracking-tight text-slate-900">AppsDevPro</h1>
+<p class="text-xs text-slate-500">Admin Dashboard</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Contenido</span>
+</a>
+<a class="relative flex items-center gap-3 px-4 py-2 text-blue-600 font-semibold before:absolute before:left-0 before:w-1 before:h-6 before:bg-blue-600 before:rounded-r-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="article">article</span>
+<span class="font-label-md text-label-md">Blog</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Configuración</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-100 pt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_circle">account_circle</span>
+<span class="font-label-md text-label-md">Perfil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-[260px] h-16 bg-slate-50/80 backdrop-blur-md border-b border-slate-200 z-10">
+<div class="flex justify-between items-center h-full px-8 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-2">
+<span class="text-slate-400 font-label-md text-label-md">Blog</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">chevron_right</span>
+<span class="text-slate-900 font-label-md text-label-md">Editar Post</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 mr-4">
+<span class="text-label-md font-label-md text-slate-600">Publicar</span>
+<button class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full bg-blue-600 transition-colors">
+<span class="translate-x-4 inline-block h-3 w-3 transform rounded-full bg-white transition-transform shadow-sm"></span>
+</button>
+</div>
+<button class="px-4 py-1.5 text-slate-900 bg-white border border-slate-200 rounded-lg font-label-md text-label-md hover:bg-slate-50 transition-colors">
+                        Nuevo post
+                    </button>
+<button class="px-4 py-1.5 text-white bg-primary rounded-lg font-label-md text-label-md shadow-sm hover:brightness-90 transition-all">
+                        Guardar cambios
+                    </button>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="pt-24 pb-16 px-8 max-w-[1440px] mx-auto">
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Editor -->
+<div class="col-span-8 space-y-8">
+<!-- Title & Slug -->
+<section class="space-y-4">
+<input class="w-full text-[32px] font-bold tracking-tight bg-transparent border-none focus:ring-0 placeholder:text-slate-300 p-0 text-slate-900" placeholder="Título de la publicación" type="text" value="Cómo optimizar el rendimiento de Shopify en 2024"/>
+<div class="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 max-w-fit">
+<span class="material-symbols-outlined text-[18px]">link</span>
+<span class="text-label-md font-label-md">appsdevpro.com/blog/</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 text-label-md font-label-md text-blue-600 w-auto min-w-[300px]" type="text" value="optimizacion-rendimiento-shopify-2024"/>
+</div>
+</section>
+<!-- Rich Text Editor Mockup -->
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+<!-- Toolbar -->
+<div class="flex items-center gap-1 p-2 border-b border-slate-100 bg-slate-50/50">
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">format_bold</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">format_italic</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">format_underlined</span>
+</button>
+<div class="w-px h-4 bg-slate-200 mx-1"></div>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">format_list_bulleted</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">format_list_numbered</span>
+</button>
+<div class="w-px h-4 bg-slate-200 mx-1"></div>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded transition-all text-slate-600">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</button>
+<div class="ml-auto flex items-center gap-2 px-2 text-slate-400 text-caption font-caption">
+                                482 palabras
+                            </div>
+</div>
+<!-- Canvas -->
+<div class="p-8 min-h-[600px] prose prose-slate max-w-none focus:outline-none">
+<p class="text-body-lg text-slate-700 leading-relaxed">
+                                El rendimiento es el pilar fundamental de cualquier tienda Shopify exitosa. En un mundo donde cada milisegundo cuenta, una carga lenta puede significar la pérdida de una conversión crítica. 
+                            </p>
+<p class="text-body-lg text-slate-700 leading-relaxed mt-4">
+                                En esta guía, exploraremos las técnicas más avanzadas para optimizar el Liquid, manejar las aplicaciones de terceros de manera eficiente y utilizar las nuevas APIs de Hydrogen para llevar la velocidad al siguiente nivel.
+                            </p>
+<div class="my-8 relative group">
+<div class="aspect-video bg-slate-100 rounded-lg overflow-hidden border border-slate-200 flex items-center justify-center">
+<img alt="Data Analytics Dashboard" class="w-full h-full object-cover" data-alt="A clean and professional digital dashboard showing complex e-commerce performance metrics with vibrant blue data visualizations. The setting is a minimalist office environment with soft natural light. The aesthetic is modern and high-tech, using a sophisticated corporate palette of electric blue, slate grey, and pure white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACazjJ_VMQ1RHXugsxjBPiRmL5NjZaw5SxnG_0-A9f8qzEY2uhyp8Hnhqida2qIme21_gNmLqoPaPrbhOLULNHL2mBD1jf8SYl8cmEp0sP-jJLBDt2V9eh6VlQdkv8aSGH6fRQQxPyTJDkVFGkFqOxxi8wQiG-lsbcubFq9tmwdcxYsL4JOyaBCD7Qz2xY6Jz96hL5gnhpBrtAuQmObsJbZM4JB2Cz0Hps0zNXM7-EdmluLk8CuTV7m3HHjpi9YXox3fRmjOt9760"/>
+</div>
+<div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+<button class="bg-white px-3 py-1.5 rounded-lg text-caption font-label-md shadow-md">Cambiar imagen</button>
+<button class="bg-white px-3 py-1.5 rounded-lg text-caption font-label-md shadow-md text-error">Eliminar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- SEO Section (Bottom of main content) -->
+<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-h2 text-h2 text-slate-900">Configuración SEO</h3>
+<span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-medium">Optimizado</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1.5">
+<label class="text-label-md font-label-md text-slate-700">Meta Title</label>
+<input class="w-full bg-slate-50 border-slate-200 rounded-lg text-body-md focus:border-primary focus:ring-primary/20 transition-all" type="text" value="Optimización de Shopify 2024: Guía de Rendimiento para Expertos"/>
+<div class="flex justify-between items-center text-caption text-slate-400">
+<span>Recomendado: 60 caracteres</span>
+<span>58/60</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-label-md font-label-md text-slate-700">Meta Description</label>
+<textarea class="w-full bg-slate-50 border-slate-200 rounded-lg text-body-md focus:border-primary focus:ring-primary/20 transition-all" rows="3">Aprende cómo maximizar la velocidad de carga de tu tienda Shopify utilizando técnicas avanzadas de optimización de código, gestión de apps y configuración de CDN global.</textarea>
+<div class="flex justify-between items-center text-caption text-slate-400">
+<span>Recomendado: 160 caracteres</span>
+<span>142/160</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar -->
+<div class="col-span-4 space-y-6">
+<!-- Featured Image -->
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+<div class="p-4 border-b border-slate-100 bg-slate-50/50">
+<h3 class="font-label-md text-label-md text-slate-900">Imagen Destacada</h3>
+</div>
+<div class="p-4">
+<div class="aspect-square bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center group cursor-pointer hover:border-blue-300 transition-colors">
+<div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">upload_file</span>
+</div>
+<p class="text-label-md font-label-md text-slate-900">Subir imagen</p>
+<p class="text-caption text-slate-400 mt-1">Recomendado: 1200x1200px (JPG, PNG)</p>
+</div>
+</div>
+</div>
+<!-- Categories & Tags -->
+<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+<h3 class="font-label-md text-label-md text-slate-900">Categorías</h3>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-md text-slate-700">Desarrollo Shopify</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-md text-slate-700">E-commerce Trends</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-md text-slate-700">Caso de Éxito</span>
+</label>
+</div>
+<div class="pt-2">
+<button class="text-blue-600 font-label-md text-label-md flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                                Añadir categoría
+                            </button>
+</div>
+</div>
+<!-- Scheduling -->
+<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+<h3 class="font-label-md text-label-md text-slate-900">Programar publicación</h3>
+<div class="space-y-1.5">
+<label class="text-caption font-label-md text-slate-500">Fecha y hora</label>
+<div class="relative">
+<input class="w-full bg-slate-50 border-slate-200 rounded-lg text-body-md pl-10 focus:border-primary focus:ring-primary/20" type="text" value="24 Mayo, 2024 - 09:00 AM"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">calendar_today</span>
+</div>
+</div>
+<button class="w-full py-2 bg-slate-900 text-white rounded-lg font-label-md text-label-md hover:bg-slate-800 transition-colors">
+                            Programar
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

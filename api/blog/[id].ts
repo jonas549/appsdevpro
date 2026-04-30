@@ -17,17 +17,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method === "PUT") {
       if (!requireAuth(req, res)) return
-      const { title, slug, content, excerpt, published } = req.body as {
+      const { title, slug, content, excerpt, published, featured_image, meta_title, meta_description } = req.body as {
         title?: string; slug?: string; content?: string; excerpt?: string; published?: boolean
+        featured_image?: string; meta_title?: string; meta_description?: string
       }
       const post = await prisma.blogPost.update({
         where: { id },
         data: {
-          ...(title      !== undefined && { title }),
-          ...(slug       !== undefined && { slug }),
-          ...(content    !== undefined && { content }),
-          ...(excerpt    !== undefined && { excerpt }),
-          ...(published  !== undefined && { published }),
+          ...(title             !== undefined && { title }),
+          ...(slug              !== undefined && { slug }),
+          ...(content           !== undefined && { content }),
+          ...(excerpt           !== undefined && { excerpt }),
+          ...(published         !== undefined && { published }),
+          ...(featured_image    !== undefined && { featured_image: featured_image || null }),
+          ...(meta_title        !== undefined && { meta_title: meta_title || null }),
+          ...(meta_description  !== undefined && { meta_description: meta_description || null }),
         },
       })
       res.json(post)

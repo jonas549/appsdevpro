@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#0031c4",
+                    "on-secondary-container": "#5c647a",
+                    "on-tertiary-fixed": "#341100",
+                    "primary-fixed": "#dee1ff",
+                    "surface-tint": "#2e4edc",
+                    "on-tertiary-container": "#fff1eb",
+                    "inverse-primary": "#bac3ff",
+                    "surface-container-high": "#e8e7f3",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#dae2fd",
+                    "surface-dim": "#dad9e5",
+                    "surface": "#fbf8ff",
+                    "tertiary-fixed": "#ffdbcb",
+                    "surface-bright": "#fbf8ff",
+                    "error-container": "#ffdad6",
+                    "background": "#fbf8ff",
+                    "inverse-surface": "#2f3039",
+                    "primary": "#2346d5",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#1a1b23",
+                    "tertiary-container": "#ba4e00",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f1effc",
+                    "on-secondary-fixed": "#131b2e",
+                    "on-tertiary-fixed-variant": "#793000",
+                    "surface-variant": "#e2e1ed",
+                    "primary-container": "#4361ee",
+                    "on-primary-container": "#f4f2ff",
+                    "primary-fixed-dim": "#bac3ff",
+                    "outline": "#747686",
+                    "surface-container": "#eeedf9",
+                    "surface-container-highest": "#e2e1ed",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#dae2fd",
+                    "secondary": "#565e74",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "0.5rem",
+                    "container-max": "1440px",
+                    "xl": "2rem",
+                    "md": "1rem",
+                    "sidebar-width": "260px",
+                    "lg": "1.5rem",
+                    "xs": "0.25rem"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "h1": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display": ["Inter"],
+                    "caption": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "h1": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h2": ["20px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "caption": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #F8FAFC; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active-pill::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 3px;
+            height: 24px;
+            background-color: #4361ee;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 border-r border-slate-200 bg-white shadow-sm flex flex-col py-6 z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">developer_mode_tv</span>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight text-slate-900 leading-tight">AppsDevPro</h1>
+<p class="text-xs text-slate-500">Admin Dashboard</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col">
+<!-- Active Tab: Dashboard -->
+<a class="relative flex items-center gap-3 px-6 py-2 text-primary font-semibold sidebar-active-pill transition-all duration-200 bg-slate-50" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-2 text-slate-600 hover:bg-slate-50 transition-colors active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Contenido</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-2 text-slate-600 hover:bg-slate-50 transition-colors active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">article</span>
+<span class="font-label-md text-label-md">Blog</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-2 text-slate-600 hover:bg-slate-50 transition-colors active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Configuración</span>
+</a>
+</nav>
+<div class="mt-auto px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Perfil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-error hover:bg-red-50 rounded-lg transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-[260px] h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 z-40 flex items-center justify-between px-8">
+<div class="flex items-center gap-2">
+<span class="font-h2 text-h2 text-slate-900">Dashboard</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 text-slate-500 font-label-md text-label-md hover:text-slate-900 transition-colors">
+                    Nuevo post
+                </button>
+<button class="px-4 py-2 bg-slate-100 text-slate-400 rounded-lg font-label-md text-label-md cursor-not-allowed" disabled="">
+                    Guardar cambios
+                </button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="pt-24 pb-12 px-8 max-w-[1440px] mx-auto">
+<!-- Stat Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">schema</span>
+<span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">Activo</span>
+</div>
+<p class="text-slate-500 font-label-md text-label-md">Total secciones editables</p>
+<h3 class="text-display font-display text-slate-900 mt-1">7</h3>
+</div>
+<div class="bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">edit_calendar</span>
+<span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">+12% hoy</span>
+</div>
+<p class="text-slate-500 font-label-md text-label-md">Campos modificados hoy</p>
+<h3 class="text-display font-display text-slate-900 mt-1">12</h3>
+</div>
+<div class="bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">send_and_archive</span>
+</div>
+<p class="text-slate-500 font-label-md text-label-md">Posts publicados</p>
+<h3 class="text-display font-display text-slate-900 mt-1">45</h3>
+</div>
+<div class="bg-white p-lg rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-slate-400 bg-slate-100 p-2 rounded-lg">drafts</span>
+</div>
+<p class="text-slate-500 font-label-md text-label-md">Posts borrador</p>
+<h3 class="text-display font-display text-slate-900 mt-1">3</h3>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Quick Access (2/3 width or adapted grid) -->
+<div class="lg:col-span-2 space-y-6">
+<div>
+<h4 class="font-h2 text-h2 text-slate-900 mb-4">Quick Access</h4>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="group relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-container transition-all cursor-pointer">
+<div class="aspect-[16/6] bg-slate-100">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, minimalist 3D abstract render of a glowing blue architectural shape against a stark white studio background. The lighting is crisp and modern, emphasizing the precision and technical elegance of professional software engineering. This image represents a hero section template for a high-end digital agency website." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqiDAlX_0UU0E5OfTM5sEQZzTsu9oCS8T60Uglz7I7c6mj97RFIuaErHo6q5Amreqyg6DCFu7KhHmL-YN0KRg7eRUvAKqv461jbfVNMzEgYEwOtdnae1PI7NGCnkWUijzCR1Axt3WiEDJG_bMPjE_LAEf8x-lxsvnMdmpSQwJFINJpf8dlWkmY1CyW5Ga7e0O4W-VL8B97-PtAgW_tXnKNnU05QXN1-VC-iKiyo9QUpse1CzUYni1rG4rryFqw7glzm35OPN8941E"/>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">view_quilt</span>
+<span class="font-body-lg text-body-lg font-medium text-slate-900">Hero Section</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</div>
+</div>
+<div class="group relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-container transition-all cursor-pointer">
+<div class="aspect-[16/6] bg-slate-100">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro photograph of high-quality server hardware components with subtle electric blue LED highlights. The aesthetic is industrial yet refined, focusing on transparency and technical integrity. Soft bokeh backgrounds create depth, suggesting a complex but organized infrastructure of digital services for Shopify development." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB651jQHlnEE4WM_o7AfIBYi_ekrNWOfrBDpFZkgYV4Dm_hvdIpsKYV-aPcmmYGK2nNuszdjUrhFh1VYEfVJOgG_uIFdKFyTh8R-BObqfCqP1i9_Pf1nHKmkLNwDzJFfT_zX85hKPDfLFMB4fbtcZfK5im8cDxwuv0XZmn2RPlDmdOXPEaLvyFvJi7Srr5LMP9M49I48nmLM-1oSvTO_IGhQo9XkD6_FSwBAjikBHdtImg3sGLdsfDr3wy2bXffytVWKBE5lybKBds"/>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">layers</span>
+<span class="font-body-lg text-body-lg font-medium text-slate-900">Servicios</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</div>
+</div>
+<div class="group relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-container transition-all cursor-pointer">
+<div class="aspect-[16/6] bg-slate-100">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean top-down view of a modern developer workspace with a tablet displaying a sleek mobile application dashboard. The color palette features whites and soft greys with vibrant blue accents on the UI. The composition is airy and professional, reflecting the high-performance application development focus of AppsDevPro." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEFYK48fEswuC6P_b_svfL2U4lf3XGSMrxDsmVD6RA9D6DMDjf5mC4lW_AhFhtOeUZ3R6CqBWL41XerLzvb3SEYkl_pCRhN3MrxMxzoTjA4YMadx4Bs3PX_Xbip8g_6Xav1eBV0dQN3cnTiX6E6d_WYc9tyCggj5O0gEXk8C6sGMndL-tblM21HEgm80FzVzWyJ0lrJ7pgEGgCThGhQZOwO_M_jKQerE6JdTj33zZiv02-lJrGrBNAVwSg5MtaFVewRXd0feLVg-I"/>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">token</span>
+<span class="font-body-lg text-body-lg font-medium text-slate-900">Apps Gallery</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</div>
+</div>
+<div class="group relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-container transition-all cursor-pointer">
+<div class="aspect-[16/6] bg-slate-100">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up shot of a minimalist editorial magazine spread with bold typography and clean layout. The paper texture is visible, suggesting high-quality content curation. The lighting is soft and natural, emphasizing the professional and thoughtful approach to blog post creation and management for an industry-leading agency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOAGVmUFP5tF0vZ6coTiXLqwXOYkUBSdLyZUFoviEYH8g3HmnZe6eX26nW4jSNVgpKJkJ6A-ClSEGsld79R9cgp8U4dDdveRztFe5rHnWfkf54NWAQEZi1fAD4Erw_XXbaogQ4F_DddyaTqmvwjpJeDEtLk7da-ldW3KyMqDn15j6TWtm5T2MUUBBV6HtaExtfKcyANFtw2pzccZKXv53GUWHZP0cEDFcATdt7nmePfprNnm6ADdGCGV76hl6XeEnKvSwvkEXhQQA"/>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">border_color</span>
+<span class="font-body-lg text-body-lg font-medium text-slate-900">Blog Manager</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity (1/3 width) -->
+<div>
+<h4 class="font-h2 text-h2 text-slate-900 mb-4">Actividad reciente</h4>
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+<div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+<span class="font-label-md text-label-md text-slate-500 uppercase tracking-wider">Historial de cambios</span>
+<button class="text-primary font-label-md text-label-md hover:underline">Ver todo</button>
+</div>
+<ul class="divide-y divide-slate-100">
+<li class="p-4 hover:bg-slate-50 transition-colors">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 mt-2 bg-primary-container rounded-full"></div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-medium">Hero Title updated</p>
+<p class="text-caption font-caption text-slate-500">hace 5m por Admin</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-slate-50 transition-colors">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-medium">New Blog Post created</p>
+<p class="text-caption font-caption text-slate-500">hace 2h por Sofia R.</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-slate-50 transition-colors">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 mt-2 bg-slate-300 rounded-full"></div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-medium">Image assets replaced</p>
+<p class="text-caption font-caption text-slate-500">hace 4h por Manuel T.</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-slate-50 transition-colors">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 mt-2 bg-primary-container rounded-full"></div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-medium">Servicios text edited</p>
+<p class="text-caption font-caption text-slate-500">hace 6h por Admin</p>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-slate-50 transition-colors">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 mt-2 bg-orange-400 rounded-full"></div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-medium">Draft published: "Case Study A"</p>
+<p class="text-caption font-caption text-slate-500">ayer a las 18:45</p>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
