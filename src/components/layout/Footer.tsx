@@ -1,4 +1,5 @@
 import { useContent } from '../../lib/ContentContext'
+import { safeHtml } from '../../lib/safe-html'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -42,7 +43,7 @@ export default function Footer() {
                 Apps<span className="text-[#4361EE]">Dev</span>Pro
               </span>
             </div>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4">{desc}</p>
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE]" dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
             <a
               href={`mailto:${email}`}
               className="text-[#4361EE] text-sm hover:underline underline-offset-2"

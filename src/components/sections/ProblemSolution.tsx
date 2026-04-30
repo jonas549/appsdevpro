@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Layers, Plug, ShoppingCart } from 'lucide-react'
 import WordsPullUpMultiStyle from '../animations/WordsPullUpMultiStyle'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 const SOLUTION_ICONS = [<Layers size={18} />, <Plug size={18} />, <ShoppingCart size={18} />]
 
@@ -22,9 +22,9 @@ export default function ProblemSolution() {
 
   const problemLabel   = p.label         || '● El Problema'
   const problemHeading = p.heading       || 'Las apps genéricas del marketplace no resuelven tu problema específico'
-  const problemDesc1   = p.description   || 'Cada **tienda Shopify** tiene reglas de negocio propias, integraciones con sistemas internos y flujos operativos únicos que no encajan en una app de catálogo. Las **apps de $9 al mes** del Shopify App Store están diseñadas para el caso promedio: descuentos básicos, gestión simple de inventario, integraciones estándar de envío. El problema aparece cuando tu operación crece y empiezas a chocar con los límites de esas apps genéricas: configuraciones que no se pueden personalizar, integraciones que no existen, lógica de negocio que tu equipo termina resolviendo manualmente con planillas de Excel.'
-  const problemDesc2   = p.description_2 || 'La consecuencia es siempre la misma. Tu equipo pierde **horas operativas** repitiendo procesos que deberían estar automatizados. Tu **conversión** se estanca porque el checkout no permite las validaciones que tu negocio requiere. Tu **AOV (ticket promedio)** no crece porque las apps de descuentos no soportan las reglas que necesitas para hacer cross-sell real. Y cuando intentas escalar a otro mercado, descubres que las apps que usas no soportan multi-store, multi-moneda o sincronización con tu ERP. Ahí es donde una **app Shopify a medida** deja de ser un lujo y se convierte en una decisión de negocio.'
-  const problemDesc3   = p.description_3 || 'Nosotros entramos justo en ese punto. Identificamos qué parte de tu operación está siendo limitada por software genérico, diseñamos una **solución Shopify personalizada** que se adapta a tu flujo real, y la construimos con tecnología que escala a la par de tu negocio. No vendemos plantillas ni proyectos enlatados — cada app que entregamos está hecha específicamente para el problema del cliente que la encarga.'
+  const problemDesc1   = p.description   || 'Cada <strong>tienda Shopify</strong> tiene reglas de negocio propias, integraciones con sistemas internos y flujos operativos únicos que no encajan en una app de catálogo. Las <strong>apps de $9 al mes</strong> del Shopify App Store están diseñadas para el caso promedio: descuentos básicos, gestión simple de inventario, integraciones estándar de envío. El problema aparece cuando tu operación crece y empiezas a chocar con los límites de esas apps genéricas: configuraciones que no se pueden personalizar, integraciones que no existen, lógica de negocio que tu equipo termina resolviendo manualmente con planillas de Excel.'
+  const problemDesc2   = p.description_2 || 'La consecuencia es siempre la misma. Tu equipo pierde <strong>horas operativas</strong> repitiendo procesos que deberían estar automatizados. Tu <strong>conversión</strong> se estanca porque el checkout no permite las validaciones que tu negocio requiere. Tu <strong>AOV (ticket promedio)</strong> no crece porque las apps de descuentos no soportan las reglas que necesitas para hacer cross-sell real. Y cuando intentas escalar a otro mercado, descubres que las apps que usas no soportan multi-store, multi-moneda o sincronización con tu ERP. Ahí es donde una <strong>app Shopify a medida</strong> deja de ser un lujo y se convierte en una decisión de negocio.'
+  const problemDesc3   = p.description_3 || 'Nosotros entramos justo en ese punto. Identificamos qué parte de tu operación está siendo limitada por software genérico, diseñamos una <strong>solución Shopify personalizada</strong> que se adapta a tu flujo real, y la construimos con tecnología que escala a la par de tu negocio. No vendemos plantillas ni proyectos enlatados — cada app que entregamos está hecha específicamente para el problema del cliente que la encarga.'
 
   const solutionLabel   = s.label   || '● La Solución'
   const solutionHeading = s.heading || 'Construimos exactamente lo que tu tienda Shopify necesita'
@@ -37,9 +37,9 @@ export default function ProblemSolution() {
       'Apps publicadas en el Shopify App Store',
     ][n - 1],
     desc: s[`item${n}_desc`] || [
-      'Desarrollamos **apps Shopify personalizadas** desde cero, adaptadas a la lógica específica de tu operación. Trabajamos con el **stack oficial recomendado por Shopify**: **Remix**, **TypeScript**, **PostgreSQL** con Prisma y **Polaris** para que el panel de tu app se vea exactamente como una app nativa de Shopify.',
-      'Tu **tienda Shopify** tiene que conversar con tu **ERP, CRM, WMS, sistemas de facturación electrónica, gateways de pago locales** y cualquier API externa que tu operación requiera. Diseñamos **integraciones robustas** con **webhooks confiables con reintentos automáticos** y arquitectura preparada para escalar.',
-      'Tenemos **apps activas en el Shopify App Store** con merchants reales pagando suscripción mensual. Ya pasamos por todo el proceso de publicación oficial: **billing recurrente**, **OAuth flow validado**, **scope de permisos correcto** y **respuesta a reviewers** durante la aprobación.',
+      'Desarrollamos <strong>apps Shopify personalizadas</strong> desde cero, adaptadas a la lógica específica de tu operación. Trabajamos con el <strong>stack oficial recomendado por Shopify</strong>: <strong>Remix</strong>, <strong>TypeScript</strong>, <strong>PostgreSQL</strong> con Prisma y <strong>Polaris</strong> para que el panel de tu app se vea exactamente como una app nativa de Shopify.',
+      'Tu <strong>tienda Shopify</strong> tiene que conversar con tu <strong>ERP, CRM, WMS, sistemas de facturación electrónica, gateways de pago locales</strong> y cualquier API externa que tu operación requiera. Diseñamos <strong>integraciones robustas</strong> con <strong>webhooks confiables con reintentos automáticos</strong> y arquitectura preparada para escalar.',
+      'Tenemos <strong>apps activas en el Shopify App Store</strong> con merchants reales pagando suscripción mensual. Ya pasamos por todo el proceso de publicación oficial: <strong>billing recurrente</strong>, <strong>OAuth flow validado</strong>, <strong>scope de permisos correcto</strong> y <strong>respuesta a reviewers</strong> durante la aprobación.',
     ][n - 1],
   }))
 
@@ -65,9 +65,11 @@ export default function ProblemSolution() {
             </h2>
             <div className="flex flex-col gap-5">
               {[problemDesc1, problemDesc2, problemDesc3].map((txt, i) => (
-                <p key={i} className={`text-sm md:text-base leading-[1.8] ${i < 2 ? 'text-[#9BA8BE]' : 'text-[#7B8DB0]'}`}>
-                  {renderRich(txt, 'font-semibold text-[#CBD5E8]')}
-                </p>
+                <p
+                  key={i}
+                  className={`text-sm md:text-base leading-[1.8] [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic ${i < 2 ? 'text-[#9BA8BE]' : 'text-[#7B8DB0]'}`}
+                  dangerouslySetInnerHTML={{ __html: safeHtml(txt) }}
+                />
               ))}
             </div>
           </div>
@@ -96,9 +98,10 @@ export default function ProblemSolution() {
                   <div className="text-[#4361EE] mt-0.5 flex-shrink-0">{sol.icon}</div>
                   <div>
                     <h3 className="font-semibold text-[#EDF0FF] text-sm mb-1.5">{sol.title}</h3>
-                    <p className="text-[#7B8DB0] text-sm leading-relaxed">
-                      {renderRich(sol.desc, 'font-semibold text-[#9BA8BE]')}
-                    </p>
+                    <p
+                      className="text-[#7B8DB0] text-sm leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                      dangerouslySetInnerHTML={{ __html: safeHtml(sol.desc) }}
+                    />
                   </div>
                 </motion.div>
               ))}

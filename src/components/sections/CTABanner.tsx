@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ArrowRight, MessageSquare } from 'lucide-react'
 import { useContent } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 const DEFAULT_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260330_145725_08886141-ed95-4a8e-8d6d-b75eaadce638.mp4'
@@ -40,9 +40,7 @@ export default function CTABanner() {
           <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6 tracking-tight">
             {heading}
           </h3>
-          <p className="text-white/70 text-base leading-relaxed mb-10 max-w-xl mx-auto">
-            {renderRich(desc, 'font-semibold text-white/90')}
-          </p>
+          <p className="text-white/70 text-base leading-relaxed mb-10 max-w-xl mx-auto [&_strong]:font-semibold [&_strong]:text-white/90 [&_em]:italic" dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#contacto"

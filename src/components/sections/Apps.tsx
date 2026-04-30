@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { ExternalLink, ArrowRight, Lock } from 'lucide-react'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 function CalendifyMockup() {
   return (
@@ -81,7 +81,7 @@ const APP_DEFAULTS = [
     badge: 'Publicada en Shopify App Store · Activa en producción',
     title: 'Calendify Delivery',
     subtitle: 'Gestión de entregas con calendario y rangos horarios',
-    desc: '**Calendify Delivery** es una **app Shopify de gestión de entregas** que permite a los merchants ofrecer al cliente la elección de **fecha de entrega y rango horario** directamente desde el carrito o el checkout. Diseñada para tiendas que venden productos perecederos, voluminosos o servicios con instalación a domicilio.\n\nIncluye **panel de administración completo**, **configuración por zona de reparto y código postal**, **límite de capacidad por día**, **bloqueo de fechas y feriados**, **notificaciones automáticas** e integración con los datos del pedido en Shopify. Más de **50 tiendas activas** la usan hoy en producción.',
+    desc: '<strong>Calendify Delivery</strong> es una <strong>app Shopify de gestión de entregas</strong> que permite a los merchants ofrecer al cliente la elección de <strong>fecha de entrega y rango horario</strong> directamente desde el carrito o el checkout. Diseñada para tiendas que venden productos perecederos, voluminosos o servicios con instalación a domicilio.\n\nIncluye <strong>panel de administración completo</strong>, <strong>configuración por zona de reparto y código postal</strong>, <strong>límite de capacidad por día</strong>, <strong>bloqueo de fechas y feriados</strong>, <strong>notificaciones automáticas</strong> e integración con los datos del pedido en Shopify. Más de <strong>50 tiendas activas</strong> la usan hoy en producción.',
     tags: 'Shopify,Remix,TypeScript,PostgreSQL,Prisma,Vercel',
     cta: 'Ver en App Store →',
     store_url: 'https://apps.shopify.com/calendify-delivery',
@@ -91,7 +91,7 @@ const APP_DEFAULTS = [
     badge: 'Próximamente en Shopify App Store · En desarrollo activo',
     title: 'Descuentify',
     subtitle: 'Motor de descuentos avanzado para Shopify',
-    desc: '**Descuentify** es un **motor de descuentos para Shopify** que va más allá de las reglas nativas. Para merchants que necesitan **descuentos por volumen escalonado**, **combos entre variantes específicas**, **bulk price editor masivo**, **campañas con condiciones combinadas** y **reglas Buy X Get Y avanzadas**.\n\nEl objetivo es claro: **subir el ticket promedio (AOV) sin canibalizar margen**. Construida con la **Shopify Functions API** para que los descuentos se apliquen correctamente al pricing del checkout, con un panel que cualquier persona del equipo de marketing puede usar sin pasar por desarrollo.',
+    desc: '<strong>Descuentify</strong> es un <strong>motor de descuentos para Shopify</strong> que va más allá de las reglas nativas. Para merchants que necesitan <strong>descuentos por volumen escalonado</strong>, <strong>combos entre variantes específicas</strong>, <strong>bulk price editor masivo</strong>, <strong>campañas con condiciones combinadas</strong> y <strong>reglas Buy X Get Y avanzadas</strong>.\n\nEl objetivo es claro: <strong>subir el ticket promedio (AOV) sin canibalizar margen</strong>. Construida con la <strong>Shopify Functions API</strong> para que los descuentos se apliquen correctamente al pricing del checkout, con un panel que cualquier persona del equipo de marketing puede usar sin pasar por desarrollo.',
     tags: 'Shopify,Remix,TypeScript,PostgreSQL,Shopify Functions,GraphQL Admin API',
     cta: 'Ver más →',
     store_url: '',
@@ -101,7 +101,7 @@ const APP_DEFAULTS = [
     badge: 'Custom Apps Privadas · Bajo NDA',
     title: 'Apps Privadas para Clientes',
     subtitle: 'Integraciones, automatizaciones y paneles internos',
-    desc: 'También desarrollamos **apps privadas para clientes** que prefieren mantener sus integraciones fuera del App Store: **integraciones con ERPs propios**, **herramientas de operación logística específica**, **paneles internos de gestión**, **automatizaciones B2B** y **conectores con sistemas legacy**.\n\nNo podemos mostrar capturas ni nombres por **NDA**, pero podemos contarte casos de uso similares al tuyo si tu proyecto encaja en este perfil durante la reunión inicial.',
+    desc: 'También desarrollamos <strong>apps privadas para clientes</strong> que prefieren mantener sus integraciones fuera del App Store: <strong>integraciones con ERPs propios</strong>, <strong>herramientas de operación logística específica</strong>, <strong>paneles internos de gestión</strong>, <strong>automatizaciones B2B</strong> y <strong>conectores con sistemas legacy</strong>.\n\nNo podemos mostrar capturas ni nombres por <strong>NDA</strong>, pero podemos contarte casos de uso similares al tuyo si tu proyecto encaja en este perfil durante la reunión inicial.',
     tags: 'ERP,CRM,WMS,Integración,Automatización,B2B',
     cta: 'Hablemos →',
     store_url: '',
@@ -116,7 +116,7 @@ export default function Apps() {
   const c = useContent('apps')
 
   const heading    = c.heading    || 'Apps que ya están resolviendo problemas reales en producción'
-  const subheading = c.subheading || '**Publicadas en el Shopify App Store**, en **producción** y con **merchants reales pagando suscripción mensual**. No te pedimos que confíes — te mostramos lo que ya construimos y está funcionando.'
+  const subheading = c.subheading || '<strong>Publicadas en el Shopify App Store</strong>, en <strong>producción</strong> y con <strong>merchants reales pagando suscripción mensual</strong>. No te pedimos que confíes — te mostramos lo que ya construimos y está funcionando.'
   const headingStyle    = getSizeStyle(c.heading_size)
   const subheadingStyle = getSizeStyle(c.subheading_size)
 
@@ -145,9 +145,11 @@ export default function Apps() {
           <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4" style={headingStyle}>
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.05} />
           </h2>
-          <p className="text-[#4B5563] text-sm md:text-base max-w-2xl mx-auto" style={subheadingStyle}>
-            {renderRich(subheading, 'font-semibold text-[#1E293B]')}
-          </p>
+          <p
+            className="text-[#4B5563] text-sm md:text-base max-w-2xl mx-auto [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+            style={subheadingStyle}
+            dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
+          />
         </div>
 
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -180,9 +182,11 @@ export default function Apps() {
                   <p className="text-[#6B7280] text-xs mb-3">{app.subtitle}</p>
                   <div className="text-[#4B5563] text-sm leading-relaxed mb-5 flex-1">
                     {app.desc.split('\n\n').map((para, pi) => (
-                      <p key={pi} className={pi > 0 ? 'mt-3' : ''}>
-                        {renderRich(para, 'font-semibold text-[#1E293B]')}
-                      </p>
+                      <p
+                        key={pi}
+                        className={`[&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic ${pi > 0 ? 'mt-3' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: safeHtml(para) }}
+                      />
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-2 mb-5">

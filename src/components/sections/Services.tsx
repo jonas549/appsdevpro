@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Zap, Lock, Link, ShoppingCart, Layout, ArrowRight } from 'lucide-react'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 const FALLBACK_VIDEO_SERVICES =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4'
@@ -31,25 +31,25 @@ const CARD_DEFAULTS = [
   {
     id: '02',
     title: 'Apps Privadas (Custom Apps)',
-    desc: 'Desarrollamos **apps privadas Shopify** para merchants que necesitan funcionalidad exclusiva sin pasar por el review del App Store. Ideales para **integraciones internas con sistemas sensibles**, **automatizaciones específicas** de tu operación o **lógica de negocio propietaria**. Sin proceso de review, scope completo de permisos disponible y tiempos más cortos.',
+    desc: 'Desarrollamos <strong>apps privadas Shopify</strong> para merchants que necesitan funcionalidad exclusiva sin pasar por el review del App Store. Ideales para <strong>integraciones internas con sistemas sensibles</strong>, <strong>automatizaciones específicas</strong> de tu operación o <strong>lógica de negocio propietaria</strong>. Sin proceso de review, scope completo de permisos disponible y tiempos más cortos.',
     tag: 'Custom App · Sin marketplace',
   },
   {
     id: '03',
     title: 'Integraciones, APIs y Webhooks',
-    desc: 'Conectamos **Shopify con cualquier sistema externo** mediante APIs robustas y webhooks confiables. Sincronización bidireccional con **ERP, CRM, WMS, facturación electrónica latinoamericana** y herramientas de BI. Implementamos **idempotencia, reintentos exponenciales, dead letter queues y logs auditables**.',
+    desc: 'Conectamos <strong>Shopify con cualquier sistema externo</strong> mediante APIs robustas y webhooks confiables. Sincronización bidireccional con <strong>ERP, CRM, WMS, facturación electrónica latinoamericana</strong> y herramientas de BI. Implementamos <strong>idempotencia, reintentos exponenciales, dead letter queues y logs auditables</strong>.',
     tag: 'ERP · CRM · Webhooks · REST',
   },
   {
     id: '04',
     title: 'Checkout Extensions y Shopify Plus',
-    desc: 'Desarrollamos **Checkout Extensions** para Shopify Plus: **upsells y cross-sells en el checkout**, **validaciones personalizadas**, **descuentos dinámicos**, **bloques en thank you page** y order status page. Trabajamos con la **nueva arquitectura de checkout extensibility**, no con Script Editor o Checkout.liquid deprecados.',
+    desc: 'Desarrollamos <strong>Checkout Extensions</strong> para Shopify Plus: <strong>upsells y cross-sells en el checkout</strong>, <strong>validaciones personalizadas</strong>, <strong>descuentos dinámicos</strong>, <strong>bloques en thank you page</strong> y order status page. Trabajamos con la <strong>nueva arquitectura de checkout extensibility</strong>, no con Script Editor o Checkout.liquid deprecados.',
     tag: 'Shopify Plus · Checkout UI',
   },
   {
     id: '05',
     title: 'Themes Shopify 2.0 + Consultoría Técnica',
-    desc: 'Desarrollamos **themes Shopify 2.0** desde cero con **secciones dinámicas, app blocks compatibles y JSON templates** optimizados para **Core Web Vitals**. También damos **consultoría técnica** para auditar tiendas existentes, optimizar conversión y proponer una hoja de ruta realista.',
+    desc: 'Desarrollamos <strong>themes Shopify 2.0</strong> desde cero con <strong>secciones dinámicas, app blocks compatibles y JSON templates</strong> optimizados para <strong>Core Web Vitals</strong>. También damos <strong>consultoría técnica</strong> para auditar tiendas existentes, optimizar conversión y proponer una hoja de ruta realista.',
     tag: 'Liquid · Shopify 2.0 · Auditoría',
   },
 ]
@@ -62,10 +62,10 @@ export default function Services() {
   const VIDEO_URL = c.video_url || FALLBACK_VIDEO_SERVICES
 
   const headingRaw = c.heading    || 'Todo lo que necesitas para desarrollar y escalar en {{Shopify}}'
-  const subheading = c.subheading || '**Especialistas en el ecosistema Shopify**. Sin generalistas, sin proyectos paralelos en otras plataformas, sin "también hacemos WordPress".'
+  const subheading = c.subheading || '<strong>Especialistas en el ecosistema Shopify</strong>. Sin generalistas, sin proyectos paralelos en otras plataformas, sin "también hacemos WordPress".'
   const mainLabel  = c.main_label || 'Servicio principal'
   const mainTitle  = c.main_title || 'Desarrollo de Apps Shopify'
-  const mainDesc   = c.main_desc  || 'Construimos tu **app Shopify** de principio a fin: **arquitectura técnica, frontend con React y Polaris, backend con Node.js y Remix, base de datos PostgreSQL, autenticación OAuth con Shopify, billing recurrente, webhooks, jobs en background y publicación final en el App Store**. Apps que escalan con tu negocio, actualizadas al ritmo de las versiones trimestrales de la API de Shopify. Cada app incluye documentación técnica, repositorio Git, pipeline de CI/CD y tests automatizados.'
+  const mainDesc   = c.main_desc  || 'Construimos tu <strong>app Shopify</strong> de principio a fin: <strong>arquitectura técnica, frontend con React y Polaris, backend con Node.js y Remix, base de datos PostgreSQL, autenticación OAuth con Shopify, billing recurrente, webhooks, jobs en background y publicación final en el App Store</strong>. Apps que escalan con tu negocio, actualizadas al ritmo de las versiones trimestrales de la API de Shopify. Cada app incluye documentación técnica, repositorio Git, pipeline de CI/CD y tests automatizados.'
   const mainTags   = (c.main_tags || 'Remix,React,Node.js,PostgreSQL,Polaris,GraphQL Admin API').split(',')
 
   const headingStyle    = getSizeStyle(c.heading_size)
@@ -102,9 +102,11 @@ export default function Services() {
               </span>
             ))}
           </h2>
-          <p className="text-[#9BA8BE] text-sm md:text-base max-w-2xl" style={subheadingStyle}>
-            {renderRich(subheading, 'font-semibold text-[#CBD5E8]')}
-          </p>
+          <p
+            className="text-[#9BA8BE] text-sm md:text-base max-w-2xl [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic"
+            style={subheadingStyle}
+            dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
+          />
         </div>
 
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -126,9 +128,11 @@ export default function Services() {
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[#4361EE]">{mainLabel}</span>
               </div>
               <h3 className="text-2xl font-bold text-white mb-4" style={mainTitleStyle}>{mainTitle}</h3>
-              <p className="text-[#9BA8BE] text-sm leading-relaxed mb-6" style={mainDescStyle}>
-                {renderRich(mainDesc, 'font-semibold text-[#CBD5E8]')}
-              </p>
+              <p
+                className="text-[#9BA8BE] text-sm leading-relaxed mb-6 [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic"
+                style={mainDescStyle}
+                dangerouslySetInnerHTML={{ __html: safeHtml(mainDesc) }}
+              />
               <div className="flex flex-wrap gap-2 mb-8">
                 {mainTags.map((t) => (
                   <span key={t} className="font-mono text-[11px] text-[#4361EE] border border-[#4361EE]/30 bg-[#4361EE]/5 px-3 py-1 rounded-full">
@@ -161,9 +165,10 @@ export default function Services() {
                   <span className="font-mono text-[10px] text-[#7B8DB0] opacity-40">{card.id}</span>
                 </div>
                 <h3 className="font-bold text-[#EDF0FF] text-base mb-2">{card.title}</h3>
-                <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4">
-                  {renderRich(card.desc, 'font-semibold text-[#9BA8BE]')}
-                </p>
+                <p
+                  className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                  dangerouslySetInnerHTML={{ __html: safeHtml(card.desc) }}
+                />
                 <span className="font-mono text-[11px] text-[#4361EE] bg-[#4361EE]/5 border border-[#4361EE]/20 px-2.5 py-1 rounded-full">
                   {card.tag}
                 </span>

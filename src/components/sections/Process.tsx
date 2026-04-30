@@ -2,33 +2,33 @@ import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useState, useRef } from 'react'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 const DEFAULTS = [
   {
     num: '01',
     title: 'Reunión inicial de descubrimiento',
-    desc: 'Una videollamada de **30 a 45 minutos** donde entendemos tu problema real, los **sistemas con los que ya trabajas** (ERP, CRM, plataforma de email, gateway de pagos), los **objetivos del proyecto** y las **restricciones técnicas o de negocio** que tengas. No es una reunión comercial — es una sesión técnica donde hacemos las preguntas correctas para poder darte una propuesta seria. Sin compromiso de avanzar.',
+    desc: 'Una videollamada de <strong>30 a 45 minutos</strong> donde entendemos tu problema real, los <strong>sistemas con los que ya trabajas</strong> (ERP, CRM, plataforma de email, gateway de pagos), los <strong>objetivos del proyecto</strong> y las <strong>restricciones técnicas o de negocio</strong> que tengas. No es una reunión comercial — es una sesión técnica donde hacemos las preguntas correctas para poder darte una propuesta seria. Sin compromiso de avanzar.',
   },
   {
     num: '02',
     title: 'Propuesta técnica detallada en 48 horas',
-    desc: 'Te enviamos un **documento de propuesta** con: alcance funcional desglosado, **arquitectura técnica recomendada**, stack tecnológico justificado, **plazo realista por fases**, presupuesto cerrado, **forma de pago, condiciones de soporte post-lanzamiento** y supuestos del proyecto. Si algo no cuadra, lo iteramos antes de firmar. Nunca te enviamos una propuesta vaga de "depende del alcance".',
+    desc: 'Te enviamos un <strong>documento de propuesta</strong> con: alcance funcional desglosado, <strong>arquitectura técnica recomendada</strong>, stack tecnológico justificado, <strong>plazo realista por fases</strong>, presupuesto cerrado, <strong>forma de pago, condiciones de soporte post-lanzamiento</strong> y supuestos del proyecto. Si algo no cuadra, lo iteramos antes de firmar. Nunca te enviamos una propuesta vaga de "depende del alcance".',
   },
   {
     num: '03',
     title: 'Desarrollo iterativo en sprints de 2 semanas',
-    desc: 'Trabajamos en **sprints de 2 semanas** con **demos frecuentes** al final de cada sprint. Ves el progreso real desde el primer sprint, no al final del proyecto cuando ya es tarde para cambiar cosas. Tienes **acceso al repositorio Git desde el día uno**, **acceso al ambiente de staging** para probar funcionalidades a medida que se entregan, y un canal directo de comunicación (Slack, WhatsApp o el que prefieras) para resolver dudas durante el desarrollo.',
+    desc: 'Trabajamos en <strong>sprints de 2 semanas</strong> con <strong>demos frecuentes</strong> al final de cada sprint. Ves el progreso real desde el primer sprint, no al final del proyecto cuando ya es tarde para cambiar cosas. Tienes <strong>acceso al repositorio Git desde el día uno</strong>, <strong>acceso al ambiente de staging</strong> para probar funcionalidades a medida que se entregan, y un canal directo de comunicación (Slack, WhatsApp o el que prefieras) para resolver dudas durante el desarrollo.',
   },
   {
     num: '04',
     title: 'QA, performance, seguridad y lanzamiento',
-    desc: 'Antes del lanzamiento hacemos **testing exhaustivo manual y automatizado**, **revisión de performance** (tiempos de carga, queries optimizadas, manejo de cache), **auditoría de seguridad** (validación de webhooks, manejo correcto de tokens OAuth, protección contra ataques comunes) y **despliegue controlado** primero en staging y luego en producción. Si la app va al **Shopify App Store**, gestionamos también todo el proceso de review con el equipo de Shopify.',
+    desc: 'Antes del lanzamiento hacemos <strong>testing exhaustivo manual y automatizado</strong>, <strong>revisión de performance</strong> (tiempos de carga, queries optimizadas, manejo de cache), <strong>auditoría de seguridad</strong> (validación de webhooks, manejo correcto de tokens OAuth, protección contra ataques comunes) y <strong>despliegue controlado</strong> primero en staging y luego en producción. Si la app va al <strong>Shopify App Store</strong>, gestionamos también todo el proceso de review con el equipo de Shopify.',
   },
   {
     num: '05',
     title: 'Soporte continuo y evolución del producto',
-    desc: 'Post-lanzamiento te acompañamos con **planes de mantenimiento mensual** que incluyen: **monitoreo activo de la app**, **actualizaciones a las nuevas versiones de la API de Shopify** (que se liberan cada trimestre), **resolución de bugs reportados por usuarios**, **mejoras incrementales según feedback real de los merchants** y **reportes mensuales de uso y performance**. El **código fuente siempre es tuyo desde el día uno** — si en algún momento decides cambiar de equipo, te entregamos repositorio, documentación técnica y handover sin fricción.',
+    desc: 'Post-lanzamiento te acompañamos con <strong>planes de mantenimiento mensual</strong> que incluyen: <strong>monitoreo activo de la app</strong>, <strong>actualizaciones a las nuevas versiones de la API de Shopify</strong> (que se liberan cada trimestre), <strong>resolución de bugs reportados por usuarios</strong>, <strong>mejoras incrementales según feedback real de los merchants</strong> y <strong>reportes mensuales de uso y performance</strong>. El <strong>código fuente siempre es tuyo desde el día uno</strong> — si en algún momento decides cambiar de equipo, te entregamos repositorio, documentación técnica y handover sin fricción.',
   },
 ]
 
@@ -38,8 +38,8 @@ export default function Process() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
   const c = useContent('process')
 
-  const heading       = c.heading    || 'Un proceso de desarrollo claro, sin sorpresas y con entregas verificables'
-  const subheading    = c.subheading || 'Desde la primera reunión hasta el lanzamiento en producción, sabes exactamente qué esperar en cada etapa, qué entregable recibes y en qué plazo.'
+  const heading    = c.heading    || 'Un proceso de desarrollo claro, sin sorpresas y con entregas verificables'
+  const subheading = c.subheading || 'Desde la primera reunión hasta el lanzamiento en producción, sabes exactamente qué esperar en cada etapa, qué entregable recibes y en qué plazo.'
   const headingStyle    = getSizeStyle(c.heading_size)
   const subheadingStyle = getSizeStyle(c.subheading_size)
 
@@ -56,9 +56,11 @@ export default function Process() {
           <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4" style={headingStyle}>
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.06} />
           </h2>
-          <p className="text-[#4B5563] text-sm md:text-base leading-relaxed" style={subheadingStyle}>
-            {subheading}
-          </p>
+          <p
+            className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+            style={subheadingStyle}
+            dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
+          />
         </div>
 
         <div ref={ref} className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4 lg:gap-8 items-start">
@@ -117,9 +119,10 @@ export default function Process() {
                     {steps[active].title}
                   </h3>
                 </div>
-                <p className="text-[#4B5563] text-sm md:text-base leading-relaxed">
-                  {renderRich(steps[active].desc, 'font-semibold text-[#1E293B]')}
-                </p>
+                <p
+                  className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+                  dangerouslySetInnerHTML={{ __html: safeHtml(steps[active].desc) }}
+                />
 
                 {/* Dot progress */}
                 <div className="flex items-center gap-2 mt-8">

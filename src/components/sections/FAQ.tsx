@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 const DEFAULT_FAQS = [
   {
@@ -82,7 +82,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5">{renderRich(a, 'font-semibold text-[#9BA8BE]')}</p>
+            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic" dangerouslySetInnerHTML={{ __html: safeHtml(a) }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -113,9 +113,7 @@ export default function FAQ() {
             <h2 className="text-3xl font-bold text-[#EDF0FF] mb-4 leading-tight" style={headingStyle}>
               {heading}
             </h2>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8" style={subheadingStyle}>
-              {subheading}
-            </p>
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic" style={subheadingStyle} dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }} />
             <a
               href={contactHref}
               className="inline-flex items-center gap-2 border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-[#EDF0FF] text-sm font-medium px-5 py-2.5 rounded-full transition-all duration-200"

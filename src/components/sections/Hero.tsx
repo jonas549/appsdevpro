@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getSizeStyle } from '../../lib/ContentContext'
-import { renderRich } from '../../lib/renderRich'
+import { safeHtml } from '../../lib/safe-html'
 
 function parseHeading(raw: string): { text: string; accent: boolean }[] {
   const parts: { text: string; accent: boolean }[] = []
@@ -73,21 +73,19 @@ export default function Hero() {
             </div>
             <div className="col-span-12 md:col-span-5 flex flex-col gap-3 md:pb-2">
               <motion.p
-                className="text-sm md:text-base leading-[1.5] text-white/90"
+                className="text-sm md:text-base leading-[1.5] text-white/90 [&_strong]:font-semibold [&_strong]:text-white [&_em]:italic"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                {renderRich(desc, 'font-semibold text-white')}
-              </motion.p>
+                dangerouslySetInnerHTML={{ __html: safeHtml(desc) }}
+              />
               <motion.p
-                className="text-xs md:text-sm leading-relaxed text-white/50"
+                className="text-xs md:text-sm leading-relaxed text-white/50 [&_strong]:font-semibold [&_strong]:text-white/70 [&_em]:italic"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              >
-                {renderRich(supportText, 'font-semibold text-white/70')}
-              </motion.p>
+                dangerouslySetInnerHTML={{ __html: safeHtml(supportText) }}
+              />
               <motion.div
                 className="flex flex-wrap items-center gap-3 pt-1"
                 initial={{ y: 20, opacity: 0 }}
