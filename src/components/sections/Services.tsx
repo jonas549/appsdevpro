@@ -77,6 +77,7 @@ export default function Services() {
   const mainTitleStyle  = getFieldStyle(c.main_title_size, c.main_title_px, c.main_title_color)
   const mainDescStyle   = getFieldStyle(c.main_desc_size,  c.main_desc_px,  c.main_desc_color)
   const mainTagsStyle   = getFieldStyle(c.main_tags_size,  c.main_tags_px,  c.main_tags_color)
+  const mainBtnStyle    = getFieldStyle(c.main_btn_label_size, c.main_btn_label_px, c.main_btn_label_color)
 
   const headingParts = parseAccent(headingRaw)
 
@@ -91,6 +92,7 @@ export default function Services() {
     tagStyle:   getFieldStyle(c[`card${n}_tag_size`],   c[`card${n}_tag_px`],   c[`card${n}_tag_color`]),
     btnLabel:   c[`card${n}_btn_label`] || 'Contactar ahora',
     btnHref:    c[`card${n}_btn_href`]  || '#contacto',
+    btnStyle:   getFieldStyle(c[`card${n}_btn_label_size`], c[`card${n}_btn_label_px`], c[`card${n}_btn_label_color`]),
   }))
 
   return (
@@ -151,7 +153,7 @@ export default function Services() {
                 ))}
               </div>
             </div>
-            <a href={mainBtnHref} className="flex items-center gap-2 text-[#4361EE] text-sm font-semibold hover:gap-3 transition-all duration-200 w-fit">
+            <a href={mainBtnHref} className="flex items-center gap-2 text-[#4361EE] text-sm font-semibold hover:gap-3 transition-all duration-200 w-fit" style={mainBtnStyle}>
               {mainBtnLabel} <ArrowRight size={14} />
             </a>
           </motion.div>
@@ -184,7 +186,7 @@ export default function Services() {
                   {card.tag}
                 </span>
               </div>
-              <a href={card.btnHref} className="flex items-center gap-1.5 text-[#4361EE] text-sm font-semibold mt-5 hover:gap-2.5 transition-all duration-200 w-fit">
+              <a href={card.btnHref} className="flex items-center gap-1.5 text-[#4361EE] text-sm font-semibold mt-5 hover:gap-2.5 transition-all duration-200 w-fit" style={card.btnStyle}>
                 {card.btnLabel} <ArrowRight size={13} />
               </a>
             </motion.div>
