@@ -357,6 +357,22 @@ const SECTIONS: SectionDef[] = [
     ],
   },
 
+  // ── Formulario de contacto ────────────────────────────────────────────────
+  {
+    id: 'contactform',
+    label: 'Formulario de Contacto',
+    groups: [
+      {
+        label: 'Textos del formulario',
+        fields: [
+          { section: 'contactform', key: 'heading',    label: 'Título de la sección', type: 'input', withSize: true },
+          { section: 'contactform', key: 'subheading', label: 'Subtítulo / descripción', type: 'textarea', withSize: true },
+          { section: 'contactform', key: 'btn_label',  label: 'Texto del botón de envío', type: 'input' },
+        ],
+      },
+    ],
+  },
+
   // ── CTA Final ─────────────────────────────────────────────────────────────
   {
     id: 'ctafinal',
@@ -527,8 +543,8 @@ export default function ContentPage() {
 
 const SECTION_ICONS: Record<string, string> = {
   hero: "web", problem_solution: "compare", services: "category", apps: "token",
-  ctabanner: "campaign", process: "account_tree", faq: "quiz", ctafinal: "flag",
-  footer: "bottom_navigation", global: "settings",
+  ctabanner: "campaign", process: "account_tree", faq: "quiz", contactform: "contact_mail",
+  ctafinal: "flag", footer: "bottom_navigation", global: "settings",
 }
 
 function SectionBlock({

@@ -19,8 +19,12 @@ const updates = [
   { section: "ctafinal",  key: "email_contact",     value: "contacto@appsdeveloperspro.com" },
   { section: "ctafinal",  key: "microcopy",         value: "O escríbenos directo a contacto@appsdeveloperspro.com · Atendemos en español e inglés · Respuesta en 24 horas hábiles" },
   // Tarea 4: SEO global
-  { section: "seo",       key: "meta_title",        value: "Apps Developers Pro — Desarrollo de Apps Shopify" },
-  { section: "seo",       key: "meta_description",  value: "Agencia especializada en desarrollo de aplicaciones Shopify. Apps publicadas en el App Store, integraciones y soluciones a medida." },
+  { section: "seo",         key: "meta_title",        value: "Apps Developers Pro — Desarrollo de Apps Shopify" },
+  { section: "seo",         key: "meta_description",  value: "Agencia especializada en desarrollo de aplicaciones Shopify. Apps publicadas en el App Store, integraciones y soluciones a medida." },
+  // Formulario de contacto
+  { section: "contactform", key: "heading",            value: "Cuéntanos tu proyecto" },
+  { section: "contactform", key: "subheading",         value: "Respondemos en menos de 48 horas con una propuesta técnica personalizada." },
+  { section: "contactform", key: "btn_label",          value: "Enviar solicitud" },
 ]
 
 async function main() {

@@ -1,10 +1,11 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom"
-import type { ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 
 const nav = [
   { to: "/admin/dashboard", label: "Dashboard",    icon: "dashboard" },
   { to: "/admin/content",   label: "Contenido",    icon: "inventory_2" },
   { to: "/admin/blog",      label: "Blog",         icon: "article" },
+  { to: "/admin/leads",     label: "Leads",        icon: "contacts" },
   { to: "/admin/settings",  label: "Configuración",icon: "settings" },
 ]
 
@@ -17,6 +18,15 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title, headerActions }: AdminLayoutProps) {
   const navigate = useNavigate()
   const location = useLocation()
+  const [unreadLeads, setUnreadLeads] = useState(0)
+
+  useEffect(() => {
+    const token = localStorage.getItem("admin_token")
+    fetch("/api/leads", { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : [])
+      .then((data: { status: string }[]) => setUnreadLeads(data.filter(l => l.status === "unread").length))
+      .catch(() => {})
+  }, [location.pathname])
 
   function logout() {
     localStorage.removeItem("admin_token")
@@ -58,7 +68,12 @@ export default function AdminLayout({ children, title, headerActions }: AdminLay
               style={({ isActive }) => isActive ? { background: '#4361EE', color: '#ffffff' } : {}}
             >
               <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{icon}</span>
-              <span className="text-[13px]">{label}</span>
+              <span className="text-[13px] flex-1">{label}</span>
+              {to === "/admin/leads" && unreadLeads > 0 && (
+                <span className="text-[10px] font-bold bg-[#4361EE] text-white rounded-full px-1.5 py-0.5 leading-none min-w-[18px] text-center" style={{ background: '#EF4444' }}>
+                  {unreadLeads}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

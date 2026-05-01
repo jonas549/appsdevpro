@@ -22,6 +22,9 @@ import BlogPage from './pages/admin/BlogPage'
 import BlogEditorPage from './pages/admin/BlogEditorPage'
 import BlogListPage from './pages/BlogListPage'
 import BlogPostPage from './pages/BlogPostPage'
+import GraciasPage from './pages/GraciasPage'
+import ContactForm from './components/sections/ContactForm'
+import LeadsPage from './pages/admin/LeadsPage'
 
 function mapRange(inputRange: number[], outputRange: number[], v: number): number {
   if (v <= inputRange[0]) return outputRange[0]
@@ -64,6 +67,7 @@ function PublicSite() {
       <CTABanner />
       <Process />
       <FAQ />
+      <ContactForm />
       <CTAFinal />
       <Footer />
       <WhatsAppButton />
@@ -77,6 +81,7 @@ export default function App() {
       <Routes>
         {/* Public site — wrapped in ContentProvider */}
         <Route path="/" element={<ContentProvider><PublicSite /></ContentProvider>} />
+        <Route path="/gracias" element={<GraciasPage />} />
         <Route path="/blog" element={<><BlogListPage /><WhatsAppButton /></>} />
         <Route path="/blog/:slug" element={<><BlogPostPage /><WhatsAppButton /></>} />
 
@@ -88,6 +93,7 @@ export default function App() {
         <Route path="/admin/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/admin/blog" element={<ProtectedRoute><BlogPage /></ProtectedRoute>} />
         <Route path="/admin/blog/:id" element={<ProtectedRoute><BlogEditorPage /></ProtectedRoute>} />
+        <Route path="/admin/leads" element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )
