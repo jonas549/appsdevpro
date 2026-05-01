@@ -66,7 +66,9 @@ export default function Services() {
   const mainLabel  = c.main_label || 'Servicio principal'
   const mainTitle  = c.main_title || 'Desarrollo de Apps Shopify'
   const mainDesc   = c.main_desc  || 'Construimos tu <strong>app Shopify</strong> de principio a fin: arquitectura técnica, frontend con React y Polaris, backend con Node.js y Remix, base de datos PostgreSQL, autenticación OAuth con Shopify, billing recurrente y publicación en el App Store.'
-  const mainTags   = (c.main_tags || 'Remix,React,Node.js,PostgreSQL,Polaris,GraphQL Admin API').split(',')
+  const mainTags     = (c.main_tags || 'Remix,React,Node.js,PostgreSQL,Polaris,GraphQL Admin API').split(',')
+  const mainBtnLabel = c.main_btn_label || 'Contactar ahora'
+  const mainBtnHref  = c.main_btn_href  || '#contacto'
 
   // Estilos por campo desde DB
   const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
@@ -87,6 +89,8 @@ export default function Services() {
     titleStyle: getFieldStyle(c[`card${n}_title_size`], c[`card${n}_title_px`], c[`card${n}_title_color`]),
     descStyle:  getFieldStyle(c[`card${n}_desc_size`],  c[`card${n}_desc_px`],  c[`card${n}_desc_color`]),
     tagStyle:   getFieldStyle(c[`card${n}_tag_size`],   c[`card${n}_tag_px`],   c[`card${n}_tag_color`]),
+    btnLabel:   c[`card${n}_btn_label`] || 'Contactar ahora',
+    btnHref:    c[`card${n}_btn_href`]  || '#contacto',
   }))
 
   return (
@@ -147,8 +151,8 @@ export default function Services() {
                 ))}
               </div>
             </div>
-            <a href="#contacto" className="flex items-center gap-2 text-[#4361EE] text-sm font-semibold hover:gap-3 transition-all duration-200 w-fit">
-              Contactar ahora <ArrowRight size={14} />
+            <a href={mainBtnHref} className="flex items-center gap-2 text-[#4361EE] text-sm font-semibold hover:gap-3 transition-all duration-200 w-fit">
+              {mainBtnLabel} <ArrowRight size={14} />
             </a>
           </motion.div>
 
@@ -180,8 +184,8 @@ export default function Services() {
                   {card.tag}
                 </span>
               </div>
-              <a href="#contacto" className="flex items-center gap-1.5 text-[#4361EE] text-sm font-semibold mt-5 hover:gap-2.5 transition-all duration-200 w-fit">
-                Contactar ahora <ArrowRight size={13} />
+              <a href={card.btnHref} className="flex items-center gap-1.5 text-[#4361EE] text-sm font-semibold mt-5 hover:gap-2.5 transition-all duration-200 w-fit">
+                {card.btnLabel} <ArrowRight size={13} />
               </a>
             </motion.div>
           ))}
