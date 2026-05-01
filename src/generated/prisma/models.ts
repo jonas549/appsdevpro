@@ -11,4 +11,5 @@
 export type * from './models/SiteContent.js'
 export type * from './models/BlogPost.js'
 export type * from './models/AdminUser.js'
+export type * from './models/Lead.js'
 export type * from './commonInputTypes.js'

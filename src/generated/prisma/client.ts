@@ -56,3 +56,8 @@ export type BlogPost = Prisma.BlogPostModel
  * 
  */
 export type AdminUser = Prisma.AdminUserModel
+/**
+ * Model Lead
+ * 
+ */
+export type Lead = Prisma.LeadModel
