@@ -301,8 +301,10 @@ const SECTIONS: SectionDef[] = [
         fields: [
           { section: 'ctabanner', key: 'heading',    label: 'Título (H3)', type: 'input' },
           { section: 'ctabanner', key: 'desc',       label: 'Párrafo', type: 'textarea' },
-          { section: 'ctabanner', key: 'cta1_label', label: 'Botón primario', type: 'input' },
-          { section: 'ctabanner', key: 'cta2_label', label: 'Botón secundario', type: 'input' },
+          { section: 'ctabanner', key: 'cta1_label', label: 'Botón primario — texto', type: 'input' },
+          { section: 'ctabanner', key: 'cta1_href',  label: 'Botón primario — enlace', type: 'url' },
+          { section: 'ctabanner', key: 'cta2_label', label: 'Botón secundario — texto', type: 'input' },
+          { section: 'ctabanner', key: 'cta2_href',  label: 'Botón secundario — enlace', type: 'url' },
         ],
       },
     ],

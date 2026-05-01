@@ -16,6 +16,7 @@ import ProtectedRoute from './components/admin/ProtectedRoute'
 import LoginPage from './pages/admin/LoginPage'
 import DashboardPage from './pages/admin/DashboardPage'
 import ContentPage from './pages/admin/ContentPage'
+import SettingsPage from './pages/admin/SettingsPage'
 import BlogPage from './pages/admin/BlogPage'
 import BlogEditorPage from './pages/admin/BlogEditorPage'
 import BlogListPage from './pages/BlogListPage'
@@ -82,6 +83,7 @@ export default function App() {
         <Route path="/admin/login" element={<LoginPage />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/admin/content" element={<ProtectedRoute><ContentPage /></ProtectedRoute>} />
+        <Route path="/admin/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/admin/blog" element={<ProtectedRoute><BlogPage /></ProtectedRoute>} />
         <Route path="/admin/blog/:id" element={<ProtectedRoute><BlogEditorPage /></ProtectedRoute>} />
       </Routes>
