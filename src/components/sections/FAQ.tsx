@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
@@ -51,7 +52,7 @@ const DEFAULT_FAQS = [
   },
 ]
 
-function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
+function FAQItem({ q, a, i, qStyle, aStyle }: { q: string; a: string; i: number; qStyle: CSSProperties; aStyle: CSSProperties }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -66,7 +67,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between gap-4 py-5 text-left group"
       >
-        <span className="text-[#EDF0FF] text-sm font-medium group-hover:text-white transition-colors leading-snug">
+        <span className="text-[#EDF0FF] text-sm font-medium group-hover:text-white transition-colors leading-snug" style={qStyle}>
           {q}
         </span>
         <span className="text-[#7B8DB0] flex-shrink-0 transition-transform duration-200">
@@ -82,7 +83,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic" dangerouslySetInnerHTML={{ __html: safeHtml(a) }} />
+            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic" style={aStyle} dangerouslySetInnerHTML={{ __html: safeHtml(a) }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -104,6 +105,8 @@ export default function FAQ() {
   const faqs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((n) => ({
     q: c[`q${n}`] || DEFAULT_FAQS[n - 1]?.q || '',
     a: c[`a${n}`] || DEFAULT_FAQS[n - 1]?.a || '',
+    qStyle: getFieldStyle(c[`q${n}_size`], c[`q${n}_px`], c[`q${n}_color`]),
+    aStyle: getFieldStyle(c[`a${n}_size`], c[`a${n}_px`], c[`a${n}_color`]),
   })).filter(f => f.q)
 
   return (
@@ -125,7 +128,7 @@ export default function FAQ() {
           </div>
           <div className="md:col-span-8">
             {faqs.map((faq, i) => (
-              <FAQItem key={i} q={faq.q} a={faq.a} i={i} />
+              <FAQItem key={i} q={faq.q} a={faq.a} i={i} qStyle={faq.qStyle} aStyle={faq.aStyle} />
             ))}
           </div>
         </div>
