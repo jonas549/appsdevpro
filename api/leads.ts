@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node"
+import { Resend } from "resend"
 import { prisma } from "./_lib/prisma.js"
 import { setCors, requireAuth } from "./_lib/auth.js"
 
@@ -87,6 +88,37 @@ function esc(s: string | null | undefined): string {
   return (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
+async function sendLeadEmail(data: {
+  name: string; email: string; phone_code: string; phone: string
+  company: string | null; budget: string | null; message: string
+}) {
+  const apiKey = process.env.RESEND_API_KEY
+  console.log("[resend] API key present:", !!apiKey, "| prefix:", apiKey?.slice(0, 8) ?? "undefined")
+
+  if (!apiKey) {
+    console.error("[resend] RESEND_API_KEY is not set — skipping email")
+    return
+  }
+
+  const resend = new Resend(apiKey)
+  const payload = {
+    from: "noreply@appsdeveloperspro.com",
+    to: "jonasoko82@gmail.com",
+    subject: `Nuevo lead: ${data.name}`,
+    html: buildEmailHtml(data),
+  }
+
+  console.log("[resend] Sending to:", payload.to, "| subject:", payload.subject)
+
+  const result = await resend.emails.send(payload)
+
+  if (result.error) {
+    console.error("[resend] API returned error:", JSON.stringify(result.error))
+  } else {
+    console.log("[resend] Email sent OK | id:", result.data?.id)
+  }
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCors(res)
   if (req.method === "OPTIONS") { res.status(204).end(); return }
@@ -109,7 +141,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return
       }
 
-      // Guardar lead primero — siempre, independiente del email
+      // Guardar lead siempre, independiente del email
       const lead = await prisma.lead.create({
         data: {
           name, email,
@@ -121,27 +153,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           status: "unread",
         },
       })
+      console.log("[leads] Lead saved:", lead.id)
 
-      // Enviar email como efecto secundario — no bloquea ni falla el request
+      // Email como efecto secundario con logging explícito
       try {
-        const { Resend } = await import("resend")
-        const resend = new Resend(process.env.RESEND_API_KEY)
-        await resend.emails.send({
-          from: "noreply@appsdeveloperspro.com",
-          to: "jonasoko82@gmail.com",
-          subject: `Nuevo lead: ${name}`,
-          html: buildEmailHtml({
-            name, email,
-            phone_code: phone_code || "+52",
-            phone,
-            company: company || null,
-            budget: budget || null,
-            message,
-          }),
+        await sendLeadEmail({
+          name, email,
+          phone_code: phone_code || "+52",
+          phone,
+          company: company || null,
+          budget: budget || null,
+          message,
         })
       } catch (emailErr) {
-        // Log pero no falla el request — el lead ya fue guardado
-        console.error("[leads] Email send failed:", emailErr)
+        const msg = emailErr instanceof Error ? emailErr.message : String(emailErr)
+        const stack = emailErr instanceof Error ? emailErr.stack : ""
+        console.error("[resend] Unhandled exception:", msg)
+        console.error("[resend] Stack:", stack)
       }
 
       res.status(201).json({ ok: true, id: lead.id })
