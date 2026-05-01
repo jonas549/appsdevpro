@@ -3,7 +3,7 @@ const WA_LINK = 'https://wa.link/phjdep'
 export default function WhatsAppButton() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <span className="absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-60 animate-ping" />
+      <span className="absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-30" />
       <a
         href={WA_LINK}
         target="_blank"

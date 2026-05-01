@@ -74,11 +74,12 @@ export default function BlogPage() {
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1) }}
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-adm-primary-container/20 focus:border-adm-primary-container transition-all outline-none"
+            className="w-full pl-10 pr-4 py-2.5 bg-white rounded-lg text-sm focus:ring-2 focus:ring-adm-primary-container/20 transition-all outline-none"
+            style={{ border: '1px solid #94A3B8', color: '#0F172A' }}
             placeholder="Buscar publicaciones..."
           />
         </div>
-        <nav className="flex items-center gap-6 border-l border-slate-200 pl-6">
+        <nav className="flex items-center gap-6 border-l pl-6" style={{ borderLeftColor: '#CBD5E1' }}>
           {(["all", "published", "draft"] as const).map(f => (
             <button key={f} onClick={() => { setFilter(f); setPage(1) }} className={tabCls(filter === f)}>
               {f === "all" ? "Todos" : f === "published" ? "Publicados" : "Borradores"}
@@ -88,7 +89,7 @@ export default function BlogPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ border: '1px solid #CBD5E1' }}>
         {loading ? (
           <div className="flex items-center justify-center gap-3 py-20 text-slate-400">
             <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
@@ -105,14 +106,14 @@ export default function BlogPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Título</th>
-                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Estado</th>
-                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Fecha</th>
-                    <th className="px-6 py-4 text-[11px] font-semibold uppercase text-slate-500 tracking-wider text-right">Acciones</th>
+                  <tr style={{ background: '#E2E8F0', borderBottom: '1px solid #CBD5E1' }}>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>Título</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>Estado</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>Fecha</th>
+                    <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-right" style={{ color: '#334155' }}>Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-200">
                   {paginated.map(post => (
                     <tr key={post.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="px-6 py-4">
@@ -156,7 +157,7 @@ export default function BlogPage() {
             </div>
 
             {/* Pagination */}
-            <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
+            <div className="px-6 py-4 flex items-center justify-between" style={{ background: '#F1F5F9', borderTop: '1px solid #CBD5E1' }}>
               <p className="text-xs text-slate-500 font-medium">
                 Mostrando {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)} de {filtered.length} publicaciones
               </p>
@@ -183,18 +184,18 @@ export default function BlogPage() {
           { icon: "timer", color: "emerald", label: "Tiempo de Lectura", value: "—", sub: "Basado en posts publicados" },
           { icon: "chat_bubble", color: "purple", label: "Posts Totales", value: posts.length.toString(), sub: `${posts.filter(p => p.published).length} publicados · ${posts.filter(p => !p.published).length} borradores` },
         ].map(s => (
-          <div key={s.label} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div key={s.label} className="bg-white p-6 rounded-xl shadow-sm" style={{ border: '1px solid #CBD5E1' }}>
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-full bg-${s.color}-50 flex items-center justify-center text-${s.color}-600`}>
                 <span className="material-symbols-outlined" style={{ fontSize: 24 }}>{s.icon}</span>
               </div>
               <div>
-                <p className="text-slate-500 text-[11px] font-medium uppercase tracking-wider">{s.label}</p>
-                <h3 className="text-2xl font-bold text-slate-900">{s.value}</h3>
+                <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>{s.label}</p>
+                <h3 className="text-2xl font-bold" style={{ color: '#0F172A' }}>{s.value}</h3>
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-50">
-              <p className="text-xs text-slate-500">{s.sub}</p>
+            <div className="mt-4 pt-4" style={{ borderTop: '1px solid #E2E8F0' }}>
+              <p className="text-xs" style={{ color: '#64748B' }}>{s.sub}</p>
             </div>
           </div>
         ))}

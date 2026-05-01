@@ -109,6 +109,7 @@ export default function SettingsPage() {
 
   const inputBase = "w-full bg-white rounded-lg px-4 py-2.5 text-[14px] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all"
   const inputStyle = { border: '1px solid #94A3B8', color: '#0F172A' }
+  const labelStyle = { color: '#334155' }
 
   return (
     <AdminLayout title="Configuración">
@@ -124,7 +125,7 @@ export default function SettingsPage() {
           </div>
           <form onSubmit={handleSeoSave} className="p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Meta título del sitio</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Meta título del sitio</label>
               <input
                 value={seoForm.meta_title}
                 onChange={e => setSeoForm(f => ({ ...f, meta_title: e.target.value }))}
@@ -135,7 +136,7 @@ export default function SettingsPage() {
               <p className="text-[11px] text-slate-400">Aparece en la pestaña del navegador y en Google. Recomendado: 60 caracteres. Actual: {seoForm.meta_title.length}</p>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Meta descripción del sitio</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Meta descripción del sitio</label>
               <textarea
                 value={seoForm.meta_description}
                 onChange={e => setSeoForm(f => ({ ...f, meta_description: e.target.value }))}
@@ -174,11 +175,11 @@ export default function SettingsPage() {
           </div>
           <form onSubmit={handleEmailSave} className="p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Email actual</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Email actual</label>
               <input value={currentEmail} readOnly className={`${inputBase} bg-slate-50 text-slate-400 cursor-not-allowed`} style={inputStyle} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Nuevo email</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Nuevo email</label>
               <input
                 type="email"
                 value={emailForm.newEmail}
@@ -189,7 +190,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Contraseña actual (para confirmar)</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Contraseña actual (para confirmar)</label>
               <input
                 type="password"
                 value={emailForm.currentPassword}
@@ -227,7 +228,7 @@ export default function SettingsPage() {
           </div>
           <form onSubmit={handlePasswordSave} className="p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Contraseña actual</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Contraseña actual</label>
               <input
                 type="password"
                 value={passwordForm.currentPassword}
@@ -238,7 +239,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Nueva contraseña</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Nueva contraseña</label>
               <input
                 type="password"
                 value={passwordForm.newPassword}
@@ -249,7 +250,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Confirmar nueva contraseña</label>
+              <label className="text-[12px] font-semibold uppercase tracking-wide" style={labelStyle}>Confirmar nueva contraseña</label>
               <input
                 type="password"
                 value={passwordForm.confirmPassword}

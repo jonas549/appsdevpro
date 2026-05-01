@@ -61,13 +61,13 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map(s => (
-          <div key={s.label} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <div key={s.label} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ border: '1px solid #CBD5E1' }}>
             <div className="flex items-center justify-between mb-4">
               <span className="material-symbols-outlined text-adm-primary bg-adm-primary/10 p-2 rounded-lg" style={{ fontSize: 22 }}>{s.icon}</span>
               {s.badge && <span className={`text-xs font-medium px-2 py-1 rounded ${s.badge.cls}`}>{s.badge.text}</span>}
             </div>
-            <p className="text-slate-500 text-[12px] font-medium">{s.label}</p>
-            <h3 className="text-[32px] font-semibold text-slate-900 mt-1 leading-none">{s.value}</h3>
+            <p className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>{s.label}</p>
+            <h3 className="text-[32px] font-bold mt-1 leading-none" style={{ color: '#0F172A' }}>{s.value}</h3>
           </div>
         ))}
       </div>
@@ -83,9 +83,10 @@ export default function DashboardPage() {
                 <Link
                   key={section}
                   to={`/admin/content?section=${section}`}
-                  className="group relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-adm-primary-container transition-all cursor-pointer"
+                  className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:border-adm-primary-container transition-all cursor-pointer"
+                  style={{ border: '1px solid #CBD5E1' }}
                 >
-                  <div className="aspect-[16/6] bg-slate-100 flex items-center justify-center">
+                  <div className="aspect-[16/6] flex items-center justify-center" style={{ background: '#E2E8F0' }}>
                     <span className="material-symbols-outlined text-slate-300" style={{ fontSize: 48 }}>{meta.icon}</span>
                   </div>
                   <div className="p-4 flex items-center justify-between">
@@ -104,9 +105,9 @@ export default function DashboardPage() {
         {/* Recent activity */}
         <div>
           <h4 className="text-[20px] font-semibold text-slate-900 mb-4">Posts recientes</h4>
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Historial</span>
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ border: '1px solid #CBD5E1' }}>
+            <div className="p-4 flex items-center justify-between" style={{ background: '#E2E8F0', borderBottom: '1px solid #CBD5E1' }}>
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>Historial</span>
               <Link to="/admin/blog" className="text-adm-primary text-[12px] font-medium hover:underline">Ver todo</Link>
             </div>
             {posts.length === 0 ? (
@@ -115,7 +116,7 @@ export default function DashboardPage() {
                 Sin posts aún
               </div>
             ) : (
-              <ul className="divide-y divide-slate-100">
+              <ul className="divide-y divide-slate-200">
                 {posts.slice(0, 5).map(post => (
                   <li key={post.id}>
                     <Link to={`/admin/blog/${post.id}`} className="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">

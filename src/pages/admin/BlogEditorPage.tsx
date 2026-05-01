@@ -208,9 +208,9 @@ export default function BlogEditorPage() {
             />
 
             {/* SEO */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-6" style={{ border: '1px solid #CBD5E1' }}>
               <div className="flex items-center justify-between">
-                <h3 className="text-[20px] font-semibold text-slate-900">Configuración SEO</h3>
+                <h3 className="text-[20px] font-bold" style={{ color: '#1E293B' }}>Configuración SEO</h3>
                 {form.meta_title && form.meta_description && (
                   <span className="text-xs text-adm-primary bg-blue-50 px-2 py-0.5 rounded font-medium">Optimizado</span>
                 )}
@@ -218,40 +218,43 @@ export default function BlogEditorPage() {
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Meta Título</label>
+                    <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>Meta Título</label>
                     {charCount(form.meta_title, 60)}
                   </div>
                   <input
                     value={form.meta_title}
                     onChange={e => set("meta_title", e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all"
+                    className="w-full bg-white rounded-lg px-4 py-2.5 text-sm focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all"
+                    style={{ border: '1px solid #94A3B8', color: '#0F172A' }}
                     placeholder={form.title || "Título para buscadores..."}
                   />
                   <p className="text-[11px] text-slate-400">Recomendado: 60 caracteres</p>
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Meta Descripción</label>
+                    <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>Meta Descripción</label>
                     {charCount(form.meta_description, 160)}
                   </div>
                   <textarea
                     value={form.meta_description}
                     onChange={e => set("meta_description", e.target.value)}
                     rows={3}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    className="w-full bg-white rounded-lg px-4 py-2.5 text-sm focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    style={{ border: '1px solid #94A3B8', color: '#0F172A' }}
                     placeholder={form.excerpt || "Descripción para buscadores..."}
                   />
                   <p className="text-[11px] text-slate-400">Recomendado: 160 caracteres</p>
                 </div>
                 {/* Excerpt */}
                 <div className="space-y-1.5">
-                  <label className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Extracto (listado del blog)</label>
+                  <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>Extracto (listado del blog)</label>
                   <textarea
                     value={form.excerpt}
                     onChange={e => set("excerpt", e.target.value)}
                     required
                     rows={2}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:border-adm-primary-container focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    className="w-full bg-white rounded-lg px-4 py-2.5 text-sm focus:ring-4 focus:ring-adm-primary-container/10 outline-none transition-all resize-none"
+                    style={{ border: '1px solid #94A3B8', color: '#0F172A' }}
                     placeholder="Breve descripción visible en la lista de posts..."
                   />
                 </div>
@@ -266,9 +269,9 @@ export default function BlogEditorPage() {
           {/* Right — sidebar */}
           <div className="col-span-4 space-y-6">
             {/* Featured image */}
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Imagen Destacada</h3>
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm" style={{ border: '1px solid #CBD5E1' }}>
+              <div className="px-4 py-3 border-b" style={{ background: '#E2E8F0', borderBottomColor: '#CBD5E1' }}>
+                <h3 className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#1E293B' }}>Imagen Destacada</h3>
               </div>
               <div className="p-4">
                 {form.featured_image ? (
@@ -318,8 +321,8 @@ export default function BlogEditorPage() {
             </div>
 
             {/* Publish status info */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
-              <h3 className="text-[12px] font-semibold text-slate-700 uppercase tracking-wide">Estado de publicación</h3>
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-4" style={{ border: '1px solid #CBD5E1' }}>
+              <h3 className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>Estado de publicación</h3>
               <div className={`flex items-center gap-3 p-3 rounded-lg ${form.published ? "bg-emerald-50 border border-emerald-100" : "bg-slate-50 border border-slate-200"}`}>
                 <span className={`material-symbols-outlined ${form.published ? "text-emerald-600" : "text-slate-400"}`} style={{ fontSize: 20 }}>
                   {form.published ? "public" : "draft"}
