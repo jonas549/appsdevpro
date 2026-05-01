@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
@@ -24,9 +24,13 @@ const BUDGET_OPTIONS = [
 
 type Status = 'idle' | 'sending' | 'error'
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5, ease: 'easeOut' } }),
+  visible: (custom: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: custom * 0.08, duration: 0.5, ease: 'easeOut' as const },
+  }),
 }
 
 export default function ContactForm() {
@@ -104,14 +108,14 @@ export default function ContactForm() {
               variants={fadeUp}
               className="font-bold leading-tight mb-4"
               style={headingStyle}
-              dangerouslySetInnerHTML={safeHtml(heading)}
+              dangerouslySetInnerHTML={{ __html: safeHtml(heading) }}
             />
             <motion.p
               custom={2}
               variants={fadeUp}
               className="leading-relaxed mb-8"
               style={subheadingStyle}
-              dangerouslySetInnerHTML={safeHtml(subheading)}
+              dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
             />
 
             {/* Trust signals */}
@@ -136,7 +140,7 @@ export default function ContactForm() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: 'easeOut' as const }}
           >
             <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <form onSubmit={handleSubmit} className="space-y-5">
