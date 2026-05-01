@@ -15,11 +15,11 @@ const PHONE_CODES = [
 ]
 
 const BUDGET_OPTIONS = [
-  'Menos de $5,000 USD',
-  '$5,000 – $15,000 USD',
-  '$15,000 – $30,000 USD',
-  'Más de $30,000 USD',
-  'Aún no lo sé',
+  '$500 – $1.500',
+  '$1.500 – $2.500',
+  '$2.500 – $5.000',
+  '$5.000 – $10.000',
+  'Más de $10.000',
 ]
 
 type Status = 'idle' | 'sending' | 'error'
@@ -41,9 +41,17 @@ export default function ContactForm() {
   const subheading = c.subheading || 'Respondemos en menos de 48 horas con una propuesta técnica personalizada.'
   const btnLabel   = c.btn_label  || 'Enviar solicitud'
   const videoUrl   = c.video_url  || ''
+  const labelTag   = c.label_tag  || 'Contacto'
+  const trust1     = c.trust_1    || 'Respuesta técnica en menos de 48 h'
+  const trust2     = c.trust_2    || 'Propuesta gratuita sin compromiso'
+  const trust3     = c.trust_3    || 'Atención en español e inglés'
 
   const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
   const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
+  const labelTagStyle   = getFieldStyle(c.label_tag_size,  c.label_tag_px,  c.label_tag_color)
+  const trust1Style     = getFieldStyle(c.trust_1_size,    c.trust_1_px,    c.trust_1_color)
+  const trust2Style     = getFieldStyle(c.trust_2_size,    c.trust_2_px,    c.trust_2_color)
+  const trust3Style     = getFieldStyle(c.trust_3_size,    c.trust_3_px,    c.trust_3_color)
 
   const [form, setForm] = useState({
     name: '', email: '', phone_code: '+52', phone: '', company: '', budget: '', message: '',
@@ -82,7 +90,7 @@ export default function ContactForm() {
     }
   }
 
-  const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-[#EDF0FF] placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
+  const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
   const labelCls = "block text-[11px] font-semibold uppercase tracking-wider text-[#7B8DB0] mb-1.5"
 
   return (
@@ -115,8 +123,11 @@ export default function ContactForm() {
             className="lg:sticky lg:top-28"
           >
             <motion.div custom={0} variants={fadeUp}>
-              <span className="inline-block text-[11px] font-semibold tracking-[0.2em] uppercase text-[#4361EE] mb-4">
-                Contacto
+              <span
+                className="inline-block text-[11px] font-semibold tracking-[0.2em] uppercase text-[#4361EE] mb-4"
+                style={labelTagStyle}
+              >
+                {labelTag}
               </span>
             </motion.div>
             <motion.h2
@@ -136,16 +147,16 @@ export default function ContactForm() {
 
             {/* Trust signals */}
             <motion.div custom={3} variants={fadeUp} className="space-y-3">
-              {[
-                { icon: 'bolt', text: 'Respuesta técnica en menos de 48 h' },
-                { icon: 'verified',  text: 'Propuesta gratuita sin compromiso' },
-                { icon: 'language',  text: 'Atención en español e inglés' },
-              ].map(item => (
+              {([
+                { icon: 'bolt',     text: trust1, style: trust1Style },
+                { icon: 'verified', text: trust2, style: trust2Style },
+                { icon: 'language', text: trust3, style: trust3Style },
+              ] as const).map(item => (
                 <div key={item.icon} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(67,97,238,0.12)' }}>
                     <span className="material-symbols-outlined text-[#4361EE]" style={{ fontSize: 16 }}>{item.icon}</span>
                   </div>
-                  <span className="text-[13px] text-[#7B8DB0]">{item.text}</span>
+                  <span className="text-[13px] text-[#7B8DB0]" style={item.style}>{item.text}</span>
                 </div>
               ))}
             </motion.div>
@@ -192,7 +203,7 @@ export default function ContactForm() {
                     <select
                       value={form.phone_code}
                       onChange={e => set('phone_code', e.target.value)}
-                      className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-[13px] text-[#EDF0FF] focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer flex-shrink-0"
+                      className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-[13px] text-white focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer flex-shrink-0"
                     >
                       {PHONE_CODES.map(p => (
                         <option key={p.code} value={p.code} style={{ background: '#0F1117' }}>
@@ -227,7 +238,7 @@ export default function ContactForm() {
                     <select
                       value={form.budget}
                       onChange={e => set('budget', e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-[#EDF0FF] focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer appearance-none"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer appearance-none"
                     >
                       <option value="" style={{ background: '#0F1117' }}>Seleccionar...</option>
                       {BUDGET_OPTIONS.map(o => (

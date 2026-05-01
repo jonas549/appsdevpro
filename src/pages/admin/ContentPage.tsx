@@ -381,9 +381,18 @@ const SECTIONS: SectionDef[] = [
       {
         label: 'Textos del formulario',
         fields: [
+          { section: 'contactform', key: 'label_tag',  label: 'Etiqueta superior (pill "CONTACTO")', type: 'input', withSize: true },
           { section: 'contactform', key: 'heading',    label: 'Título de la sección', type: 'input', withSize: true },
           { section: 'contactform', key: 'subheading', label: 'Subtítulo / descripción', type: 'textarea', withSize: true },
           { section: 'contactform', key: 'btn_label',  label: 'Texto del botón de envío', type: 'input' },
+        ],
+      },
+      {
+        label: 'Señales de confianza',
+        fields: [
+          { section: 'contactform', key: 'trust_1', label: 'Señal 1 (ícono: rayo)', type: 'input', withSize: true },
+          { section: 'contactform', key: 'trust_2', label: 'Señal 2 (ícono: verificado)', type: 'input', withSize: true },
+          { section: 'contactform', key: 'trust_3', label: 'Señal 3 (ícono: idioma)', type: 'input', withSize: true },
         ],
       },
     ],

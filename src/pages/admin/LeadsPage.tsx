@@ -39,6 +39,8 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<Lead | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<Lead | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const [filter, setFilter] = useState<"all" | "unread" | "read" | "contacted" | "closed">("all")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
@@ -69,6 +71,18 @@ export default function LeadsPage() {
     if (lead.status === "unread") {
       await markAs(lead, "read")
     }
+  }
+
+  async function deleteLead(lead: Lead) {
+    setDeleting(true)
+    await fetch(`/api/leads/${lead.id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    setLeads(prev => prev.filter(l => l.id !== lead.id))
+    if (selected?.id === lead.id) setSelected(null)
+    setDeleteTarget(null)
+    setDeleting(false)
   }
 
   const filtered = leads.filter(l => {
@@ -151,7 +165,7 @@ export default function LeadsPage() {
               <table className="w-full text-left">
                 <thead>
                   <tr style={{ background: '#E2E8F0', borderBottom: '1px solid #CBD5E1' }}>
-                    {["Nombre", "Email", "Empresa", "Presupuesto", "Estado", "Fecha", ""].map(h => (
+                    {["Nombre", "Email", "Empresa", "Presupuesto", "Estado", "Fecha", "", ""].map(h => (
                       <th key={h} className="px-5 py-4 text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#334155' }}>{h}</th>
                     ))}
                   </tr>
@@ -176,6 +190,15 @@ export default function LeadsPage() {
                       <td className="px-5 py-4 text-[13px] text-slate-500">{formatDate(lead.createdAt)}</td>
                       <td className="px-5 py-4">
                         <span className="material-symbols-outlined text-slate-300" style={{ fontSize: 18 }}>chevron_right</span>
+                      </td>
+                      <td className="px-3 py-4">
+                        <button
+                          onClick={e => { e.stopPropagation(); setDeleteTarget(lead) }}
+                          className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Eliminar lead"
+                        >
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -202,6 +225,45 @@ export default function LeadsPage() {
           </>
         )}
       </div>
+
+      {/* Delete confirmation modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
+          <div
+            className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6"
+            style={{ border: '1px solid #CBD5E1' }}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#FEF2F2' }}>
+                <span className="material-symbols-outlined text-red-500" style={{ fontSize: 20 }}>delete_forever</span>
+              </div>
+              <div>
+                <h3 className="text-[15px] font-bold text-slate-900">Eliminar lead</h3>
+                <p className="text-[13px] text-slate-500">{deleteTarget.name}</p>
+              </div>
+            </div>
+            <p className="text-[14px] text-slate-600 mb-6">¿Estás seguro? Esta acción no se puede deshacer.</p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-slate-600 transition-all active:scale-[0.98]"
+                style={{ background: '#F1F5F9', border: '1px solid #CBD5E1' }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => deleteLead(deleteTarget)}
+                disabled={deleting}
+                className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60"
+                style={{ background: '#EF4444' }}
+              >
+                {deleting ? 'Eliminando…' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       {selected && (

@@ -51,6 +51,22 @@ function buildEmailHtml(data: {
             </td></tr>
           </table>
 
+          <!-- Empresa + Presupuesto -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0">
+            <tr><td style="padding:24px 0;border-bottom:1px solid #1E293B">
+              <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                <td width="50%" style="padding-right:20px">
+                  <p style="margin:0 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#64748B">Empresa</p>
+                  <p style="margin:0;font-size:14px;color:#EDF0FF">${data.company ? esc(data.company) : '—'}</p>
+                </td>
+                <td width="50%">
+                  <p style="margin:0 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#64748B">Presupuesto</p>
+                  <p style="margin:0;font-size:14px;color:#EDF0FF">${data.budget ? esc(data.budget) : '—'}</p>
+                </td>
+              </tr></table>
+            </td></tr>
+          </table>
+
           <!-- Mensaje -->
           <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;margin-bottom:32px">
             <tr><td>
@@ -109,7 +125,7 @@ async function sendLeadEmail(data: {
   const resend = new Resend(apiKey)
   const payload = {
     from: "noreply@appsdeveloperspro.com",
-    to: "jonasoko82@gmail.com",
+    to: "contacto@appsdeveloperspro.com",
     subject: `Nuevo lead: ${data.name}`,
     html: buildEmailHtml(data),
   }
