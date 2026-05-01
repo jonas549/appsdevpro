@@ -65,8 +65,12 @@ export default function ContactForm() {
         body: JSON.stringify(form),
       })
       if (!res.ok) {
-        const data = await res.json() as { error?: string }
-        setErrorMsg(data.error || 'Error al enviar')
+        let msg = 'Error al enviar'
+        try {
+          const data = await res.json() as { error?: string }
+          msg = data.error || msg
+        } catch { /* respuesta no era JSON */ }
+        setErrorMsg(msg)
         setStatus('error')
         return
       }
