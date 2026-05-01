@@ -4,15 +4,6 @@ import { motion, type Variants } from 'framer-motion'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 
-const PHONE_CODES = [
-  { code: '+52', flag: '🇲🇽', label: 'MX' },
-  { code: '+1',  flag: '🇺🇸', label: 'US' },
-  { code: '+54', flag: '🇦🇷', label: 'AR' },
-  { code: '+57', flag: '🇨🇴', label: 'CO' },
-  { code: '+51', flag: '🇵🇪', label: 'PE' },
-  { code: '+56', flag: '🇨🇱', label: 'CL' },
-  { code: '+34', flag: '🇪🇸', label: 'ES' },
-]
 
 const BUDGET_OPTIONS = [
   '$500 – $1.500',
@@ -91,7 +82,7 @@ export default function ContactForm() {
   }
 
   const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
-  const labelCls = "block text-[11px] font-semibold uppercase tracking-wider text-[#7B8DB0] mb-1.5"
+  const labelCls = "block text-[11px] font-semibold uppercase tracking-wider text-white mb-1.5"
 
   return (
     <section id="contacto" className="relative py-24 overflow-hidden" style={{ background: '#07090F' }}>
@@ -200,17 +191,18 @@ export default function ContactForm() {
                 <div>
                   <label className={labelCls}>Teléfono *</label>
                   <div className="flex gap-2">
-                    <select
+                    <input
                       value={form.phone_code}
-                      onChange={e => set('phone_code', e.target.value)}
-                      className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-[13px] text-white focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer flex-shrink-0"
-                    >
-                      {PHONE_CODES.map(p => (
-                        <option key={p.code} value={p.code} style={{ background: '#0F1117' }}>
-                          {p.flag} {p.code}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={e => {
+                        const cleaned = e.target.value
+                          .replace(/[^\d+]/g, '')
+                          .replace(/(.)\+/g, '$1')
+                        set('phone_code', cleaned)
+                      }}
+                      placeholder="+52"
+                      maxLength={5}
+                      className="w-20 flex-shrink-0 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-[14px] text-white placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
+                    />
                     <input
                       type="tel"
                       required
