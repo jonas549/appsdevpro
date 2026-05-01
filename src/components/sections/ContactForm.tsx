@@ -40,6 +40,7 @@ export default function ContactForm() {
   const heading    = c.heading    || 'Cuéntanos tu proyecto'
   const subheading = c.subheading || 'Respondemos en menos de 48 horas con una propuesta técnica personalizada.'
   const btnLabel   = c.btn_label  || 'Enviar solicitud'
+  const videoUrl   = c.video_url  || ''
 
   const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
   const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
@@ -86,13 +87,24 @@ export default function ContactForm() {
 
   return (
     <section id="contacto" className="relative py-24 overflow-hidden" style={{ background: '#07090F' }}>
+      {videoUrl && (
+        <>
+          <video
+            autoPlay muted loop playsInline
+            src={videoUrl}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,9,15,0.75)', zIndex: 1 }} />
+        </>
+      )}
       {/* Subtle grid */}
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: 'linear-gradient(#EDF0FF 1px, transparent 1px), linear-gradient(90deg, #EDF0FF 1px, transparent 1px)',
         backgroundSize: '48px 48px',
+        zIndex: videoUrl ? 2 : undefined,
       }} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-12" style={{ zIndex: videoUrl ? 3 : 10 }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
           {/* Left — copy */}

@@ -1,4 +1,12 @@
 import { useEffect, useState } from "react"
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext, verticalListSortingStrategy, useSortable, arrayMove,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import AdminLayout from "../../components/admin/AdminLayout"
 import RichTextEditor from "../../components/admin/RichTextEditor"
 
@@ -39,6 +47,8 @@ const TAG_OPTS = [
 
 const VIDEO_PH_PROBLEM  = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4'
 const VIDEO_PH_SERVICES = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4'
+
+const DRAGGABLE_IDS = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'faq', 'contactform', 'ctafinal']
 
 const SECTIONS: SectionDef[] = [
   // ── Hero ──────────────────────────────────────────────────────────────────
@@ -363,6 +373,12 @@ const SECTIONS: SectionDef[] = [
     label: 'Formulario de Contacto',
     groups: [
       {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'contactform', key: 'video_url', label: 'Video de fondo (URL, dejar vacío para fondo sólido)', type: 'url', placeholder: 'https://res.cloudinary.com/.../video.mp4' },
+        ],
+      },
+      {
         label: 'Textos del formulario',
         fields: [
           { section: 'contactform', key: 'heading',    label: 'Título de la sección', type: 'input', withSize: true },
@@ -456,7 +472,16 @@ export default function ContentPage() {
   const [loading, setLoading]         = useState(true)
   const [savingId, setSavingId]       = useState<string | null>(null)
   const [savedId, setSavedId]         = useState<string | null>(null)
+  const [sectionOrder, setSectionOrder] = useState<string[]>(DRAGGABLE_IDS)
+  const [savedOrder, setSavedOrder]     = useState<string[]>(DRAGGABLE_IDS)
   const token = localStorage.getItem("admin_token") || ""
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor),
+  )
+
+  const orderDirty = JSON.stringify(sectionOrder) !== JSON.stringify(savedOrder)
 
   useEffect(() => {
     fetch("/api/content", { headers: { Authorization: `Bearer ${token}` } })
@@ -466,10 +491,42 @@ export default function ContentPage() {
         for (const { section, key, value } of data) map[fk(section, key)] = value
         setValues(map)
         setSavedValues(map)
+        try {
+          const raw = map[fk('global', 'section_order')]
+          if (raw) {
+            const parsed = JSON.parse(raw) as string[]
+            const valid = parsed.filter(id => DRAGGABLE_IDS.includes(id))
+            if (valid.length > 0) {
+              const full = [...valid, ...DRAGGABLE_IDS.filter(id => !valid.includes(id))]
+              setSectionOrder(full)
+              setSavedOrder(full)
+            }
+          }
+        } catch { /* keep default order */ }
         setLoading(false)
       })
       .catch(() => setLoading(false))
   }, [token])
+
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    if (!over || active.id === over.id) return
+    setSectionOrder(prev => {
+      const oldIdx = prev.indexOf(String(active.id))
+      const newIdx = prev.indexOf(String(over.id))
+      return arrayMove(prev, oldIdx, newIdx)
+    })
+  }
+
+  async function saveOrder() {
+    const res = await fetch("/api/content", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ section: 'global', key: 'section_order', value: JSON.stringify(sectionOrder) }),
+    })
+    if (!res.ok) { alert("Error al guardar el orden"); return }
+    setSavedOrder([...sectionOrder])
+    window.dispatchEvent(new Event('content-updated'))
+  }
 
   function update(section: string, key: string, value: string) {
     setValues(prev => ({ ...prev, [fk(section, key)]: value }))
@@ -520,22 +577,57 @@ export default function ContentPage() {
     )
   }
 
+  const sectionMap = Object.fromEntries(SECTIONS.map(s => [s.id, s]))
+
+  function blockProps(cfg: SectionDef) {
+    return {
+      cfg,
+      values,
+      update,
+      dirty: isDirty(cfg),
+      saving: savingId === cfg.id,
+      justSaved: savedId === cfg.id,
+      onSave: () => save(cfg),
+      token,
+    }
+  }
+
   return (
     <AdminLayout title="Contenido del sitio">
       <div className="flex flex-col gap-6">
-        {SECTIONS.map(cfg => (
-          <SectionBlock
-            key={cfg.id}
-            cfg={cfg}
-            values={values}
-            update={update}
-            dirty={isDirty(cfg)}
-            saving={savingId === cfg.id}
-            justSaved={savedId === cfg.id}
-            onSave={() => save(cfg)}
-            token={token}
-          />
-        ))}
+        {/* Hero — fixed first */}
+        <SectionBlock {...blockProps(sectionMap['hero'])} />
+
+        {/* Draggable sections */}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+            <div className="flex flex-col gap-6">
+              {sectionOrder.map(id => {
+                const cfg = sectionMap[id]
+                if (!cfg) return null
+                return <SortableSectionBlock key={id} {...blockProps(cfg)} />
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
+
+        {/* Save order button */}
+        {orderDirty && (
+          <div className="flex justify-end">
+            <button
+              onClick={saveOrder}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold text-white transition-all active:scale-[0.98]"
+              style={{ background: '#4361EE', boxShadow: '0 2px 12px rgba(67,97,238,0.3)' }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 16 }}>swap_vert</span>
+              Guardar orden de secciones
+            </button>
+          </div>
+        )}
+
+        {/* Footer + Global — fixed last */}
+        <SectionBlock {...blockProps(sectionMap['footer'])} />
+        <SectionBlock {...blockProps(sectionMap['global'])} />
       </div>
     </AdminLayout>
   )
@@ -547,8 +639,34 @@ const SECTION_ICONS: Record<string, string> = {
   ctafinal: "flag", footer: "bottom_navigation", global: "settings",
 }
 
+function SortableSectionBlock(props: Parameters<typeof SectionBlock>[0]) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: props.cfg.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    position: 'relative' as const,
+    zIndex: isDragging ? 10 : undefined,
+  }
+  return (
+    <div ref={setNodeRef} style={style}>
+      <SectionBlock
+        {...props}
+        dragHandle={
+          <span
+            className="material-symbols-outlined cursor-grab active:cursor-grabbing shrink-0"
+            style={{ fontSize: 20, color: '#94A3B8', touchAction: 'none' }}
+            {...attributes}
+            {...listeners}
+          >drag_indicator</span>
+        }
+      />
+    </div>
+  )
+}
+
 function SectionBlock({
-  cfg, values, update, dirty, saving, justSaved, onSave, token,
+  cfg, values, update, dirty, saving, justSaved, onSave, token, dragHandle,
 }: {
   cfg: SectionDef
   values: Values
@@ -558,6 +676,7 @@ function SectionBlock({
   justSaved: boolean
   onSave: () => void
   token: string
+  dragHandle?: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
 
@@ -589,12 +708,15 @@ function SectionBlock({
         className="flex items-center justify-between px-6 py-4 border-b"
         style={{ background: '#E2E8F0', borderBottomColor: '#E2E8F0' }}
       >
-        <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left">
-          <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#64748B' }}>
-            {SECTION_ICONS[cfg.id] ?? "web"}
-          </span>
-          <span className="text-[20px] font-bold" style={{ color: '#1E293B' }}>{cfg.label}</span>
-        </button>
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          {dragHandle}
+          <button onClick={() => setOpen(o => !o)} className="flex items-center gap-3 flex-1 text-left min-w-0">
+            <span className="material-symbols-outlined shrink-0" style={{ fontSize: 20, color: '#64748B' }}>
+              {SECTION_ICONS[cfg.id] ?? "web"}
+            </span>
+            <span className="text-[20px] font-bold truncate" style={{ color: '#1E293B' }}>{cfg.label}</span>
+          </button>
+        </div>
         <div className="flex items-center gap-4">
           {justSaved && (
             <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">

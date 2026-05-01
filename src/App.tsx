@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { motion, useScroll, useMotionValue, useMotionValueEvent } from 'framer-motion'
-import { ContentProvider } from './lib/ContentContext'
+import { ContentProvider, useContent } from './lib/ContentContext'
 import WhatsAppButton from './components/WhatsAppButton'
 import Hero from './components/sections/Hero'
 import MarqueeSection from './components/sections/Marquee'
@@ -56,19 +56,49 @@ function ScaleFadeOut({ children }: { children: React.ReactNode }) {
   )
 }
 
+const DEFAULT_ORDER = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'faq', 'contactform', 'ctafinal']
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
+  problem_solution: ProblemSolution,
+  services: Services,
+  apps: Apps,
+  ctabanner: CTABanner,
+  process: Process,
+  faq: FAQ,
+  contactform: ContactForm,
+  ctafinal: CTAFinal,
+}
+
+function DynamicSections() {
+  const globalContent = useContent('global')
+  const order = (() => {
+    try {
+      const parsed = JSON.parse(globalContent.section_order || '') as string[]
+      const valid = parsed.filter(id => id in SECTION_COMPONENTS)
+      if (valid.length === 0) return DEFAULT_ORDER
+      return [...valid, ...DEFAULT_ORDER.filter(id => !valid.includes(id))]
+    } catch { return DEFAULT_ORDER }
+  })()
+
+  return (
+    <>
+      {order.map(id => {
+        const Comp = SECTION_COMPONENTS[id]
+        if (!Comp) return null
+        if (id === 'problem_solution') return <ScaleFadeOut key={id}><Comp /></ScaleFadeOut>
+        return <Comp key={id} />
+      })}
+    </>
+  )
+}
+
 function PublicSite() {
   return (
     <div className="min-h-screen bg-[#07090F]">
       <ScaleFadeOut><Hero /></ScaleFadeOut>
       <MarqueeSection />
-      <ScaleFadeOut><ProblemSolution /></ScaleFadeOut>
-      <Services />
-      <Apps />
-      <CTABanner />
-      <Process />
-      <FAQ />
-      <ContactForm />
-      <CTAFinal />
+      <DynamicSections />
       <Footer />
       <WhatsAppButton />
     </div>
