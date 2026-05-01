@@ -30,7 +30,7 @@ export default function Hero() {
   const desc        = c.description  || 'Construimos <strong>apps Shopify a medida</strong>, <strong>integraciones con sistemas externos</strong> y <strong>tiendas Shopify completas</strong> para merchants que necesitan más de lo que ofrece el App Store.'
   const supportText = c.support_text || 'Somos un equipo enfocado al 100% en el <strong>ecosistema Shopify</strong>. No hacemos WordPress, no hacemos apps móviles — desarrollamos <strong>apps Shopify</strong>, <strong>checkout extensions</strong>, <strong>integraciones API</strong> y <strong>themes Shopify 2.0</strong>.'
   const cta         = c.cta_label    || 'Solicitar propuesta gratuita'
-  const href        = c.cta_href     || '#contacto'
+  const href        = c.cta_href     || 'https://wa.link/phjdep'
   const cta2        = c.cta2_label   || 'Ver apps publicadas'
   const microcopy   = c.microcopy    || 'Respuesta técnica en 48 horas · Sin compromiso · Atención en español e inglés'
   const video       = c.video_url    || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
@@ -103,6 +103,8 @@ export default function Hero() {
               >
                 <a
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2 hover:gap-3 transition-all duration-300 bg-[#4361EE] rounded-full pl-5 pr-1.5 py-1.5"
                 >
                   <span className="text-white font-medium text-sm whitespace-nowrap" style={ctaLabelStyle}>{cta}</span>

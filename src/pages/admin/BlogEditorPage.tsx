@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, type FormEvent } from "react"
+import { useEffect, useState, useRef, useCallback, type FormEvent } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import AdminLayout from "../../components/admin/AdminLayout"
 import RichTextEditor from "../../components/admin/RichTextEditor"
@@ -33,8 +33,29 @@ export default function BlogEditorPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [slugManual, setSlugManual] = useState(false)
+  const [slugConflict, setSlugConflict] = useState(false)
   const [uploadingFeatured, setUploadingFeatured] = useState(false)
   const featuredInputRef = useRef<HTMLInputElement>(null)
+
+  const checkSlug = useCallback((slug: string, currentId: string | undefined) => {
+    if (!slug || slug.length < 2) { setSlugConflict(false); return }
+    fetch(`/api/blog/slug/${encodeURIComponent(slug)}`)
+      .then(r => {
+        if (!r.ok) { setSlugConflict(false); return }
+        return r.json()
+      })
+      .then((data?: { id?: string }) => {
+        if (!data) return
+        // Conflict if the found post is a DIFFERENT post
+        setSlugConflict(!!data.id && data.id !== currentId)
+      })
+      .catch(() => setSlugConflict(false))
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => checkSlug(form.slug, isNew ? undefined : id), 500)
+    return () => clearTimeout(timer)
+  }, [form.slug, id, isNew, checkSlug])
 
   useEffect(() => {
     if (isNew) return
@@ -158,7 +179,7 @@ export default function BlogEditorPage() {
                 className="w-full text-[32px] font-bold tracking-tight bg-transparent border-none focus:ring-0 outline-none placeholder:text-slate-300 p-0 text-slate-900"
                 placeholder="Título de la publicación"
               />
-              <div className="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 max-w-fit">
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border max-w-fit ${slugConflict ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-100'}`}>
                 <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 18 }}>link</span>
                 <span className="text-[12px] text-slate-500 font-medium">appsdevpro.com/blog/</span>
                 <input
@@ -169,6 +190,12 @@ export default function BlogEditorPage() {
                   placeholder="mi-post"
                 />
               </div>
+              {slugConflict && (
+                <p className="text-[12px] text-red-600 flex items-center gap-1">
+                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>warning</span>
+                  Este slug ya está en uso en otro post — cámbialo antes de guardar.
+                </p>
+              )}
             </section>
 
             {/* Rich text editor */}

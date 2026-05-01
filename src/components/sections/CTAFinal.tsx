@@ -49,11 +49,11 @@ export default function CTAFinal() {
   const label        = c.label         || '¿Listo para empezar?'
   const heading      = c.heading       || '¿Tienes un proyecto de desarrollo Shopify en mente?'
   const desc         = c.desc          || 'Cuéntanos qué necesitas. En menos de 48 horas te enviamos una propuesta técnica detallada y sin compromiso con arquitectura recomendada, stack técnico justificado, plazo realista por fases y presupuesto cerrado.'
-  const cta1         = c.cta1_label    || 'Solicitar propuesta gratuita'
-  const cta2         = c.cta2_label    || 'Hablar por WhatsApp'
-  const microcopy    = c.microcopy     || 'O escríbenos directo a hola@appsdevpro.com · Atendemos en español e inglés · Respuesta en 24 horas hábiles'
-  const whatsapp     = c.whatsapp_number || ''
-  const emailContact = c.email_contact || 'hola@appsdevpro.com'
+  const cta1      = c.cta1_label || 'Solicitar propuesta gratuita'
+  const cta2      = c.cta2_label || 'Hablar por WhatsApp'
+  const cta1Href  = c.cta1_href  || 'https://wa.link/phjdep'
+  const cta2Href  = c.cta2_href  || 'https://wa.link/phjdep'
+  const microcopy = c.microcopy  || 'O escríbenos directo a contacto@appsdeveloperspro.com · Atendemos en español e inglés · Respuesta en 24 horas hábiles'
 
   const labelStyle     = getFieldStyle(c.label_size,     c.label_px,     c.label_color)
   const headingStyle   = getFieldStyle(c.heading_size,   c.heading_px,   c.heading_color)
@@ -90,25 +90,25 @@ export default function CTAFinal() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               <a
-                href={`mailto:${emailContact}`}
+                href={cta1Href}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={cta1Style}
                 className="flex items-center gap-2.5 bg-[#4361EE] hover:bg-[#3451D1] text-white font-semibold text-base px-7 py-3.5 rounded-full transition-colors duration-200 shadow-[0_0_30px_rgba(67,97,238,0.4)]"
               >
                 <ArrowRight size={16} />
                 {cta1}
               </a>
-              {whatsapp && (
-                <a
-                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={cta2Style}
-                  className="flex items-center gap-2.5 border border-white/25 bg-white/[0.06] hover:bg-white/[0.12] text-white font-medium text-base px-7 py-3.5 rounded-full transition-all duration-200"
-                >
-                  <MessageCircle size={16} />
-                  {cta2}
-                </a>
-              )}
+              <a
+                href={cta2Href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={cta2Style}
+                className="flex items-center gap-2.5 border border-white/25 bg-white/[0.06] hover:bg-white/[0.12] text-white font-medium text-base px-7 py-3.5 rounded-full transition-all duration-200"
+              >
+                <MessageCircle size={16} />
+                {cta2}
+              </a>
             </div>
 
             <p className="text-white/45 text-sm font-mono" style={microcopyStyle}>

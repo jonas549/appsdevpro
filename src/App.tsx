@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { motion, useScroll, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import { ContentProvider } from './lib/ContentContext'
+import WhatsAppButton from './components/WhatsAppButton'
 import Hero from './components/sections/Hero'
 import MarqueeSection from './components/sections/Marquee'
 import ProblemSolution from './components/sections/ProblemSolution'
@@ -65,6 +66,7 @@ function PublicSite() {
       <FAQ />
       <CTAFinal />
       <Footer />
+      <WhatsAppButton />
     </div>
   )
 }
@@ -75,8 +77,8 @@ export default function App() {
       <Routes>
         {/* Public site — wrapped in ContentProvider */}
         <Route path="/" element={<ContentProvider><PublicSite /></ContentProvider>} />
-        <Route path="/blog" element={<BlogListPage />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route path="/blog" element={<><BlogListPage /><WhatsAppButton /></>} />
+        <Route path="/blog/:slug" element={<><BlogPostPage /><WhatsAppButton /></>} />
 
         {/* Admin */}
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />

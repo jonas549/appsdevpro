@@ -15,9 +15,9 @@ export default function CTABanner() {
   const heading  = c.heading    || '¿Tu tienda Shopify necesita algo que no existe en el App Store?'
   const desc     = c.desc       || 'Si tienes un requerimiento que ninguna app del Shopify App Store cubre — hablemos. Sin compromiso, sin venta agresiva, sin formulario de 20 campos. En menos de 48 horas te enviamos una propuesta técnica detallada con arquitectura recomendada, stack técnico, plazo realista y presupuesto cerrado.'
   const cta1     = c.cta1_label || 'Escríbenos ahora'
-  const cta1Href = c.cta1_href  || '#contacto'
+  const cta1Href = c.cta1_href  || 'https://wa.link/phjdep'
   const cta2     = c.cta2_label || 'Agendar reunión'
-  const cta2Href = c.cta2_href  || '#proceso'
+  const cta2Href = c.cta2_href  || 'https://wa.link/phjdep'
   const video    = c.video_url  || DEFAULT_VIDEO
 
   const headingStyle  = getFieldStyle(c.heading_size,   c.heading_px,   c.heading_color)
@@ -51,6 +51,8 @@ export default function CTABanner() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href={cta1Href}
+              target="_blank"
+              rel="noopener noreferrer"
               style={cta1Style}
               className="flex items-center gap-2 bg-[#4361EE] hover:bg-[#3451D1] text-white font-semibold text-base px-7 py-3.5 rounded-full transition-colors duration-200 shadow-[0_0_30px_rgba(67,97,238,0.4)]"
             >
@@ -59,6 +61,8 @@ export default function CTABanner() {
             </a>
             <a
               href={cta2Href}
+              target="_blank"
+              rel="noopener noreferrer"
               style={cta2Style}
               className="flex items-center gap-2 border border-white/25 bg-white/[0.06] hover:bg-white/[0.12] text-white font-medium text-base px-7 py-3.5 rounded-full transition-all duration-200"
             >

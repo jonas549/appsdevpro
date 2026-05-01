@@ -6,7 +6,7 @@ export default function Footer() {
   const c = useContent('footer')
 
   const desc      = c.description || 'Agencia especializada en desarrollo de aplicaciones para Shopify y Shopify Plus. Transformamos necesidades técnicas en soluciones reales.'
-  const email     = c.email       || 'hola@appsdevpro.com'
+  const email     = c.email       || 'contacto@appsdeveloperspro.com'
   const copyright = c.copyright   || `© ${year} Apps Developers Pro. Todos los derechos reservados.`
 
   const descStyle      = getFieldStyle(c.description_size, c.description_px, c.description_color)

@@ -11,7 +11,7 @@ const siteContent = [
   { section: "hero", key: "description",  value: "Construimos **apps Shopify a medida**, **integraciones con sistemas externos** y **tiendas Shopify completas** para merchants que necesitan más de lo que ofrece el App Store. Desde **apps publicadas en el Shopify App Store** hasta **soluciones privadas conectadas a tu ERP o CRM**, desarrollamos exactamente lo que tu operación requiere." },
   { section: "hero", key: "support_text", value: "Somos un equipo enfocado al 100% en el **ecosistema Shopify**. No hacemos WordPress, no hacemos apps móviles, no somos generalistas: desarrollamos **apps Shopify**, **custom apps**, **checkout extensions**, **integraciones API** y **themes Shopify 2.0** con un stack moderno basado en **Remix, TypeScript, Node.js y PostgreSQL**. Ya tenemos apps en producción con merchants reales pagando suscripción mensual — no estamos aprendiendo con tu proyecto." },
   { section: "hero", key: "cta_label",    value: "Solicitar propuesta gratuita" },
-  { section: "hero", key: "cta_href",     value: "#contacto" },
+  { section: "hero", key: "cta_href",     value: "https://wa.link/phjdep" },
   { section: "hero", key: "cta2_label",   value: "Ver apps publicadas" },
   { section: "hero", key: "microcopy",    value: "Respuesta técnica en 48 horas · Sin compromiso · Atención en español e inglés" },
   { section: "hero", key: "video_url",    value: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" },
@@ -92,7 +92,9 @@ const siteContent = [
   { section: "ctabanner", key: "heading",    value: "¿Tu tienda Shopify necesita algo que no existe en el App Store?" },
   { section: "ctabanner", key: "desc",       value: "Si tienes un requerimiento que ninguna **app del Shopify App Store** cubre — hablemos. **Sin compromiso, sin venta agresiva, sin formulario de 20 campos**. En menos de **48 horas** te enviamos una **propuesta técnica detallada** con arquitectura recomendada, stack técnico, plazo realista y presupuesto cerrado. Si vemos que el proyecto no encaja con nuestro perfil, también te lo decimos directamente." },
   { section: "ctabanner", key: "cta1_label", value: "Escríbenos ahora" },
+  { section: "ctabanner", key: "cta1_href",  value: "https://wa.link/phjdep" },
   { section: "ctabanner", key: "cta2_label", value: "Agendar reunión" },
+  { section: "ctabanner", key: "cta2_href",  value: "https://wa.link/phjdep" },
   { section: "ctabanner", key: "video_url",  value: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260330_145725_08886141-ed95-4a8e-8d6d-b75eaadce638.mp4" },
 
   // ── Proceso ───────────────────────────────────────────────────────────────
@@ -118,7 +120,7 @@ const siteContent = [
   { section: "faq", key: "heading",       value: "Preguntas frecuentes sobre desarrollo de apps y tiendas Shopify" },
   { section: "faq", key: "subheading",    value: "Las preguntas más comunes que recibimos de merchants antes de empezar un proyecto. Si la tuya no está acá, escríbenos directamente y te respondemos en menos de 24 horas hábiles." },
   { section: "faq", key: "contact_label", value: "Hacer una pregunta →" },
-  { section: "faq", key: "contact_href",  value: "mailto:hola@appsdevpro.com" },
+  { section: "faq", key: "contact_href",  value: "https://wa.link/phjdep" },
 
   { section: "faq", key: "q1", value: "¿Quiénes son Apps Developers Pro y por qué deberíamos contratarlos para desarrollar nuestra app Shopify?" },
   { section: "faq", key: "a1", value: "Apps Developers Pro es un equipo de desarrollo especializado al **100% en el ecosistema Shopify**. No somos una agencia generalista que también hace WordPress, apps móviles nativas, branding o marketing digital — desarrollamos exclusivamente para Shopify, y esa especialización es justamente lo que nos diferencia. Conocemos la plataforma a profundidad: las particularidades de la **GraphQL Admin API**, los **límites de rate limiting** y cómo gestionarlos correctamente en producción, los **requisitos del Shopify App Store**, el funcionamiento del **checkout extensibility**, las **diferencias entre Shopify Basic, Advanced, Plus y Commerce Components**, y cómo cada feature de la plataforma se comporta cuando se enfrenta a tráfico real.\n\nTenemos **apps publicadas en el Shopify App Store con merchants reales pagando suscripción mensual**, lo que significa que ya pasamos por el ciclo completo de desarrollo, review, lanzamiento, soporte y mantenimiento. Cuando nos contratas, no estamos aprendiendo con tu proyecto — ya pasamos por las dificultades técnicas, comerciales y operativas que tu app va a enfrentar.\n\nAdemás, **trabajamos en Latinoamérica y España**, con **atención en español e inglés**, horarios compatibles con ambas regiones, y experiencia integrando Shopify con **sistemas locales de cada país** (facturación electrónica, gateways de pago regionales, plataformas logísticas específicas de cada mercado)." },
@@ -158,13 +160,20 @@ const siteContent = [
   { section: "ctafinal", key: "heading",    value: "¿Tienes un proyecto de desarrollo Shopify en mente?" },
   { section: "ctafinal", key: "desc",       value: "Cuéntanos qué necesitas. En menos de **48 horas** te enviamos una **propuesta técnica detallada y sin compromiso** con arquitectura recomendada, **stack técnico justificado**, plazo realista por fases y presupuesto cerrado. Si vemos que el proyecto encaja con nuestro perfil, empezamos a construir. Si vemos que no encaja —porque queda fuera de nuestra especialización o porque hay un camino más simple para tu caso—, también te lo decimos directamente y, cuando es posible, te referimos a alguien que pueda ayudarte mejor. **Tu tiempo y nuestro tiempo son demasiado valiosos para perderlos en proyectos que no van a funcionar bien.**" },
   { section: "ctafinal", key: "cta1_label", value: "Solicitar propuesta gratuita →" },
+  { section: "ctafinal", key: "cta1_href",  value: "https://wa.link/phjdep" },
   { section: "ctafinal", key: "cta2_label", value: "Hablar por WhatsApp" },
-  { section: "ctafinal", key: "microcopy",  value: "O escríbenos directo a hola@appsdevpro.com · Atendemos en español e inglés · Respuesta en 24 horas hábiles" },
+  { section: "ctafinal", key: "cta2_href",  value: "https://wa.link/phjdep" },
+  { section: "ctafinal", key: "email_contact", value: "contacto@appsdeveloperspro.com" },
+  { section: "ctafinal", key: "microcopy",  value: "O escríbenos directo a contacto@appsdeveloperspro.com · Atendemos en español e inglés · Respuesta en 24 horas hábiles" },
 
   // ── Footer ────────────────────────────────────────────────────────────────
   { section: "footer", key: "description", value: "Agencia especializada en desarrollo de aplicaciones para Shopify y Shopify Plus. Transformamos necesidades técnicas en soluciones reales." },
-  { section: "footer", key: "email",       value: "hola@appsdevpro.com" },
+  { section: "footer", key: "email",       value: "contacto@appsdeveloperspro.com" },
   { section: "footer", key: "copyright",   value: "© 2025 Apps Developers Pro. Todos los derechos reservados." },
+
+  // ── SEO Global ────────────────────────────────────────────────────────────
+  { section: "seo", key: "meta_title",       value: "Apps Developers Pro — Desarrollo de Apps Shopify" },
+  { section: "seo", key: "meta_description", value: "Agencia especializada en desarrollo de aplicaciones Shopify. Apps publicadas en el App Store, integraciones y soluciones a medida." },
 ]
 
 async function main() {

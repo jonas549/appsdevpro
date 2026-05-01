@@ -42,6 +42,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           if (!map[section]) map[section] = {}
           map[section][key] = value
         }
+        // Apply global SEO from DB
+        const seoTitle = map['seo']?.['meta_title']
+        const seoDesc  = map['seo']?.['meta_description']
+        if (seoTitle) document.title = seoTitle
+        if (seoDesc) {
+          const metaEl = document.querySelector('meta[name="description"]')
+          if (metaEl) metaEl.setAttribute('content', seoDesc)
+        }
         setContent(map)
       })
       .catch(() => {})

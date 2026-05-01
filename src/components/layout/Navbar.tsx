@@ -37,7 +37,9 @@ export default function Navbar() {
 
         {/* CTA */}
         <a
-          href="#contacto"
+          href="https://wa.link/phjdep"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-colors duration-200 flex-shrink-0"
         >
           Hablemos

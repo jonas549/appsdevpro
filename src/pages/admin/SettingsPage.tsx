@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import AdminLayout from "../../components/admin/AdminLayout"
 
@@ -15,6 +15,45 @@ export default function SettingsPage() {
   const [passwordStatus, setPasswordStatus] = useState<Status>('idle')
   const [emailError, setEmailError]         = useState("")
   const [passwordError, setPasswordError]   = useState("")
+
+  // SEO
+  const [seoForm, setSeoForm] = useState({ meta_title: "", meta_description: "" })
+  const [seoStatus, setSeoStatus] = useState<Status>('idle')
+  const [seoError, setSeoError] = useState("")
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then(r => r.json())
+      .then((data: { section: string; key: string; value: string }[]) => {
+        const seo = data.filter(e => e.section === "seo")
+        setSeoForm({
+          meta_title:       seo.find(e => e.key === "meta_title")?.value       ?? "",
+          meta_description: seo.find(e => e.key === "meta_description")?.value ?? "",
+        })
+      })
+      .catch(() => {})
+  }, [])
+
+  async function handleSeoSave(e: React.FormEvent) {
+    e.preventDefault()
+    setSeoError("")
+    setSeoStatus('saving')
+    try {
+      for (const key of ["meta_title", "meta_description"] as const) {
+        const r = await fetch("/api/content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ section: "seo", key, value: seoForm[key] }),
+        })
+        if (!r.ok) { setSeoError("Error al guardar"); setSeoStatus('error'); return }
+      }
+      setSeoStatus('success')
+      window.dispatchEvent(new Event('content-updated'))
+      setTimeout(() => setSeoStatus('idle'), 2500)
+    } catch {
+      setSeoError("Error de red"); setSeoStatus('error')
+    }
+  }
 
   async function handleEmailSave(e: React.FormEvent) {
     e.preventDefault()
@@ -74,6 +113,56 @@ export default function SettingsPage() {
   return (
     <AdminLayout title="Configuración">
       <div className="max-w-xl flex flex-col gap-6">
+
+        {/* SEO global */}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ border: '1px solid #CBD5E1' }}>
+          <div className="px-6 py-4 border-b" style={{ background: '#E2E8F0', borderBottomColor: '#E2E8F0' }}>
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#64748B' }}>search</span>
+              <span className="text-[18px] font-bold text-slate-800">SEO del sitio</span>
+            </div>
+          </div>
+          <form onSubmit={handleSeoSave} className="p-6 flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Meta título del sitio</label>
+              <input
+                value={seoForm.meta_title}
+                onChange={e => setSeoForm(f => ({ ...f, meta_title: e.target.value }))}
+                placeholder="Apps Developers Pro — Desarrollo de Apps Shopify"
+                className={inputBase}
+                style={inputStyle}
+              />
+              <p className="text-[11px] text-slate-400">Aparece en la pestaña del navegador y en Google. Recomendado: 60 caracteres. Actual: {seoForm.meta_title.length}</p>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">Meta descripción del sitio</label>
+              <textarea
+                value={seoForm.meta_description}
+                onChange={e => setSeoForm(f => ({ ...f, meta_description: e.target.value }))}
+                rows={3}
+                placeholder="Agencia especializada en desarrollo de aplicaciones Shopify..."
+                className={`${inputBase} resize-none`}
+                style={inputStyle}
+              />
+              <p className="text-[11px] text-slate-400">Aparece en los resultados de Google. Recomendado: 160 caracteres. Actual: {seoForm.meta_description.length}</p>
+            </div>
+            {seoError && <p className="text-red-600 text-[13px]">{seoError}</p>}
+            {seoStatus === 'success' && (
+              <p className="text-emerald-600 text-[13px] font-semibold">SEO actualizado correctamente.</p>
+            )}
+            <button
+              type="submit"
+              disabled={seoStatus === 'saving'}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed w-fit"
+              style={{ background: '#4361EE' }}
+            >
+              {seoStatus === 'saving'
+                ? <><span className="material-symbols-outlined animate-spin" style={{ fontSize: 14 }}>progress_activity</span> Guardando…</>
+                : <><span className="material-symbols-outlined" style={{ fontSize: 14 }}>save</span> Guardar SEO</>
+              }
+            </button>
+          </form>
+        </div>
 
         {/* Cambiar email */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ border: '1px solid #CBD5E1' }}>
