@@ -7,6 +7,7 @@ const router = Router()
 router.get("/", async (_req, res) => {
   try {
     const content = await prisma.siteContent.findMany({ orderBy: [{ section: "asc" }, { key: "asc" }] })
+    res.setHeader("Cache-Control", "no-store")
     res.json(content)
   } catch (err) {
     console.error(err)

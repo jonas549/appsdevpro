@@ -11,6 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const content = await prisma.siteContent.findMany({
         orderBy: [{ section: "asc" }, { key: "asc" }],
       })
+      res.setHeader("Cache-Control", "no-store")
       res.json(content)
       return
     }

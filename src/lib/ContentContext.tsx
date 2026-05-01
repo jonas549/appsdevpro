@@ -49,12 +49,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     load()
+    const onVisibility = () => { if (document.visibilityState === 'visible') load() }
     window.addEventListener('focus', load)
-    // Escucha guardado del admin para refrescar inmediatamente
     window.addEventListener('content-updated', load)
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       window.removeEventListener('focus', load)
       window.removeEventListener('content-updated', load)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 

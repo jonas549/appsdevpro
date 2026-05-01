@@ -466,13 +466,19 @@ export default function ContentPage() {
     const dirty = getAllKeys(cfg).filter(({ section, key }) =>
       values[fk(section, key)] !== savedValues[fk(section, key)]
     )
-    await Promise.all(dirty.map(({ section, key }) =>
+    const responses = await Promise.all(dirty.map(({ section, key }) =>
       fetch("/api/content", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ section, key, value: values[fk(section, key)] ?? "" }),
       })
     ))
+    const allOk = responses.every(r => r.ok)
+    if (!allOk) {
+      setSavingId(null)
+      alert("Error al guardar. Por favor recarga la página e intenta de nuevo.")
+      return
+    }
     setSavedValues(prev => {
       const next = { ...prev }
       dirty.forEach(({ section, key }) => { next[fk(section, key)] = values[fk(section, key)] ?? "" })
