@@ -74,6 +74,7 @@ export default function Services() {
   const mainLabelStyle  = getFieldStyle(c.main_label_size, c.main_label_px, c.main_label_color)
   const mainTitleStyle  = getFieldStyle(c.main_title_size, c.main_title_px, c.main_title_color)
   const mainDescStyle   = getFieldStyle(c.main_desc_size,  c.main_desc_px,  c.main_desc_color)
+  const mainTagsStyle   = getFieldStyle(c.main_tags_size,  c.main_tags_px,  c.main_tags_color)
 
   const headingParts = parseAccent(headingRaw)
 
@@ -95,7 +96,7 @@ export default function Services() {
         autoPlay loop muted playsInline
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+      <div className="absolute inset-0 z-[1]" style={{ background: 'rgba(0, 0, 0, 0.5)' }} />
       <div className="noise-overlay opacity-[0.06] mix-blend-overlay pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
@@ -140,7 +141,7 @@ export default function Services() {
               />
               <div className="flex flex-wrap gap-2 mb-8">
                 {mainTags.map((t) => (
-                  <span key={t} className="font-mono text-[11px] text-[#4361EE] border border-[#4361EE]/30 bg-[#4361EE]/5 px-3 py-1 rounded-full">
+                  <span key={t} className="font-mono text-[11px] text-[#4361EE] border border-[#4361EE]/30 bg-[#4361EE]/5 px-3 py-1 rounded-full" style={mainTagsStyle}>
                     {t.trim()}
                   </span>
                 ))}
