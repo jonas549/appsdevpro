@@ -47,7 +47,7 @@ export default function Footer() {
                 Apps<span className="text-[#4361EE]">Dev</span>Pro
               </span>
             </div>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE]" style={descStyle} dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-inherit" style={descStyle} dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
             <a
               href={`mailto:${email}`}
               style={emailStyle}

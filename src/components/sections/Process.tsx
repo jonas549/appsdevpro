@@ -59,7 +59,7 @@ export default function Process() {
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.06} />
           </h2>
           <p
-            className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+            className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
             style={subheadingStyle}
             dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
           />
@@ -122,7 +122,7 @@ export default function Process() {
                   </h3>
                 </div>
                 <p
-                  className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+                  className="text-[#4B5563] text-sm md:text-base leading-relaxed [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
                   style={steps[active].descStyle}
                   dangerouslySetInnerHTML={{ __html: safeHtml(steps[active].desc) }}
                 />

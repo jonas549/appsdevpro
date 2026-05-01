@@ -109,7 +109,7 @@ export default function Services() {
             ))}
           </h2>
           <p
-            className="text-[#9BA8BE] text-sm md:text-base max-w-2xl [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic"
+            className="text-[#9BA8BE] text-sm md:text-base max-w-2xl [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
             style={subheadingStyle}
             dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
           />
@@ -135,7 +135,7 @@ export default function Services() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4" style={mainTitleStyle}>{mainTitle}</h3>
               <p
-                className="text-[#9BA8BE] text-sm leading-relaxed mb-6 [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic"
+                className="text-[#9BA8BE] text-sm leading-relaxed mb-6 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
                 style={mainDescStyle}
                 dangerouslySetInnerHTML={{ __html: safeHtml(mainDesc) }}
               />
@@ -172,7 +172,7 @@ export default function Services() {
                 </div>
                 <h3 className="font-bold text-[#EDF0FF] text-base mb-2" style={card.titleStyle}>{card.title}</h3>
                 <p
-                  className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                  className="text-[#7B8DB0] text-sm leading-relaxed mb-4 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
                   style={card.descStyle}
                   dangerouslySetInnerHTML={{ __html: safeHtml(card.desc) }}
                 />

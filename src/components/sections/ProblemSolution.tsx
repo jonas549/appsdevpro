@@ -75,7 +75,7 @@ export default function ProblemSolution() {
               {[problemDesc1, problemDesc2, problemDesc3].map((txt, i) => (
                 <p
                   key={i}
-                  className={`text-sm md:text-base leading-[1.8] [&_strong]:font-semibold [&_strong]:text-[#CBD5E8] [&_em]:italic ${i < 2 ? 'text-[#9BA8BE]' : 'text-[#7B8DB0]'}`}
+                  className={`text-sm md:text-base leading-[1.8] [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic ${i < 2 ? 'text-[#9BA8BE]' : 'text-[#7B8DB0]'}`}
                   style={descStyles[i]}
                   dangerouslySetInnerHTML={{ __html: safeHtml(txt) }}
                 />
@@ -110,7 +110,7 @@ export default function ProblemSolution() {
                   <div>
                     <h3 className="font-semibold text-[#EDF0FF] text-sm mb-1.5" style={itemStyles[i].title}>{sol.title}</h3>
                     <p
-                      className="text-[#7B8DB0] text-sm leading-relaxed [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic"
+                      className="text-[#7B8DB0] text-sm leading-relaxed [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
                       style={itemStyles[i].desc}
                       dangerouslySetInnerHTML={{ __html: safeHtml(sol.desc) }}
                     />

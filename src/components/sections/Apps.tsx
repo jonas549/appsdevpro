@@ -150,7 +150,7 @@ export default function Apps() {
             <WordsPullUp text={heading} wordClassName="text-[#0F172A]" stagger={0.05} />
           </h2>
           <p
-            className="text-[#4B5563] text-sm md:text-base max-w-2xl mx-auto [&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic"
+            className="text-[#4B5563] text-sm md:text-base max-w-2xl mx-auto [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic"
             style={subheadingStyle}
             dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
           />
@@ -188,7 +188,7 @@ export default function Apps() {
                     {app.desc.split('\n\n').map((para, pi) => (
                       <p
                         key={pi}
-                        className={`[&_strong]:font-semibold [&_strong]:text-[#1E293B] [&_em]:italic ${pi > 0 ? 'mt-3' : ''}`}
+                        className={`[&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic ${pi > 0 ? 'mt-3' : ''}`}
                         dangerouslySetInnerHTML={{ __html: safeHtml(para) }}
                       />
                     ))}

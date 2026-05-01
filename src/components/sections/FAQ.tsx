@@ -82,7 +82,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic" dangerouslySetInnerHTML={{ __html: safeHtml(a) }} />
+            <p className="text-[#7B8DB0] text-sm leading-relaxed pb-5 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic" dangerouslySetInnerHTML={{ __html: safeHtml(a) }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -114,7 +114,7 @@ export default function FAQ() {
             <h2 className="text-3xl font-bold text-[#EDF0FF] mb-4 leading-tight" style={headingStyle}>
               {heading}
             </h2>
-            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8 [&_strong]:font-semibold [&_strong]:text-[#9BA8BE] [&_em]:italic" style={subheadingStyle} dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }} />
+            <p className="text-[#7B8DB0] text-sm leading-relaxed mb-8 [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic" style={subheadingStyle} dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }} />
             <a
               href={contactHref}
               style={contactLabelStyle}
