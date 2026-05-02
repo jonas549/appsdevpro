@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { ExternalLink, ArrowRight, Lock } from 'lucide-react'
+import { ExternalLink, ArrowRight } from 'lucide-react'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
@@ -62,19 +62,6 @@ function DescuentifyMockup() {
   )
 }
 
-function NDAMockup() {
-  return (
-    <div className="bg-[#0F1422] rounded-xl p-5 h-44 flex flex-col items-center justify-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-        <Lock size={20} className="text-[#7B8DB0]" />
-      </div>
-      <p className="text-[#7B8DB0] text-xs text-center leading-snug max-w-[180px]">
-        Capturas bajo NDA · Disponible previa reunión
-      </p>
-    </div>
-  )
-}
-
 const APP_DEFAULTS = [
   {
     status: 'active',
@@ -108,7 +95,11 @@ const APP_DEFAULTS = [
   },
 ]
 
-const MOCKUPS = [<CalendifyMockup />, <DescuentifyMockup />, <NDAMockup />]
+const MOCKUPS = [
+  <CalendifyMockup />,
+  <DescuentifyMockup />,
+  <img src="/app-privada.jpg" alt="Apps Privadas para Clientes" className="w-full h-44 object-cover rounded-xl" />,
+]
 
 export default function Apps() {
   const ref = useRef(null)
@@ -171,7 +162,7 @@ export default function Apps() {
                 className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col"
                 style={{ border: `1px solid ${borderColor}` }}
               >
-                <div className="p-5 pb-2 border-b" style={{ borderColor, backgroundColor: isNDA ? '#07090F' : undefined }}>
+                <div className="p-5 pb-2 border-b" style={{ borderColor }}>
                   {app.mockup}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
