@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
@@ -109,8 +110,24 @@ export default function FAQ() {
     aStyle: getFieldStyle(c[`a${n}_size`], c[`a${n}_px`], c[`a${n}_color`]),
   })).filter(f => f.q)
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.a.replace(/<[^>]*>/g, ''),
+      },
+    })),
+  }
+
   return (
     <section id="faq" className="bg-[#07090F] py-28 md:py-36">
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
           <div className="md:col-span-4 md:sticky md:top-24 self-start">
