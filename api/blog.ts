@@ -15,9 +15,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method === "POST") {
       if (!requireAuth(req, res)) return
-      const { title, slug, content, excerpt, published, featured_image, meta_title, meta_description } = req.body as {
+      const { title, slug, content, excerpt, published, featured_image, meta_title, meta_description, faq_data } = req.body as {
         title: string; slug: string; content: string; excerpt: string; published?: boolean
-        featured_image?: string; meta_title?: string; meta_description?: string
+        featured_image?: string; meta_title?: string; meta_description?: string; faq_data?: string
       }
       if (!title || !slug || !excerpt) {
         res.status(400).json({ error: "title, slug, excerpt required" })
@@ -26,10 +26,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const post = await prisma.blogPost.create({
         data: {
           title, slug, content: content || "", excerpt,
-          published: published ?? false,
+          published: published === true || (published as unknown) === 'true',
           featured_image: featured_image || null,
           meta_title: meta_title || null,
           meta_description: meta_description || null,
+          faq_data: faq_data || null,
         },
       })
       res.status(201).json(post)

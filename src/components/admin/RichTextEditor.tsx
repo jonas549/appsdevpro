@@ -9,6 +9,14 @@ import Placeholder from "@tiptap/extension-placeholder"
 import { Node, mergeAttributes } from "@tiptap/core"
 import { useEffect, useRef, useState, useCallback } from "react"
 
+function getBlockType(ed: { isActive: (name: string, attrs?: object) => boolean }): string {
+  if (ed.isActive("heading", { level: 1 })) return "h1"
+  if (ed.isActive("heading", { level: 2 })) return "h2"
+  if (ed.isActive("heading", { level: 3 })) return "h3"
+  if (ed.isActive("heading", { level: 4 })) return "h4"
+  return "p"
+}
+
 // TikTok embed extension
 const TikTok = Node.create({
   name: "tiktok",
@@ -106,6 +114,7 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ value, onChange, placeholder = "Escribe aquí...", minHeight = 300, token }: RichTextEditorProps) {
+  const [blockType, setBlockType] = useState("p")
   const [showLinkPopover, setShowLinkPopover] = useState(false)
   const [showYouTubeInput, setShowYouTubeInput] = useState(false)
   const [showTikTokInput, setShowTikTokInput] = useState(false)
@@ -126,7 +135,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
       Placeholder.configure({ placeholder }),
     ],
     content: value,
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+    onUpdate: ({ editor }) => { onChange(editor.getHTML()); setBlockType(getBlockType(editor)) },
+    onSelectionUpdate: ({ editor }) => { setBlockType(getBlockType(editor)) },
   })
 
   // Sync external value changes (e.g. initial load from DB)
@@ -192,12 +202,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
       <div ref={toolbarRef} className="relative flex flex-wrap items-center gap-0.5 p-2 border-b border-slate-100 bg-slate-50/50">
         {/* Heading dropdown */}
         <select
-          value={
-            editor.isActive("heading", { level: 1 }) ? "h1" :
-            editor.isActive("heading", { level: 2 }) ? "h2" :
-            editor.isActive("heading", { level: 3 }) ? "h3" :
-            editor.isActive("heading", { level: 4 }) ? "h4" : "p"
-          }
+          value={blockType}
           onChange={e => {
             const v = e.target.value
             if (v === "p") editor.chain().focus().setParagraph().run()
@@ -333,7 +338,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
 
       {/* Editor canvas */}
       <style>{`
-        .tiptap-editor { outline: none; }
+        .tiptap-editor { outline: none; min-height: inherit; }
+        .tiptap-editor .ProseMirror { min-height: inherit; outline: none; }
         .tiptap-editor p { margin-bottom: 0.875rem; }
         .tiptap-editor h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2; }
         .tiptap-editor h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.875rem; line-height: 1.3; }
@@ -348,11 +354,16 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
         .tiptap-editor iframe { width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
         .tiptap-editor .tiptap-placeholder::before { color: #94a3b8; content: attr(data-placeholder); float: left; pointer-events: none; height: 0; }
       `}</style>
-      <EditorContent
-        editor={editor}
-        className="tiptap-editor p-8 text-slate-700 leading-relaxed text-base focus:outline-none"
+      <div
+        onClick={() => editor.commands.focus()}
         style={{ minHeight }}
-      />
+        className="cursor-text"
+      >
+        <EditorContent
+          editor={editor}
+          className="tiptap-editor p-8 text-slate-700 leading-relaxed text-base"
+        />
+      </div>
     </div>
   )
 }

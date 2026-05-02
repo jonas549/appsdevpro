@@ -6,8 +6,11 @@ import SEOHead from "../components/SEOHead"
 interface Post {
   id: string; title: string; slug: string; content: string; excerpt: string
   published: boolean; createdAt: string; featured_image?: string
-  meta_title?: string; meta_description?: string
+  meta_title?: string; meta_description?: string; faq_data?: string
 }
+
+interface FaqItem { q: string; a: string }
+interface FaqData { heading?: string; items: FaqItem[] }
 
 function readingTime(content: string) {
   const words = content.replace(/<[^>]*>/g, "").split(/\s+/).filter(Boolean).length
@@ -19,6 +22,7 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<Post | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   useEffect(() => {
     if (!slug) return
@@ -39,6 +43,12 @@ export default function BlogPostPage() {
   }
 
   if (!post) return null
+
+  let faqData: FaqData | null = null
+  try {
+    if (post.faq_data) faqData = JSON.parse(post.faq_data) as FaqData
+  } catch { /* ignore */ }
+  const faqItems = faqData?.items?.filter(f => f.q && f.a) ?? []
 
   const safeContent = DOMPurify.sanitize(post.content, {
     ADD_TAGS: ["iframe", "blockquote"],
@@ -96,6 +106,30 @@ export default function BlogPostPage() {
           dangerouslySetInnerHTML={{ __html: safeContent }}
         />
 
+        {/* FAQ accordion */}
+        {faqItems.length > 0 && (
+          <div className="mt-16 pt-12 border-t border-slate-100">
+            <h2 className="text-2xl font-bold text-slate-900 mb-8">{faqData?.heading || "Preguntas frecuentes"}</h2>
+            <div className="space-y-3">
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-slate-200 rounded-xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full flex items-center justify-between px-6 py-4 text-left bg-white hover:bg-slate-50 transition-colors"
+                  >
+                    <span className="font-semibold text-slate-900 pr-4">{item.q}</span>
+                    <span className={`text-slate-400 transition-transform duration-200 flex-shrink-0 ${openFaq === i ? "rotate-180" : ""}`}>▾</span>
+                  </button>
+                  {openFaq === i && (
+                    <div className="px-6 pb-5 text-slate-600 leading-relaxed bg-slate-50">{item.a}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Back link */}
         <div className="mt-16 pt-8 border-t border-slate-100">
           <Link
@@ -106,6 +140,22 @@ export default function BlogPostPage() {
           </Link>
         </div>
       </div>
+
+      {/* FAQPage structured data */}
+      {faqItems.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqItems.map(f => ({
+              "@type": "Question",
+              "name": f.q,
+              "acceptedAnswer": { "@type": "Answer", "text": f.a },
+            })),
+          }) }}
+        />
+      )}
     </div>
   )
 }

@@ -8,6 +8,8 @@ interface PostForm {
   featured_image: string; meta_title: string; meta_description: string
 }
 
+interface FaqItem { q: string; a: string }
+
 function toSlug(s: string) {
   return s.toLowerCase()
     .replace(/[áàä]/g, "a").replace(/[éèë]/g, "e").replace(/[íìï]/g, "i")
@@ -36,6 +38,9 @@ export default function BlogEditorPage() {
   const [slugConflict, setSlugConflict] = useState(false)
   const [uploadingFeatured, setUploadingFeatured] = useState(false)
   const featuredInputRef = useRef<HTMLInputElement>(null)
+  const emptyFaqItems: FaqItem[] = Array.from({ length: 5 }, () => ({ q: "", a: "" }))
+  const [faqHeading, setFaqHeading] = useState("Preguntas frecuentes")
+  const [faqItems, setFaqItems] = useState<FaqItem[]>(emptyFaqItems)
 
   const checkSlug = useCallback((slug: string, currentId: string | undefined) => {
     if (!slug || slug.length < 2) { setSlugConflict(false); return }
@@ -63,6 +68,17 @@ export default function BlogEditorPage() {
       .then(r => r.json())
       .then(data => {
         setForm({ ...empty, ...data, featured_image: data.featured_image ?? "", meta_title: data.meta_title ?? "", meta_description: data.meta_description ?? "" })
+        if (data.faq_data) {
+          try {
+            const parsed = JSON.parse(data.faq_data) as { heading?: string; items?: FaqItem[] }
+            if (parsed.heading) setFaqHeading(parsed.heading)
+            if (parsed.items) {
+              const items = [...parsed.items]
+              while (items.length < 5) items.push({ q: "", a: "" })
+              setFaqItems(items)
+            }
+          } catch { /* ignore malformed */ }
+        }
         setLoading(false)
         setSlugManual(true)
       })
@@ -102,10 +118,14 @@ export default function BlogEditorPage() {
     try {
       const url = isNew ? "/api/blog" : `/api/blog/${id}`
       const method = isNew ? "POST" : "PUT"
+      const filledFaqItems = faqItems.filter(f => f.q.trim() || f.a.trim())
+      const faq_data = filledFaqItems.length > 0
+        ? JSON.stringify({ heading: faqHeading, items: filledFaqItems })
+        : null
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, faq_data }),
       })
       const data = await res.json() as { id?: string; error?: string }
       if (!res.ok) { setError(data.error || "Error al guardar"); return }
@@ -181,7 +201,7 @@ export default function BlogEditorPage() {
               />
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border max-w-fit ${slugConflict ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-100'}`}>
                 <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 18 }}>link</span>
-                <span className="text-[12px] text-slate-500 font-medium">appsdevpro.com/blog/</span>
+                <span className="text-[12px] text-slate-500 font-medium">appsdeveloperspro.com/blog/</span>
                 <input
                   value={form.slug}
                   onChange={e => { setSlugManual(true); set("slug", e.target.value) }}
@@ -259,6 +279,63 @@ export default function BlogEditorPage() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-6" style={{ border: '1px solid #CBD5E1' }}>
+              <h3 className="text-[20px] font-bold" style={{ color: '#1E293B' }}>Preguntas Frecuentes (FAQ)</h3>
+              <div className="space-y-1.5">
+                <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: '#334155' }}>Título del bloque</label>
+                <input
+                  value={faqHeading}
+                  onChange={e => setFaqHeading(e.target.value)}
+                  className="w-full bg-white rounded-lg px-4 py-2.5 text-sm focus:ring-4 focus:ring-adm-primary-container/10 outline-none"
+                  style={{ border: '1px solid #94A3B8', color: '#0F172A' }}
+                  placeholder="Preguntas frecuentes"
+                />
+              </div>
+              <div className="space-y-4">
+                {faqItems.map((item, i) => (
+                  <div key={i} className="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Pregunta {i + 1}</p>
+                      {faqItems.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setFaqItems(prev => prev.filter((_, idx) => idx !== i))}
+                          className="text-slate-400 hover:text-red-500 transition-colors"
+                          title="Eliminar"
+                        >
+                          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>close</span>
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      value={item.q}
+                      onChange={e => setFaqItems(prev => prev.map((f, idx) => idx === i ? { ...f, q: e.target.value } : f))}
+                      className="w-full bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-adm-primary-container/20 outline-none"
+                      style={{ border: '1px solid #CBD5E1' }}
+                      placeholder="¿Pregunta aquí?"
+                    />
+                    <textarea
+                      value={item.a}
+                      onChange={e => setFaqItems(prev => prev.map((f, idx) => idx === i ? { ...f, a: e.target.value } : f))}
+                      rows={2}
+                      className="w-full bg-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-adm-primary-container/20 outline-none resize-none"
+                      style={{ border: '1px solid #CBD5E1' }}
+                      placeholder="Respuesta..."
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setFaqItems(prev => [...prev, { q: "", a: "" }])}
+                className="text-sm text-adm-primary font-semibold hover:underline flex items-center gap-1"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>add</span>
+                Agregar pregunta
+              </button>
             </div>
 
             {error && (

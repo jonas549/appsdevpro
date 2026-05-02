@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 
 const navItems = ['Servicios', 'Apps', 'Proceso', 'Blog', 'FAQ']
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false)
+
   return (
-    <div className="absolute top-0 left-0 right-0 z-50 flex justify-center">
+    <div className="absolute top-0 left-0 right-0 z-50 flex flex-col items-center">
       <motion.div
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -27,12 +30,24 @@ export default function Navbar() {
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="text-xs md:text-sm text-[#7B8DB0] hover:text-primary transition-colors duration-200"
+              className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200"
             >
               {item}
             </a>
           ))}
         </nav>
+
+        {/* Hamburger — mobile only */}
+        <button
+          type="button"
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          className="md:hidden flex flex-col justify-center gap-[5px] p-1 flex-shrink-0"
+        >
+          <span className={`block w-5 h-[2px] bg-white rounded-full transition-all duration-200 origin-center ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
+          <span className={`block w-5 h-[2px] bg-white rounded-full transition-all duration-200 ${open ? 'opacity-0 scale-x-0' : ''}`} />
+          <span className={`block w-5 h-[2px] bg-white rounded-full transition-all duration-200 origin-center ${open ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+        </button>
 
         {/* CTA */}
         <a
@@ -45,6 +60,24 @@ export default function Navbar() {
           <ArrowRight size={14} />
         </a>
       </motion.div>
+
+      {/* Mobile dropdown */}
+      {open && (
+        <div className="md:hidden w-[calc(100%-2rem)] max-w-sm mt-2 bg-[#07090F] border border-white/[0.06] rounded-2xl overflow-hidden">
+          <nav className="flex flex-col">
+            {navItems.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setOpen(false)}
+                className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+        </div>
+      )}
     </div>
   )
 }

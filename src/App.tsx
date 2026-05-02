@@ -11,6 +11,7 @@ import Services from './components/sections/Services'
 import Apps from './components/sections/Apps'
 import CTABanner from './components/sections/CTABanner'
 import Process from './components/sections/Process'
+import BlogFeed from './components/sections/BlogFeed'
 import FAQ from './components/sections/FAQ'
 import CTAFinal from './components/sections/CTAFinal'
 import Footer from './components/layout/Footer'
@@ -57,7 +58,7 @@ function ScaleFadeOut({ children }: { children: React.ReactNode }) {
   )
 }
 
-const DEFAULT_ORDER = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'faq', 'contactform', 'ctafinal']
+const DEFAULT_ORDER = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'blog_feed', 'faq', 'contactform', 'ctafinal']
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
@@ -66,6 +67,7 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<any>> = {
   apps: Apps,
   ctabanner: CTABanner,
   process: Process,
+  blog_feed: BlogFeed,
   faq: FAQ,
   contactform: ContactForm,
   ctafinal: CTAFinal,

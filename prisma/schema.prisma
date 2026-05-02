@@ -26,6 +26,7 @@ model BlogPost {
   featured_image   String?
   meta_title       String?
   meta_description String?
+  faq_data         String?  @db.Text
   published        Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
