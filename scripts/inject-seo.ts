@@ -69,6 +69,126 @@ function get(cms: Record<string, Record<string, string>>, section: string, key: 
   return plain(cms[section]?.[key] || fallback)
 }
 
+// ─── Build full static HTML for AI crawlers ──────────────────────────────────
+
+function buildAiHtml(cms: Record<string, Record<string, string>>, title: string, desc: string, img: string): string {
+  const seo      = cms["seo"]      || {}
+  const faq      = cms["faq"]      || {}
+  const apps     = cms["apps"]     || {}
+  const ctafinal = cms["ctafinal"] || {}
+
+  const h1        = get(cms, "hero",      "heading",      D.heroH1)
+  const heroDesc  = get(cms, "hero",      "description",  D.heroDesc)
+  const heroSup   = get(cms, "hero",      "support_text", D.heroSup)
+  const heroCta   = get(cms, "hero",      "cta_label",    "Solicitar propuesta gratuita")
+  const heroHref  = plain(cms["hero"]?.cta_href || "https://wa.link/phjdep")
+
+  const probH2    = get(cms, "problem",   "heading",      D.probH2)
+  const probDesc  = get(cms, "problem",   "description",  D.probDesc)
+  const solH2     = get(cms, "solution",  "heading",      D.solH2)
+  const solItems  = D.solItems.map((def, i) => ({
+    title: get(cms, "solution", `item${i + 1}_title`, def.title),
+    desc:  get(cms, "solution", `item${i + 1}_desc`,  def.desc),
+  }))
+
+  const servH2    = get(cms, "services",  "heading",      D.servH2)
+  const servSub   = get(cms, "services",  "subheading",   D.servSub)
+  const servMain  = {
+    title: get(cms, "services", "main_title", D.servItems[0].title),
+    desc:  get(cms, "services", "main_desc",  D.servItems[0].desc),
+  }
+  const servCards = D.servItems.slice(1).map((def, i) => ({
+    title: get(cms, "services", `card${i + 1}_title`, def.title),
+    desc:  get(cms, "services", `card${i + 1}_desc`,  def.desc),
+  }))
+
+  const appsH2   = get(cms, "apps", "heading",    "Apps que ya están resolviendo problemas reales en producción")
+  const appsSub  = get(cms, "apps", "subheading", "Publicadas en el Shopify App Store, en producción y con merchants reales pagando suscripción mensual.")
+  const APP_DEFS = [
+    { title: "Calendify Delivery",         subtitle: "Gestión de entregas con calendario y rangos horarios",         desc: "Calendify Delivery es una app Shopify de gestión de entregas que permite a los merchants ofrecer al cliente la elección de fecha de entrega y rango horario directamente desde el carrito o el checkout. Diseñada para tiendas que venden productos perecederos, voluminosos o servicios con instalación a domicilio. Incluye panel de administración completo, configuración por zona de reparto y código postal, límite de capacidad por día, bloqueo de fechas y feriados, notificaciones automáticas e integración con los datos del pedido en Shopify. Más de 50 tiendas activas la usan hoy en producción.", badge: "Publicada en Shopify App Store · Activa en producción", tags: "Shopify, Remix, TypeScript, PostgreSQL, Prisma, Vercel", cta: "Ver en App Store", store_url: "https://apps.shopify.com/calendify-delivery" },
+    { title: "Descuentify",                subtitle: "Motor de descuentos avanzado para Shopify",                    desc: "Descuentify es un motor de descuentos para Shopify que va más allá de las reglas nativas. Para merchants que necesitan descuentos por volumen escalonado, combos entre variantes específicas, bulk price editor masivo, campañas con condiciones combinadas y reglas Buy X Get Y avanzadas. El objetivo es subir el ticket promedio (AOV) sin canibalizar margen.", badge: "Próximamente en Shopify App Store · En desarrollo activo", tags: "Shopify, Remix, TypeScript, PostgreSQL, Shopify Functions, GraphQL Admin API", cta: "Ver más", store_url: "" },
+    { title: "Apps Privadas para Clientes", subtitle: "Integraciones, automatizaciones y paneles internos",          desc: "También desarrollamos apps privadas para clientes que prefieren mantener sus integraciones fuera del App Store: integraciones con ERPs propios, herramientas de operación logística específica, paneles internos de gestión, automatizaciones B2B y conectores con sistemas legacy.", badge: "Custom Apps Privadas · Bajo NDA", tags: "ERP, CRM, WMS, Integración, Automatización, B2B", cta: "Hablemos", store_url: "" },
+  ]
+  const appItems = APP_DEFS.map((def, i) => ({
+    title:     plain(apps[`app${i + 1}_title`]     || def.title),
+    subtitle:  plain(apps[`app${i + 1}_subtitle`]  || def.subtitle),
+    desc:      plain(apps[`app${i + 1}_desc`]      || def.desc),
+    badge:     plain(apps[`app${i + 1}_badge`]     || def.badge),
+    tags:      plain(apps[`app${i + 1}_tags`]      || def.tags),
+    cta:       plain(apps[`app${i + 1}_cta`]       || def.cta),
+    store_url: plain(apps[`app${i + 1}_store_url`] || def.store_url),
+  }))
+
+  const procH2    = get(cms, "process", "heading",    D.procH2)
+  const procSub   = get(cms, "process", "subheading", D.procSub)
+  const PROC_DEFS = [
+    { num: "01", title: "Reunión inicial de descubrimiento",           desc: "Una videollamada de 30 a 45 minutos donde entendemos tu problema real, los sistemas con los que ya trabajas y los objetivos del proyecto. No es una reunión comercial — es una sesión técnica." },
+    { num: "02", title: "Propuesta técnica detallada en 48 horas",     desc: "Te enviamos un documento con alcance funcional desglosado, arquitectura técnica recomendada, stack tecnológico justificado, plazo realista por fases y presupuesto cerrado." },
+    { num: "03", title: "Desarrollo iterativo en sprints de 2 semanas", desc: "Trabajamos en sprints de 2 semanas con demos al final de cada uno. Ves el progreso real desde el primer sprint, con acceso al repositorio Git y al ambiente de staging desde el día uno." },
+    { num: "04", title: "QA, performance, seguridad y lanzamiento",    desc: "Antes del lanzamiento hacemos testing exhaustivo, revisión de performance, auditoría de seguridad y despliegue controlado. Si la app va al App Store, gestionamos todo el proceso de review." },
+    { num: "05", title: "Soporte continuo y evolución del producto",   desc: "Post-lanzamiento te acompañamos con monitoreo activo, actualizaciones a las nuevas versiones de la API de Shopify, resolución de bugs y mejoras incrementales. El código fuente siempre es tuyo." },
+  ]
+  const procSteps = PROC_DEFS.map((def, i) => ({
+    num:   plain(cms["process"]?.[`step${i + 1}_num`]   || def.num),
+    title: get(cms, "process", `step${i + 1}_title`, def.title),
+    desc:  get(cms, "process", `step${i + 1}_desc`,  def.desc),
+  }))
+
+  const ctaH2     = get(cms, "ctabanner", "heading",    D.ctaH2)
+  const ctaDesc   = get(cms, "ctabanner", "desc",       D.ctaDesc)
+  const finalH2   = get(cms, "ctafinal",  "heading",    D.finalH2)
+  const finalDesc = get(cms, "ctafinal",  "subheading", D.finalDesc)
+  const finalHref = plain(ctafinal.cta_href || "https://wa.link/phjdep")
+  const finalCta  = get(cms, "ctafinal",  "cta_label",  "Solicitar propuesta gratuita")
+
+  const faqH2    = get(cms, "faq", "heading", D.faqH2)
+  const faqItems = Array.from({ length: 11 }, (_, i) => ({
+    q: plain(faq[`q${i + 1}`] || D.faqs[i]?.q || ""),
+    a: plain(faq[`a${i + 1}`] || D.faqs[i]?.a || ""),
+  })).filter(f => f.q && f.a)
+
+  const canonical = plain(seo.canonical || SITE_URL)
+
+  const head = [
+    `  <meta charset="UTF-8">`,
+    `  <meta name="viewport" content="width=device-width, initial-scale=1.0">`,
+    `  <title>${esc(title)}</title>`,
+    `  <meta name="description" content="${esc(desc)}">`,
+    `  <link rel="canonical" href="${esc(canonical)}">`,
+    `  <meta property="og:type" content="website">`,
+    `  <meta property="og:site_name" content="Apps Developers Pro">`,
+    `  <meta property="og:locale" content="es_ES">`,
+    `  <meta property="og:title" content="${esc(title)}">`,
+    `  <meta property="og:description" content="${esc(desc)}">`,
+    `  <meta property="og:url" content="${esc(canonical)}">`,
+    `  <meta property="og:image" content="${esc(img)}">`,
+    `  <meta property="og:image:width" content="1200">`,
+    `  <meta property="og:image:height" content="630">`,
+    `  <meta name="twitter:card" content="summary_large_image">`,
+    `  <meta name="twitter:title" content="${esc(title)}">`,
+    `  <meta name="twitter:description" content="${esc(desc)}">`,
+    `  <meta name="twitter:image" content="${esc(img)}">`,
+  ].join("\n")
+
+  const body = [
+    `<header><nav><a href="${SITE_URL}">Apps Developers Pro</a> | <a href="${SITE_URL}/blog">Blog</a></nav></header>`,
+    `<main>`,
+    `  <section aria-label="Inicio"><h1>${esc(h1)}</h1>${heroDesc ? `<p>${esc(heroDesc)}</p>` : ""}${heroSup ? `<p>${esc(heroSup)}</p>` : ""}<a href="${esc(heroHref)}">${esc(heroCta)}</a></section>`,
+    `  <section aria-label="El problema"><h2>${esc(probH2)}</h2>${probDesc ? `<p>${esc(probDesc)}</p>` : ""}</section>`,
+    `  <section aria-label="La solución"><h2>${esc(solH2)}</h2>${solItems.map(it => `<article><h3>${esc(it.title)}</h3><p>${esc(it.desc)}</p></article>`).join("")}</section>`,
+    `  <section aria-label="Servicios"><h2>${esc(servH2)}</h2>${servSub ? `<p>${esc(servSub)}</p>` : ""}<article><h3>${esc(servMain.title)}</h3><p>${esc(servMain.desc)}</p></article>${servCards.map(it => `<article><h3>${esc(it.title)}</h3><p>${esc(it.desc)}</p></article>`).join("")}</section>`,
+    `  <section aria-label="Apps publicadas" id="apps"><h2>${esc(appsH2)}</h2>${appsSub ? `<p>${esc(appsSub)}</p>` : ""}${appItems.map(app => `<article><h3>${esc(app.title)}</h3><p>${esc(app.subtitle)}</p><p>${esc(app.badge)}</p><p>${esc(app.desc)}</p><p>Tecnologías: ${esc(app.tags)}</p>${app.store_url ? `<a href="${esc(app.store_url)}">${esc(app.cta)}</a>` : `<span>${esc(app.cta)}</span>`}</article>`).join("")}</section>`,
+    `  <section aria-label="Proceso" id="proceso"><h2>${esc(procH2)}</h2>${procSub ? `<p>${esc(procSub)}</p>` : ""}${procSteps.map(s => `<article><h3>${esc(s.num)}. ${esc(s.title)}</h3><p>${esc(s.desc)}</p></article>`).join("")}</section>`,
+    `  <section aria-label="CTA"><h2>${esc(ctaH2)}</h2>${ctaDesc ? `<p>${esc(ctaDesc)}</p>` : ""}</section>`,
+    `  <section aria-label="FAQ" id="faq"><h2>${esc(faqH2)}</h2>${faqItems.map(f => `<div><h3>${esc(f.q)}</h3><p>${esc(f.a)}</p></div>`).join("")}</section>`,
+    `  <section aria-label="Contacto"><h2>${esc(finalH2)}</h2>${finalDesc ? `<p>${esc(finalDesc)}</p>` : ""}<a href="${esc(finalHref)}">${esc(finalCta)}</a></section>`,
+    `</main>`,
+    `<footer><p>Apps Developers Pro — <a href="mailto:contacto@appsdeveloperspro.com">contacto@appsdeveloperspro.com</a></p></footer>`,
+  ].filter(Boolean).join("\n")
+
+  return `<!doctype html>\n<html lang="es">\n<head>\n${head}\n</head>\n<body>\n${body}\n</body>\n</html>`
+}
+
 // ─── Build SEO content for <noscript> ────────────────────────────────────────
 
 function buildNoscriptContent(cms: Record<string, Record<string, string>>): string {
@@ -280,6 +400,10 @@ async function main() {
   }
 
   fs.writeFileSync(DIST_HTML, html, "utf-8")
+
+  // Generar ai-render.html para crawlers de IA que descartan <noscript>
+  const aiHtml = buildAiHtml(cms, title, desc, img)
+  fs.writeFileSync(path.resolve("dist", "ai-render.html"), aiHtml, "utf-8")
 
   const faqCount = Object.keys(cms["faq"] || {}).filter(k => /^q\d+$/.test(k)).length
   console.log("[inject-seo] ✅ dist/index.html actualizado")
