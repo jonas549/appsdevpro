@@ -44,9 +44,9 @@ export default function CTABanner() {
           animate={isInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6 tracking-tight" style={headingStyle}>
+          <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6 tracking-tight" style={headingStyle}>
             {heading}
-          </h3>
+          </h2>
           <p className="text-white/70 text-base leading-relaxed mb-10 max-w-xl mx-auto [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic" style={descStyle} dangerouslySetInnerHTML={{ __html: safeHtml(desc) }} />
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
