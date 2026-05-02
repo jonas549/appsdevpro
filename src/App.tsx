@@ -41,6 +41,14 @@ function mapRange(inputRange: number[], outputRange: number[], v: number): numbe
   return outputRange[outputRange.length - 1]
 }
 
+function PageViewTracker() {
+  const { pathname, search, hash } = useLocation()
+  useEffect(() => {
+    window.gtag?.('config', 'G-8J3B6TQM9Q', { page_path: pathname + search + hash })
+  }, [pathname, search, hash])
+  return null
+}
+
 function HashScroller() {
   const { hash } = useLocation()
   useEffect(() => {
@@ -135,6 +143,7 @@ function PublicSite() {
 export default function App() {
   return (
     <BrowserRouter>
+      <PageViewTracker />
       <Routes>
         {/* Public site — wrapped in ContentProvider */}
         <Route path="/" element={<ContentProvider><PublicSite /></ContentProvider>} />

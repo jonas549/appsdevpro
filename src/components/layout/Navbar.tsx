@@ -73,6 +73,7 @@ export default function Navbar() {
           href="https://wa.link/phjdep"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => window.gtag?.('event', 'contact', { method: 'navbar_cta' })}
           className="hidden md:flex items-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-colors duration-200 flex-shrink-0"
         >
           Hablemos
@@ -87,6 +88,7 @@ export default function Navbar() {
             href="https://wa.link/phjdep"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => window.gtag?.('event', 'contact', { method: 'navbar_cta' })}
             className="flex items-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors duration-200"
           >
             Hablemos

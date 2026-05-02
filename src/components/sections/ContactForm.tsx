@@ -74,6 +74,7 @@ export default function ContactForm() {
         setStatus('error')
         return
       }
+      window.gtag?.('event', 'generate_lead', { currency: 'USD', value: 1 })
       navigate('/gracias', { state: { name: form.name } })
     } catch {
       setErrorMsg('Error de conexión. Intenta de nuevo.')

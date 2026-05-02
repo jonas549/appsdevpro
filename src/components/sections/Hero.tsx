@@ -103,6 +103,7 @@ export default function Hero() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => window.gtag?.('event', 'contact', { method: 'hero_cta' })}
                   className="group inline-flex items-center gap-2 hover:gap-3 transition-all duration-300 bg-[#4361EE] rounded-full pl-5 pr-1.5 py-1.5"
                 >
                   <span className="text-white font-medium text-sm whitespace-nowrap" style={ctaLabelStyle}>{cta}</span>
