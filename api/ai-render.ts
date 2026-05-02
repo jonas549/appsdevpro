@@ -171,6 +171,7 @@ function buildHtml(
   const finalHref = plain(ctafinal.cta_href || "https://wa.link/phjdep")
   const finalCta  = get(cms, "ctafinal",  "cta_label",  "Solicitar propuesta gratuita")
 
+  const faqH2     = get(cms, "faq", "heading", D.faqH2)
   const faqItems  = Array.from({ length: 11 }, (_, i) => ({
     q: plain(faq[`q${i + 1}`] || D.faqs[i]?.q || ""),
     a: plain(faq[`a${i + 1}`] || D.faqs[i]?.a || ""),
