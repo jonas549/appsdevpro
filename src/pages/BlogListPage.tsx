@@ -40,7 +40,7 @@ export default function BlogListPage() {
       {/* Header */}
       <div className="bg-[#07090F]">
         <Navbar />
-        <div className="pt-24 pb-16 px-6">
+        <div className="pt-28 pb-16 px-6">
           <div className="max-w-7xl mx-auto">
             <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
               <span>←</span> Volver al inicio

@@ -71,7 +71,7 @@ export default function BlogPostPage() {
       {/* Dark header zone */}
       <div className="bg-[#07090F]">
         <Navbar />
-        <div className="pt-24 pb-14 px-6">
+        <div className="pt-28 pb-14 px-6">
           <div className="max-w-[720px] mx-auto">
             <Link to="/blog" className="inline-flex items-center gap-2 text-white/50 hover:text-white/80 text-sm mb-8 transition-colors">
               <span>←</span> Blog

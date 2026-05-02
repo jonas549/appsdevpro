@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import Navbar from '../layout/Navbar'
 import WordsPullUp from '../animations/WordsPullUp'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
@@ -57,7 +56,6 @@ export default function Hero() {
         <video src={video} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
         <div className="noise-overlay opacity-[0.07] mix-blend-overlay pointer-events-none z-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60 z-10 pointer-events-none" />
-        <Navbar />
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-8 pb-6 md:pb-10">
           <div className="grid grid-cols-12 gap-4 items-end">
             <div className="col-span-12 md:col-span-7">

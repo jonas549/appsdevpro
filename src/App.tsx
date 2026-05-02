@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { motion, useScroll, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import { ContentProvider, useContent } from './lib/ContentContext'
 import SEOHead from './components/SEOHead'
+import Navbar from './components/layout/Navbar'
 import WhatsAppButton from './components/WhatsAppButton'
 import Hero from './components/sections/Hero'
 import MarqueeSection from './components/sections/Marquee'
@@ -121,6 +122,7 @@ function PublicSite() {
     <div className="min-h-screen bg-[#07090F]">
       <HashScroller />
       <HomeSEO />
+      <Navbar />
       <ScaleFadeOut><Hero /></ScaleFadeOut>
       <MarqueeSection />
       <DynamicSections />
