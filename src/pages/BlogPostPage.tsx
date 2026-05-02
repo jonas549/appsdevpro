@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, Link, Navigate } from "react-router-dom"
 import DOMPurify from "dompurify"
+import SEOHead from "../components/SEOHead"
 
 interface Post {
   id: string; title: string; slug: string; content: string; excerpt: string
@@ -46,6 +47,14 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead
+        title={`${post.meta_title || post.title} | Apps Developers Pro`}
+        description={post.meta_description || post.excerpt}
+        canonical={`/blog/${post.slug}`}
+        ogImage={post.featured_image}
+        ogType="article"
+        publishedTime={post.createdAt}
+      />
       {/* Hero */}
       <div className="bg-[#07090F] pt-24 pb-12 px-6">
         <div className="max-w-3xl mx-auto">

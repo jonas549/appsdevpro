@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import SEOHead from "../components/SEOHead"
 
 interface Post {
   id: string; title: string; slug: string; excerpt: string
@@ -28,6 +29,11 @@ export default function BlogListPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEOHead
+        title="Blog | Apps Developers Pro"
+        description="Ideas, casos de estudio y recursos sobre desarrollo de apps y tiendas Shopify."
+        canonical="/blog"
+      />
       {/* Header */}
       <div className="bg-[#07090F] pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto">

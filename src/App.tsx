@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { motion, useScroll, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import { ContentProvider, useContent } from './lib/ContentContext'
+import SEOHead from './components/SEOHead'
 import WhatsAppButton from './components/WhatsAppButton'
 import Hero from './components/sections/Hero'
 import MarqueeSection from './components/sections/Marquee'
@@ -93,9 +94,17 @@ function DynamicSections() {
   )
 }
 
+function HomeSEO() {
+  const seo = useContent('seo')
+  const title = seo.meta_title || 'Apps Developers Pro — Desarrollo de Apps Shopify'
+  const description = seo.meta_description || 'Agencia especializada en desarrollo de aplicaciones Shopify. Apps publicadas en el App Store, integraciones y soluciones a medida.'
+  return <SEOHead title={title} description={description} canonical="/" />
+}
+
 function PublicSite() {
   return (
     <div className="min-h-screen bg-[#07090F]">
+      <HomeSEO />
       <ScaleFadeOut><Hero /></ScaleFadeOut>
       <MarqueeSection />
       <DynamicSections />

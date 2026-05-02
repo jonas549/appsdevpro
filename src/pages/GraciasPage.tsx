@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEOHead from '../components/SEOHead'
 
 const VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
@@ -21,6 +22,12 @@ export default function GraciasPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#07090F]">
+      <SEOHead
+        title="Gracias | Apps Developers Pro"
+        description="Hemos recibido tu mensaje. Te contactaremos con una propuesta técnica personalizada en menos de 48 horas."
+        canonical="/gracias"
+        noIndex={true}
+      />
       {/* Video background */}
       <video
         autoPlay
