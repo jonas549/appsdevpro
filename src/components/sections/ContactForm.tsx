@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, type Variants } from 'framer-motion'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
+import { trackEvent } from '../MetaPixel'
 import { safeHtml } from '../../lib/safe-html'
 
 
@@ -75,6 +76,7 @@ export default function ContactForm() {
         return
       }
       window.gtag?.('event', 'generate_lead', { currency: 'USD', value: 1 })
+      trackEvent('Lead')
       navigate('/gracias', { state: { name: form.name } })
     } catch {
       setErrorMsg('Error de conexión. Intenta de nuevo.')

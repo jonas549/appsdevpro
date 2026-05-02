@@ -28,6 +28,7 @@ import BlogPostPage from './pages/BlogPostPage'
 import GraciasPage from './pages/GraciasPage'
 import ContactForm from './components/sections/ContactForm'
 import LeadsPage from './pages/admin/LeadsPage'
+import MetaPixel from './components/MetaPixel'
 
 function mapRange(inputRange: number[], outputRange: number[], v: number): number {
   if (v <= inputRange[0]) return outputRange[0]
@@ -144,6 +145,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <PageViewTracker />
+      <MetaPixel />
       <Routes>
         {/* Public site — wrapped in ContentProvider */}
         <Route path="/" element={<ContentProvider><PublicSite /></ContentProvider>} />
