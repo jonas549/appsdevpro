@@ -13,13 +13,12 @@ export default function Navbar() {
         className="flex items-center gap-3 sm:gap-6 md:gap-10 bg-[#07090F] border border-white/[0.06] rounded-b-2xl md:rounded-b-3xl px-4 py-2 md:px-8 md:py-3"
       >
         {/* Logo */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-[34px] h-[34px] rounded-lg bg-gradient-to-br from-accent to-[#3451D1] flex items-center justify-center text-white font-bold text-sm">
-            AP
-          </div>
-          <span className="font-bold text-primary text-sm hidden sm:block">
-            Apps<span className="text-accent">Dev</span>Pro
-          </span>
+        <div className="flex items-center flex-shrink-0">
+          <img
+            src="/logo-header.png"
+            alt="Apps Developers Pro"
+            className="h-7 md:h-8 w-auto"
+          />
         </div>
 
         {/* Nav items — hidden on mobile */}
