@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const navItems = ['Servicios', 'Apps', 'Proceso', 'Blog', 'FAQ']
 
@@ -26,15 +27,13 @@ export default function Navbar() {
 
         {/* Nav items — hidden on mobile */}
         <nav className="hidden md:flex items-center gap-8 lg:gap-12">
-          {navItems.map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200"
-            >
-              {item}
-            </a>
-          ))}
+          {navItems.map(item =>
+            item === 'Blog' ? (
+              <Link key={item} to="/blog" className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200">{item}</Link>
+            ) : (
+              <a key={item} href={`#${item.toLowerCase()}`} className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200">{item}</a>
+            )
+          )}
         </nav>
 
         {/* Hamburger — mobile only */}
@@ -65,16 +64,27 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden w-[calc(100%-2rem)] max-w-sm mt-2 bg-[#07090F] border border-white/[0.06] rounded-2xl overflow-hidden">
           <nav className="flex flex-col">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                onClick={() => setOpen(false)}
-                className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
-              >
-                {item}
-              </a>
-            ))}
+            {navItems.map(item =>
+              item === 'Blog' ? (
+                <Link
+                  key={item}
+                  to="/blog"
+                  onClick={() => setOpen(false)}
+                  className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
+                >
+                  {item}
+                </Link>
+              ) : (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setOpen(false)}
+                  className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
+                >
+                  {item}
+                </a>
+              )
+            )}
           </nav>
         </div>
       )}

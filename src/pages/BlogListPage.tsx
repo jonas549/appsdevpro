@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import SEOHead from "../components/SEOHead"
+import Navbar from "../components/layout/Navbar"
+import Footer from "../components/layout/Footer"
 
 interface Post {
   id: string; title: string; slug: string; excerpt: string
@@ -36,13 +38,16 @@ export default function BlogListPage() {
         canonical="/blog"
       />
       {/* Header */}
-      <div className="bg-[#07090F] pt-24 pb-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
-            <span>←</span> Volver al inicio
-          </Link>
-          <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight mb-4">Blog</h1>
-          <p className="text-white/60 text-lg">Ideas, casos de estudio y recursos sobre desarrollo Shopify.</p>
+      <div className="bg-[#07090F]">
+        <Navbar />
+        <div className="pt-24 pb-16 px-6">
+          <div className="max-w-7xl mx-auto">
+            <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
+              <span>←</span> Volver al inicio
+            </Link>
+            <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight mb-4">Blog</h1>
+            <p className="text-white/60 text-lg">Ideas, casos de estudio y recursos sobre desarrollo Shopify.</p>
+          </div>
         </div>
       </div>
 
@@ -129,6 +134,7 @@ export default function BlogListPage() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   )
 }

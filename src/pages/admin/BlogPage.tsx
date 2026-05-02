@@ -136,6 +136,15 @@ export default function BlogPage() {
                       <td className="px-6 py-4 text-sm text-slate-500">{formatDate(post.createdAt)}</td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
+                          <a
+                            href={`/blog/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-slate-400 hover:text-[#4361EE] transition-colors"
+                            title={post.published ? "Ver post publicado" : "Vista previa del borrador"}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>visibility</span>
+                          </a>
                           <Link to={`/admin/blog/${post.id}`} className="p-2 text-slate-400 hover:text-adm-primary transition-colors">
                             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
                           </Link>

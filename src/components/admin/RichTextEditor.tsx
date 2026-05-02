@@ -348,14 +348,22 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
         .tiptap-editor ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 0.875rem; }
         .tiptap-editor ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 0.875rem; }
         .tiptap-editor li { margin-bottom: 0.25rem; }
-        .tiptap-editor a { color: #2346d5; text-decoration: underline; }
+        .tiptap-editor a { color: #2346d5; text-decoration: underline; cursor: pointer; }
+        .tiptap-editor a[href]:hover { opacity: 0.75; }
         .tiptap-editor blockquote { border-left: 3px solid #e2e8f0; padding-left: 1rem; color: #64748b; margin: 1rem 0; }
         .tiptap-editor img { border-radius: 0.5rem; max-width: 100%; margin: 1rem 0; }
         .tiptap-editor iframe { width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
         .tiptap-editor .tiptap-placeholder::before { color: #94a3b8; content: attr(data-placeholder); float: left; pointer-events: none; height: 0; }
       `}</style>
       <div
-        onClick={() => editor.commands.focus()}
+        onClick={(e) => {
+          if (e.ctrlKey || e.metaKey) {
+            const link = (e.target as HTMLElement).closest('a[href]') as HTMLAnchorElement | null
+            if (link?.href) { e.preventDefault(); window.open(link.href, '_blank', 'noopener,noreferrer'); return }
+          }
+          const target = e.target as HTMLElement
+          if (!target.closest('.ProseMirror')) editor.commands.focus()
+        }}
         style={{ minHeight }}
         className="cursor-text"
       >

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
-import { useContent } from "../../lib/ContentContext"
+import { useContent, getFieldStyle } from "../../lib/ContentContext"
 
 interface Post {
   id: string; title: string; slug: string; excerpt: string
@@ -8,7 +8,7 @@ interface Post {
 }
 
 export default function BlogFeed() {
-  const content = useContent('blog_feed')
+  const c = useContent('blog_feed')
   const [posts, setPosts] = useState<Post[]>([])
   const dragRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
@@ -26,7 +26,12 @@ export default function BlogFeed() {
 
   if (posts.length === 0) return null
 
-  const heading = (content.heading as string | undefined) || "Últimas del blog"
+  const heading    = c.heading    || "Últimas del blog"
+  const subheading = c.subheading || ""
+  const videoUrl   = c.video_url  || ""
+
+  const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
+  const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
 
   const onMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true
@@ -42,22 +47,41 @@ export default function BlogFeed() {
     if (!isDragging.current || !dragRef.current) return
     e.preventDefault()
     const x = e.pageX - dragRef.current.offsetLeft
-    const walk = (x - startX.current) * 1.5
-    dragRef.current.scrollLeft = scrollLeft.current - walk
+    dragRef.current.scrollLeft = scrollLeft.current - (x - startX.current) * 1.5
   }
 
   return (
-    <section id="blog" className="py-24 bg-[#07090F]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-end justify-between mb-12">
-          <h2 className="text-white text-3xl md:text-4xl font-bold">{heading}</h2>
+    <section id="blog" className="py-24 bg-[#07090F] relative overflow-hidden">
+      {/* Optional video background */}
+      {videoUrl && (
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-25 pointer-events-none"
+          src={videoUrl}
+        />
+      )}
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="flex items-end justify-between mb-4">
+          <h2
+            className="text-white text-3xl md:text-4xl font-bold"
+            style={headingStyle}
+          >
+            {heading}
+          </h2>
           <Link
             to="/blog"
-            className="text-white/60 hover:text-white text-sm font-medium transition-colors flex-shrink-0"
+            className="text-white/60 hover:text-white text-sm font-medium transition-colors flex-shrink-0 ml-8"
           >
             Ver todos →
           </Link>
         </div>
+
+        {subheading && (
+          <p className="text-white/60 text-lg mb-10" style={subheadingStyle}>{subheading}</p>
+        )}
+
+        {!subheading && <div className="mb-10" />}
 
         <div
           ref={dragRef}
@@ -74,7 +98,9 @@ export default function BlogFeed() {
               to={`/blog/${post.slug}`}
               draggable={false}
               className="flex-shrink-0 w-80 bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden group hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/40 transition-all duration-200"
-              onClick={e => { if (isDragging.current && Math.abs((dragRef.current?.scrollLeft ?? 0) - scrollLeft.current) > 5) e.preventDefault() }}
+              onClick={e => {
+                if (isDragging.current && Math.abs((dragRef.current?.scrollLeft ?? 0) - scrollLeft.current) > 5) e.preventDefault()
+              }}
             >
               {post.featured_image ? (
                 <img

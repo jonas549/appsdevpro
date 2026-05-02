@@ -48,7 +48,7 @@ const TAG_OPTS = [
 const VIDEO_PH_PROBLEM  = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4'
 const VIDEO_PH_SERVICES = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0.mp4'
 
-const DRAGGABLE_IDS = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'faq', 'contactform', 'ctafinal']
+const DRAGGABLE_IDS = ['problem_solution', 'services', 'apps', 'ctabanner', 'process', 'blog_feed', 'faq', 'contactform', 'ctafinal']
 
 const SECTIONS: SectionDef[] = [
   // ── Hero ──────────────────────────────────────────────────────────────────
@@ -343,6 +343,27 @@ const SECTIONS: SectionDef[] = [
     ],
   },
 
+  // ── Blog Feed ─────────────────────────────────────────────────────────────
+  {
+    id: 'blog_feed',
+    label: 'Blog (Últimas publicaciones)',
+    groups: [
+      {
+        label: 'Video de fondo',
+        fields: [
+          { section: 'blog_feed', key: 'video_url', label: 'URL del video de fondo (dejar vacío para fondo sólido)', type: 'url' },
+        ],
+      },
+      {
+        label: 'Encabezado de sección',
+        fields: [
+          { section: 'blog_feed', key: 'heading',    label: 'Título de la sección', type: 'input', withSize: true },
+          { section: 'blog_feed', key: 'subheading', label: 'Subtítulo (opcional)', type: 'textarea', withSize: true },
+        ],
+      },
+    ],
+  },
+
   // ── FAQ ───────────────────────────────────────────────────────────────────
   {
     id: 'faq',
@@ -504,7 +525,7 @@ export default function ContentPage() {
           const raw = map[fk('global', 'section_order')]
           if (raw) {
             const parsed = JSON.parse(raw) as string[]
-            const valid = parsed.filter(id => DRAGGABLE_IDS.includes(id))
+            const valid = parsed.filter((id: string) => DRAGGABLE_IDS.includes(id))
             if (valid.length > 0) {
               const full = [...valid, ...DRAGGABLE_IDS.filter(id => !valid.includes(id))]
               setSectionOrder(full)
@@ -644,8 +665,8 @@ export default function ContentPage() {
 
 const SECTION_ICONS: Record<string, string> = {
   hero: "web", problem_solution: "compare", services: "category", apps: "token",
-  ctabanner: "campaign", process: "account_tree", faq: "quiz", contactform: "contact_mail",
-  ctafinal: "flag", footer: "bottom_navigation", global: "settings",
+  ctabanner: "campaign", process: "account_tree", blog_feed: "rss_feed", faq: "quiz",
+  contactform: "contact_mail", ctafinal: "flag", footer: "bottom_navigation", global: "settings",
 }
 
 function SortableSectionBlock(props: Parameters<typeof SectionBlock>[0]) {
