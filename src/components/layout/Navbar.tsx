@@ -1,12 +1,24 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-const navItems = ['Servicios', 'Apps', 'Proceso', 'Blog', 'FAQ']
+const navItems = ['Inicio', 'Servicios', 'Apps', 'Proceso', 'Blog', 'FAQ']
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  function handleAnchorClick(e: React.MouseEvent, section: string, onDone?: () => void) {
+    e.preventDefault()
+    if (location.pathname === '/') {
+      document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate(`/#${section}`)
+    }
+    onDone?.()
+  }
 
   return (
     <div className="absolute top-0 left-0 right-0 z-50 flex flex-col items-center">
@@ -25,15 +37,23 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Nav items — hidden on mobile */}
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8 lg:gap-12">
-          {navItems.map(item =>
-            item === 'Blog' ? (
-              <Link key={item} to="/blog" className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200">{item}</Link>
-            ) : (
-              <a key={item} href={`#${item.toLowerCase()}`} className="text-xs md:text-sm text-white hover:text-primary transition-colors duration-200">{item}</a>
+          {navItems.map(item => {
+            const cls = "text-xs md:text-sm text-white hover:text-primary transition-colors duration-200"
+            if (item === 'Inicio') return <Link key={item} to="/" className={cls}>{item}</Link>
+            if (item === 'Blog')   return <Link key={item} to="/blog" className={cls}>{item}</Link>
+            return (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={e => handleAnchorClick(e, item.toLowerCase())}
+                className={cls}
+              >
+                {item}
+              </a>
             )
-          )}
+          })}
         </nav>
 
         {/* Hamburger — mobile only */}
@@ -64,27 +84,21 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden w-[calc(100%-2rem)] max-w-sm mt-2 bg-[#07090F] border border-white/[0.06] rounded-2xl overflow-hidden">
           <nav className="flex flex-col">
-            {navItems.map(item =>
-              item === 'Blog' ? (
-                <Link
-                  key={item}
-                  to="/blog"
-                  onClick={() => setOpen(false)}
-                  className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
-                >
-                  {item}
-                </Link>
-              ) : (
+            {navItems.map(item => {
+              const cls = "block px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
+              if (item === 'Inicio') return <Link key={item} to="/" onClick={() => setOpen(false)} className={cls}>{item}</Link>
+              if (item === 'Blog')   return <Link key={item} to="/blog" onClick={() => setOpen(false)} className={cls}>{item}</Link>
+              return (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  onClick={() => setOpen(false)}
-                  className="px-6 py-3.5 text-sm text-white/80 hover:text-white hover:bg-white/[0.04] transition-colors border-b border-white/[0.04] last:border-0"
+                  onClick={e => handleAnchorClick(e, item.toLowerCase(), () => setOpen(false))}
+                  className={cls}
                 >
                   {item}
                 </a>
               )
-            )}
+            })}
           </nav>
         </div>
       )}

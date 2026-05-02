@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useRef, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { motion, useScroll, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import { ContentProvider, useContent } from './lib/ContentContext'
 import SEOHead from './components/SEOHead'
@@ -38,6 +38,19 @@ function mapRange(inputRange: number[], outputRange: number[], v: number): numbe
     }
   }
   return outputRange[outputRange.length - 1]
+}
+
+function HashScroller() {
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (!hash) return
+    const id = hash.slice(1)
+    const timer = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [hash])
+  return null
 }
 
 function ScaleFadeOut({ children }: { children: React.ReactNode }) {
@@ -106,6 +119,7 @@ function HomeSEO() {
 function PublicSite() {
   return (
     <div className="min-h-screen bg-[#07090F]">
+      <HashScroller />
       <HomeSEO />
       <ScaleFadeOut><Hero /></ScaleFadeOut>
       <MarqueeSection />

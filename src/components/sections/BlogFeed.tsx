@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useContent, getFieldStyle } from "../../lib/ContentContext"
+import { safeHtml } from "../../lib/safe-html"
 
 interface Post {
   id: string; title: string; slug: string; excerpt: string
@@ -71,14 +72,19 @@ export default function BlogFeed() {
           </h2>
           <Link
             to="/blog"
-            className="text-white/60 hover:text-white text-sm font-medium transition-colors flex-shrink-0 ml-8"
+            className="text-white hover:text-white/70 text-sm font-medium transition-colors flex-shrink-0 ml-8"
           >
             Ver todos →
           </Link>
         </div>
 
+        {/* Subheading — rendered as HTML (CMS stores TipTap HTML) */}
         {subheading && (
-          <p className="text-white/60 text-lg mb-10" style={subheadingStyle}>{subheading}</p>
+          <p
+            className="text-white/70 text-lg mb-10 [&_strong]:text-white [&_strong]:font-semibold"
+            style={subheadingStyle}
+            dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
+          />
         )}
 
         {!subheading && <div className="mb-10" />}
@@ -97,7 +103,7 @@ export default function BlogFeed() {
               key={post.id}
               to={`/blog/${post.slug}`}
               draggable={false}
-              className="flex-shrink-0 w-80 bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden group hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/40 transition-all duration-200"
+              className="flex-shrink-0 w-80 bg-white/[0.04] border border-white/[0.15] rounded-2xl overflow-hidden group hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/40 transition-all duration-200"
               onClick={e => {
                 if (isDragging.current && Math.abs((dragRef.current?.scrollLeft ?? 0) - scrollLeft.current) > 5) e.preventDefault()
               }}
@@ -115,12 +121,12 @@ export default function BlogFeed() {
                 </div>
               )}
               <div className="p-6">
-                <p className="text-white/40 text-xs mb-2">
+                <p className="text-white/50 text-xs mb-2">
                   {new Date(post.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
                 <h3 className="text-white font-bold text-lg mb-3 leading-snug line-clamp-2 group-hover:text-[#4361EE] transition-colors">{post.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed line-clamp-3 mb-4">{post.excerpt}</p>
-                <span className="text-[#4361EE] text-sm font-semibold group-hover:underline">Leer más →</span>
+                <p className="text-white/[0.85] text-sm leading-relaxed line-clamp-3 mb-4">{post.excerpt}</p>
+                <span className="text-white text-sm font-semibold group-hover:text-[#4361EE] transition-colors">Leer más →</span>
               </div>
             </Link>
           ))}
