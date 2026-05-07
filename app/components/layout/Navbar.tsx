@@ -31,9 +31,9 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="flex items-center gap-3 sm:gap-6 md:gap-10 bg-[#07090F] border border-white/[0.06] rounded-b-2xl md:rounded-b-3xl px-4 py-2 md:px-8 md:py-3"
       >
-        <div className="flex items-center flex-shrink-0">
+        <Link href="/" className="flex items-center flex-shrink-0">
           <img src="/logo-header.png" alt="Apps Developers Pro" className="h-7 md:h-8 w-auto" />
-        </div>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-8 lg:gap-12">
           {navItems.map(item => {

@@ -69,10 +69,10 @@ function LeadsContent() {
     setUpdating(false)
   }
 
-  async function openModal(lead: Lead) {
+  function openModal(lead: Lead) {
     setSelected(lead)
     if (lead.status === 'unread') {
-      await markAs(lead, 'read')
+      markAs(lead, 'read').catch(() => {})
     }
   }
 

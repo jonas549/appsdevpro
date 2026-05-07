@@ -125,6 +125,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Underline,

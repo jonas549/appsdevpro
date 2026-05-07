@@ -8,10 +8,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function GraciasPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ name?: string }>
-}) {
-  return <GraciasClient searchParamsPromise={searchParams} />
+export default function GraciasPage() {
+  return <GraciasClient />
 }

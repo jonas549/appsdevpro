@@ -78,7 +78,8 @@ export default function ContactForm() {
       }
       window.gtag?.('event', 'generate_lead', { currency: 'USD', value: 1 })
       trackEvent('Lead')
-      router.push(`/gracias?name=${encodeURIComponent(form.name)}`)
+      sessionStorage.setItem('gracias_name', form.name)
+      router.push('/gracias')
     } catch {
       setErrorMsg('Error de conexión. Intenta de nuevo.')
       setStatus('error')

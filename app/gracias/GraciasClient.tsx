@@ -1,22 +1,27 @@
 'use client'
+/* eslint-disable react-hooks/set-state-in-effect */
 
-import { use } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 
 const VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
-export default function GraciasClient({ searchParamsPromise }: { searchParamsPromise: Promise<{ name?: string }> }) {
-  const searchParams = use(searchParamsPromise)
+export default function GraciasClient() {
   const router = useRouter()
-  const name = searchParams.name || ''
+  const [firstName, setFirstName] = useState<string | null>(null)
 
-  if (!name) {
-    router.replace('/')
-    return null
-  }
+  useEffect(() => {
+    const stored = sessionStorage.getItem('gracias_name')
+    if (!stored) {
+      router.replace('/')
+      return
+    }
+    sessionStorage.removeItem('gracias_name')
+    setFirstName(stored.trim().split(' ')[0])
+  }, [router])
 
-  const firstName = name.trim().split(' ')[0]
+  if (!firstName) return null
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#07090F]">
