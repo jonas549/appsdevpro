@@ -1,0 +1,49 @@
+import type { VercelRequest, VercelResponse } from "@vercel/node"
+import { prisma } from "./_lib/prisma.js"
+import { setCors, requireAuth } from "./_lib/auth.js"
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  setCors(res)
+  if (req.method === "OPTIONS") { res.status(204).end(); return }
+
+  try {
+    if (req.method === "GET") {
+      const posts = await prisma.blogPost.findMany({ orderBy: { createdAt: "desc" } })
+      res.json(posts)
+      return
+    }
+
+    if (req.method === "POST") {
+      if (!requireAuth(req, res)) return
+      const { title, slug, content, excerpt, published, featured_image, meta_title, meta_description, faq_data } = req.body as {
+        title: string; slug: string; content: string; excerpt: string; published?: boolean
+        featured_image?: string; meta_title?: string; meta_description?: string; faq_data?: string
+      }
+      if (!title || !slug || !excerpt) {
+        res.status(400).json({ error: "title, slug, excerpt required" })
+        return
+      }
+      const post = await prisma.blogPost.create({
+        data: {
+          title, slug, content: content || "", excerpt,
+          published: published === true || (published as unknown) === 'true',
+          featured_image: featured_image || null,
+          meta_title: meta_title || null,
+          meta_description: meta_description || null,
+          faq_data: faq_data || null,
+        },
+      })
+      res.status(201).json(post)
+      return
+    }
+
+    res.status(405).json({ error: "Method not allowed" })
+  } catch (err: unknown) {
+    if ((err as { code?: string }).code === "P2002") {
+      res.status(409).json({ error: "Slug already exists" })
+      return
+    }
+    console.error(err)
+    res.status(500).json({ error: "Server error" })
+  }
+}

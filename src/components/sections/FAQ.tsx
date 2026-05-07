@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Helmet } from 'react-helmet-async'

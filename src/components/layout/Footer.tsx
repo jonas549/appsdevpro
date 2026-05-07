@@ -1,3 +1,4 @@
+'use client'
 import { useContent, getFieldStyle } from '../../lib/ContentContext'
 import { safeHtml } from '../../lib/safe-html'
 

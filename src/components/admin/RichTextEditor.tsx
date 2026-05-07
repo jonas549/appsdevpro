@@ -1,3 +1,4 @@
+'use client'
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Link from "@tiptap/extension-link"
@@ -124,6 +125,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "Escribe
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Underline,

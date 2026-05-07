@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, useContext, useEffect, useState } from "react"
 import type { CSSProperties, ReactNode } from "react"
 
@@ -18,10 +20,6 @@ export function getSizeStyle(size?: string): CSSProperties {
   }
 }
 
-/**
- * Combina tag semántico (_size), tamaño en px (_px) y color (_color)
- * en un único objeto CSSProperties listo para usar como style prop.
- */
 export function getFieldStyle(size?: string, px?: string, color?: string): CSSProperties {
   const style: CSSProperties = { ...getSizeStyle(size) }
   const pxNum = parseInt(px || '')
@@ -30,8 +28,8 @@ export function getFieldStyle(size?: string, px?: string, color?: string): CSSPr
   return style
 }
 
-export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<ContentMap>({})
+export function ContentProvider({ children, initialContent }: { children: ReactNode; initialContent?: ContentMap }) {
+  const [content, setContent] = useState<ContentMap>(initialContent ?? {})
 
   function load() {
     fetch("/api/content", { cache: 'no-store' })
@@ -42,13 +40,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           if (!map[section]) map[section] = {}
           map[section][key] = value
         }
-        // Apply global SEO from DB
-        const seoTitle = map['seo']?.['meta_title']
-        const seoDesc  = map['seo']?.['meta_description']
-        if (seoTitle) document.title = seoTitle
-        if (seoDesc) {
-          const metaEl = document.querySelector('meta[name="description"]')
-          if (metaEl) metaEl.setAttribute('content', seoDesc)
+        if (!initialContent) {
+          const seoTitle = map['seo']?.['meta_title']
+          const seoDesc  = map['seo']?.['meta_description']
+          if (seoTitle) document.title = seoTitle
+          if (seoDesc) {
+            const metaEl = document.querySelector('meta[name="description"]')
+            if (metaEl) metaEl.setAttribute('content', seoDesc)
+          }
         }
         setContent(map)
       })
@@ -56,7 +55,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    load()
+    if (!initialContent) load()
     const onVisibility = () => { if (document.visibilityState === 'visible') load() }
     window.addEventListener('focus', load)
     window.addEventListener('content-updated', load)
@@ -66,6 +65,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('content-updated', load)
       document.removeEventListener('visibilitychange', onVisibility)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <ContentContext.Provider value={content}>{children}</ContentContext.Provider>

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './app/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -22,8 +22,9 @@ export default {
         'adm-error': '#ba1a1a',
       },
       fontFamily: {
-        mono: ['"JetBrains Mono"', 'monospace'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', '"JetBrains Mono"', 'monospace'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        'dm-sans': ['var(--font-dm-sans)', '"DM Sans"', 'sans-serif'],
       },
     },
   },

@@ -1,0 +1,9 @@
+{
+  "/api/content/route": "app/api/content/route.js",
+  "/api/blog/route": "app/api/blog/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/api/leads/route": "app/api/leads/route.js",
+  "/page": "app/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/blog/[slug]/page": "app/blog/[slug]/page.js"
+}
