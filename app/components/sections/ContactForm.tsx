@@ -1,0 +1,229 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion, type Variants } from 'framer-motion'
+import { useContent, getFieldStyle } from '@/src/lib/ContentContext'
+import { trackEvent } from '@/app/lib/pixel'
+import { safeHtml } from '@/src/lib/safe-html'
+
+const BUDGET_OPTIONS = [
+  '$500 – $1.500',
+  '$1.500 – $2.500',
+  '$2.500 – $5.000',
+  '$5.000 – $10.000',
+  'Más de $10.000',
+]
+
+type Status = 'idle' | 'sending' | 'error'
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (custom: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: custom * 0.08, duration: 0.5, ease: 'easeOut' as const },
+  }),
+}
+
+export default function ContactForm() {
+  const c = useContent('contactform')
+  const router = useRouter()
+
+  const heading    = c.heading    || 'Cuéntanos tu proyecto'
+  const subheading = c.subheading || 'Respondemos en menos de 48 horas con una propuesta técnica personalizada.'
+  const btnLabel   = c.btn_label  || 'Enviar solicitud'
+  const videoUrl   = c.video_url  || ''
+  const labelTag   = c.label_tag  || 'Contacto'
+  const trust1     = c.trust_1    || 'Respuesta técnica en menos de 48 h'
+  const trust2     = c.trust_2    || 'Propuesta gratuita sin compromiso'
+  const trust3     = c.trust_3    || 'Atención en español e inglés'
+
+  const headingStyle    = getFieldStyle(c.heading_size,    c.heading_px,    c.heading_color)
+  const subheadingStyle = getFieldStyle(c.subheading_size, c.subheading_px, c.subheading_color)
+  const labelTagStyle   = getFieldStyle(c.label_tag_size,  c.label_tag_px,  c.label_tag_color)
+  const trust1Style     = getFieldStyle(c.trust_1_size,    c.trust_1_px,    c.trust_1_color)
+  const trust2Style     = getFieldStyle(c.trust_2_size,    c.trust_2_px,    c.trust_2_color)
+  const trust3Style     = getFieldStyle(c.trust_3_size,    c.trust_3_px,    c.trust_3_color)
+
+  const [form, setForm] = useState({
+    name: '', email: '', phone_code: '+52', phone: '', company: '', budget: '', message: '',
+  })
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
+
+  function set(key: keyof typeof form, value: string) {
+    setForm(prev => ({ ...prev, [key]: value }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setErrorMsg('')
+    setStatus('sending')
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        let msg = 'Error al enviar'
+        try {
+          const data = await res.json() as { error?: string }
+          msg = data.error || msg
+        } catch { /* not JSON */ }
+        setErrorMsg(msg)
+        setStatus('error')
+        return
+      }
+      window.gtag?.('event', 'generate_lead', { currency: 'USD', value: 1 })
+      trackEvent('Lead')
+      router.push(`/gracias?name=${encodeURIComponent(form.name)}`)
+    } catch {
+      setErrorMsg('Error de conexión. Intenta de nuevo.')
+      setStatus('error')
+    }
+  }
+
+  const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
+  const labelCls = "block text-[11px] font-semibold uppercase tracking-wider text-white mb-1.5"
+
+  return (
+    <section id="contacto" className="relative py-24 overflow-hidden" style={{ background: '#07090F' }}>
+      {videoUrl && (
+        <>
+          <video
+            autoPlay muted loop playsInline src={videoUrl}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(7,9,15,0.75)', zIndex: 1 }} />
+        </>
+      )}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'linear-gradient(#EDF0FF 1px, transparent 1px), linear-gradient(90deg, #EDF0FF 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+        zIndex: videoUrl ? 2 : undefined,
+      }} />
+
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-12" style={{ zIndex: videoUrl ? 3 : 10 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            className="lg:sticky lg:top-28"
+          >
+            <motion.div custom={0} variants={fadeUp}>
+              <span className="inline-block text-[11px] font-semibold tracking-[0.2em] uppercase text-[#4361EE] mb-4" style={labelTagStyle}>
+                {labelTag}
+              </span>
+            </motion.div>
+            <motion.h2
+              custom={1} variants={fadeUp}
+              className="font-bold leading-tight mb-4"
+              style={headingStyle}
+              dangerouslySetInnerHTML={{ __html: safeHtml(heading) }}
+            />
+            <motion.p
+              custom={2} variants={fadeUp}
+              className="leading-relaxed mb-8"
+              style={subheadingStyle}
+              dangerouslySetInnerHTML={{ __html: safeHtml(subheading) }}
+            />
+            <motion.div custom={3} variants={fadeUp} className="space-y-3">
+              {([
+                { icon: 'bolt',     text: trust1, style: trust1Style },
+                { icon: 'verified', text: trust2, style: trust2Style },
+                { icon: 'language', text: trust3, style: trust3Style },
+              ] as const).map(item => (
+                <div key={item.icon} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(67,97,238,0.12)' }}>
+                    <span className="material-symbols-outlined text-[#4361EE]" style={{ fontSize: 16 }}>{item.icon}</span>
+                  </div>
+                  <span className="text-[13px] text-[#7B8DB0]" style={item.style}>{item.text}</span>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: 'easeOut' as const }}
+          >
+            <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelCls}>Nombre *</label>
+                    <input required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Tu nombre" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Email *</label>
+                    <input type="email" required value={form.email} onChange={e => set('email', e.target.value)} placeholder="tu@empresa.com" className={inputCls} />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelCls}>Teléfono *</label>
+                  <div className="flex gap-2">
+                    <input
+                      value={form.phone_code}
+                      onChange={e => { const cleaned = e.target.value.replace(/[^\d+]/g, '').replace(/(.)\+/g, '$1'); set('phone_code', cleaned) }}
+                      placeholder="+52" maxLength={5}
+                      className="w-20 flex-shrink-0 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-[14px] text-white placeholder:text-[#7B8DB0] focus:outline-none focus:border-[#4361EE] focus:bg-white/10 transition-all"
+                    />
+                    <input type="tel" required value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="55 1234 5678" className={`${inputCls} flex-1`} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelCls}>Empresa</label>
+                    <input value={form.company} onChange={e => set('company', e.target.value)} placeholder="Nombre de tu empresa" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Presupuesto aproximado</label>
+                    <select value={form.budget} onChange={e => set('budget', e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#4361EE] transition-all cursor-pointer appearance-none">
+                      <option value="" style={{ background: '#0F1117' }}>Seleccionar...</option>
+                      {BUDGET_OPTIONS.map(o => <option key={o} value={o} style={{ background: '#0F1117' }}>{o}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelCls}>Cuéntanos tu proyecto *</label>
+                  <textarea required rows={4} value={form.message} onChange={e => set('message', e.target.value)} placeholder="¿Qué necesitas construir? ¿Tienes una Shopify store? ¿Integraciones con ERP, WMS...?" className={`${inputCls} resize-none`} />
+                </div>
+
+                {errorMsg && (
+                  <p className="text-red-400 text-[13px] flex items-center gap-2">
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>error</span>
+                    {errorMsg}
+                  </p>
+                )}
+
+                <button
+                  type="submit" disabled={status === 'sending'}
+                  className="w-full py-3.5 rounded-xl text-[14px] font-semibold text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: '#4361EE', boxShadow: '0 4px 24px rgba(67,97,238,0.35)' }}
+                >
+                  {status === 'sending' ? (
+                    <><span className="material-symbols-outlined animate-spin" style={{ fontSize: 18 }}>progress_activity</span>Enviando...</>
+                  ) : (
+                    <><span className="material-symbols-outlined" style={{ fontSize: 18 }}>send</span>{btnLabel}</>
+                  )}
+                </button>
+                <p className="text-center text-[11px] text-[#7B8DB0]">
+                  Al enviar aceptas que guardemos tu información para responderte.
+                </p>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}

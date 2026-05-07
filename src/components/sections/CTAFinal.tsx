@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, MessageCircle } from 'lucide-react'

@@ -1,12 +1,33 @@
-export default function HomePage() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', flexDirection: 'column', gap: '1rem' }}>
-      <h1 style={{ color: '#EDF0FF', fontFamily: 'var(--font-dm-sans)', fontSize: '2rem', fontWeight: 700 }}>
-        Next.js 15 — Setup OK ✓
-      </h1>
-      <p style={{ color: '#7B8DB0', fontFamily: 'var(--font-inter)' }}>
-        Rama: nextjs-migration — Fase 1 completada
-      </p>
-    </div>
-  )
+/* eslint-disable react-refresh/only-export-components */
+import type { Metadata } from 'next'
+import { prisma } from '@/lib/prisma'
+import SiteShell from '@/app/components/SiteShell'
+
+const SITE_URL = 'https://appsdeveloperspro.com'
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const rows = await prisma.content.findMany({ where: { section: 'seo' } })
+    const seo = Object.fromEntries(rows.map(r => [r.key, r.value]))
+    return {
+      title: seo.meta_title || 'Apps Developers Pro — Desarrollo de Apps Shopify',
+      description: seo.meta_description || 'Agencia especializada en desarrollo de aplicaciones Shopify. Apps publicadas en el App Store, integraciones y soluciones a medida.',
+      alternates: { canonical: SITE_URL },
+    }
+  } catch {
+    return {}
+  }
+}
+
+export default async function HomePage() {
+  let contentMap: Record<string, Record<string, string>> | undefined
+  try {
+    const rows = await prisma.content.findMany()
+    contentMap = {}
+    for (const { section, key, value } of rows) {
+      if (!contentMap[section]) contentMap[section] = {}
+      contentMap[section][key] = value
+    }
+  } catch { /* DB unavailable — render with client-side fallback */ }
+  return <SiteShell initialContent={contentMap} />
 }

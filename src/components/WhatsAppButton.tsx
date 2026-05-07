@@ -1,3 +1,4 @@
+'use client'
 const WA_LINK = 'https://wa.link/phjdep'
 
 export default function WhatsAppButton() {

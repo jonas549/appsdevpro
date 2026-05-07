@@ -1,3 +1,4 @@
+'use client'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useState, useRef } from 'react'
 import WordsPullUp from '../animations/WordsPullUp'

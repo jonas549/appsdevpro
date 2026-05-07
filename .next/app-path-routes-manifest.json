@@ -1,0 +1,19 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/me/route": "/api/auth/me",
+  "/api/auth/update-credentials/route": "/api/auth/update-credentials",
+  "/api/upload/route": "/api/upload",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/api/blog/slug/[slug]/route": "/api/blog/slug/[slug]",
+  "/api/blog/route": "/api/blog",
+  "/api/leads/[id]/route": "/api/leads/[id]",
+  "/api/blog/[id]/route": "/api/blog/[id]",
+  "/api/content/route": "/api/content",
+  "/api/leads/route": "/api/leads",
+  "/page": "/",
+  "/blog/page": "/blog",
+  "/gracias/page": "/gracias",
+  "/blog/[slug]/page": "/blog/[slug]"
+}
