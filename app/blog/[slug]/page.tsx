@@ -31,7 +31,7 @@ export async function generateMetadata(
     })
     if (!post || !post.published) return { robots: { index: false } }
 
-    const title = post.meta_title ? `${post.meta_title} | Apps Developers Pro` : `${post.title} | Apps Developers Pro`
+    const title = post.meta_title || post.title
     const description = post.meta_description || post.excerpt
     const canonicalUrl = `${SITE_URL}/blog/${slug}`
 
