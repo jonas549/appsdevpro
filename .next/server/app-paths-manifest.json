@@ -9,11 +9,19 @@
   "/api/blog/slug/[slug]/route": "app/api/blog/slug/[slug]/route.js",
   "/api/blog/route": "app/api/blog/route.js",
   "/api/leads/[id]/route": "app/api/leads/[id]/route.js",
-  "/api/blog/[id]/route": "app/api/blog/[id]/route.js",
   "/api/content/route": "app/api/content/route.js",
+  "/api/blog/[id]/route": "app/api/blog/[id]/route.js",
   "/api/leads/route": "app/api/leads/route.js",
+  "/admin/blog/page": "app/admin/blog/page.js",
+  "/admin/content/page": "app/admin/content/page.js",
+  "/admin/blog/[id]/page": "app/admin/blog/[id]/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/leads/page": "app/admin/leads/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/settings/page": "app/admin/settings/page.js",
   "/page": "app/page.js",
-  "/blog/page": "app/blog/page.js",
   "/gracias/page": "app/gracias/page.js",
-  "/blog/[slug]/page": "app/blog/[slug]/page.js"
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/blog/page": "app/blog/page.js"
 }
