@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import SiteShell from '@/app/components/SiteShell'
 
+export const dynamic = 'force-dynamic'
+
 const SITE_URL = 'https://appsdeveloperspro.com'
 
 export async function generateMetadata(): Promise<Metadata> {
