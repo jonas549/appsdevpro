@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: var(--font-dm-sans), 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
+}
+
+strong { color: inherit; }
+em { color: inherit; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #07090F;
+  color: #EDF0FF;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height%3D'100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee-scroll 28s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.marquee-wrapper:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 30px 8px rgba(100,149,255,0.6), 0 0 60px 20px rgba(67,97,238,0.3); }
+  50% { box-shadow: 0 0 40px 12px rgba(120,169,255,0.8), 0 0 80px 30px rgba(67,97,238,0.45); }
+}
+
+.eclipse-orb {
+  animation: orb-pulse 3s ease-in-out infinite;
+}
+
+@keyframes beam-1 {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.7; }
+}
+@keyframes beam-2 {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+@keyframes beam-3 {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+.beam-1 { animation: beam-1 4s ease-in-out infinite; }
+.beam-2 { animation: beam-2 5s ease-in-out infinite 0.5s; }
+.beam-3 { animation: beam-3 6s ease-in-out infinite 1s; }
