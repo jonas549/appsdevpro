@@ -3,6 +3,10 @@ import { prisma } from "@/lib/prisma"
 
 const SITE_URL = "https://appsdeveloperspro.com"
 
+// Sin esto Next lo prerenderiza en build y un post publicado por la API no
+// aparecería en el sitemap hasta el siguiente deploy.
+export const dynamic = "force-dynamic"
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
