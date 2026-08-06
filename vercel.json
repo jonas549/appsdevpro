@@ -16,18 +16,5 @@
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/blog/:slug",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "(?:facebookexternalhit|Facebot|Twitterbot|LinkedInBot|WhatsApp|Slackbot|TelegramBot|Discordbot|redditbot|Pinterestbot|Applebot|Baiduspider|YandexBot)"
-        }
-      ],
-      "destination": "/api/og/blog/:slug"
-    }
   ]
 }
