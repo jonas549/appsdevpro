@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2020",
     "lib": [
       "dom",
       "dom.iterable",
@@ -29,13 +29,21 @@
     },
     "strictNullChecks": true
   },
+  "//": "include cubre solo lo que Next compila. TypeScript sigue los imports hacia src/ automáticamente, así que los componentes legacy que sí usa la app (Hero, FAQ, RichTextEditor, ContentContext...) se verifican igual, y el código muerto de Vite (App.tsx, main.tsx, views/, MetaPixel.tsx) queda fuera.",
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "types/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "lib/**/*.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "dist",
+    "_api_legacy",
+    "server",
+    "scripts"
   ]
 }

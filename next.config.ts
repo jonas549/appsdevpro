@@ -11,9 +11,6 @@ const nextConfig: NextConfig = {
   eslint: {
     dirs: ['app', 'lib'],
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   webpack: (config) => {
     config.resolve.extensionAlias = {
       ...config.resolve.extensionAlias,
