@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import AdminLayout from '@/app/components/admin/AdminLayout'
 import ProtectedRoute from '@/app/components/admin/ProtectedRoute'
 
@@ -48,14 +49,47 @@ function LeadsContent() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [updating, setUpdating] = useState(false)
+  const [loadError, setLoadError] = useState('')
+  const router = useRouter()
   const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') || '' : ''
 
   useEffect(() => {
-    fetch('/api/leads', { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then((data: Lead[]) => { setLeads(data); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [token])
+    let cancelled = false
+
+    async function loadLeads() {
+      try {
+        const res = await fetch('/api/leads', { headers: { Authorization: `Bearer ${token}` } })
+
+        // Sesión caducada o inválida: el token guardado ya no sirve, al login.
+        if (res.status === 401) {
+          localStorage.removeItem('admin_token')
+          localStorage.removeItem('admin_email')
+          router.replace('/admin/login')
+          return
+        }
+
+        if (!res.ok) throw new Error(`El servidor respondió ${res.status}`)
+
+        // El endpoint devuelve { error: "..." } en los fallos, no una lista:
+        // sin esta guarda, un objeto acabaría en el estado y `leads.filter`
+        // reventaría el render.
+        const data: unknown = await res.json()
+        if (!Array.isArray(data)) throw new Error('Respuesta inesperada del servidor')
+
+        if (!cancelled) { setLeads(data as Lead[]); setLoading(false) }
+      } catch (err) {
+        console.error('[leads] No se pudieron cargar los leads:', err)
+        if (!cancelled) {
+          setLeads([])
+          setLoadError(err instanceof Error ? err.message : 'Error de conexión')
+          setLoading(false)
+        }
+      }
+    }
+
+    loadLeads()
+    return () => { cancelled = true }
+  }, [token, router])
 
   async function markAs(lead: Lead, status: string) {
     setUpdating(true)
@@ -152,6 +186,19 @@ function LeadsContent() {
           <div className="flex items-center justify-center gap-3 py-20 text-slate-400">
             <span className="material-symbols-outlined animate-spin" style={{ fontSize: 24 }}>progress_activity</span>
             <span className="text-sm">Cargando leads...</span>
+          </div>
+        ) : loadError ? (
+          <div className="flex flex-col items-center gap-3 py-20 text-slate-400">
+            <span className="material-symbols-outlined text-red-400" style={{ fontSize: 40 }}>error_outline</span>
+            <p className="text-sm text-slate-600 font-medium">No se pudieron cargar los leads.</p>
+            <p className="text-xs text-slate-400">{loadError}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-1 px-4 py-2 rounded-lg text-[13px] font-semibold text-white transition-all active:scale-[0.98]"
+              style={{ background: '#4361EE' }}
+            >
+              Reintentar
+            </button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-20 text-slate-400">
