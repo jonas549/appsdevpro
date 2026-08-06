@@ -44,18 +44,25 @@ function DescuentifyMockup() {
     <div className="bg-[#FFFBF0] rounded-xl p-5 h-44 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <span className="text-[#374151] font-semibold text-sm">Motor de Descuentos</span>
-        <span className="text-xs font-mono text-[#D97706] bg-[#FEF3C7] px-2 py-0.5 rounded-full">En desarrollo</span>
+        <span className="text-xs font-mono text-[#047857] bg-[#D1FAE5] px-2 py-0.5 rounded-full">Activa en producción</span>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[
-          { label: 'AOV esperado', value: '+28%', color: '#F59E0B' },
-          { label: 'Descuentos vol.', value: 'N tiers', color: '#F97316' },
-          { label: 'Campañas activas', value: 'Multi', color: '#EAB308' },
-          { label: 'Buy X Get Y', value: 'Avanzado', color: '#D97706' },
+          { title: 'Porcentaje',        sub: 'Descuento %',     color: '#F59E0B' },
+          { title: 'Precio fijo',       sub: 'Rango de precio', color: '#F97316' },
+          { title: 'Compra X, lleva Y', sub: 'Buy X Get Y',     color: '#EAB308' },
+          { title: 'Escalonado',        sub: 'Por cantidad',    color: '#B45309', highlight: true },
         ].map((m) => (
-          <div key={m.label} className="bg-white rounded-lg p-2.5 border border-[#FDE68A]">
-            <div className="font-bold text-base" style={{ color: m.color }}>{m.value}</div>
-            <div className="text-[10px] text-[#6B7280] leading-tight">{m.label}</div>
+          <div
+            key={m.title}
+            className={`rounded-lg p-2 border ${
+              m.highlight
+                ? 'bg-[#FEF3C7] border-[#F59E0B] shadow-sm'
+                : 'bg-white border-[#FDE68A]'
+            }`}
+          >
+            <div className="font-bold text-[13px] leading-tight" style={{ color: m.color }}>{m.title}</div>
+            <div className="text-[10px] text-[#6B7280] leading-tight">{m.sub}</div>
           </div>
         ))}
       </div>
