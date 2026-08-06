@@ -96,7 +96,11 @@ export const BlogPostScalarFieldEnum = {
   faq_data: 'faq_data',
   published: 'published',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  cover_image_alt: 'cover_image_alt',
+  tags: 'tags',
+  publishedAt: 'publishedAt',
+  clientRequestId: 'clientRequestId'
 } as const
 
 export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]

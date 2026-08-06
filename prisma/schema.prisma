@@ -30,6 +30,13 @@ model BlogPost {
   published        Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  // Campos añadidos para la API de publicación automática (/api/agent/blog/posts).
+  // Todos opcionales o con default: la migración es puramente aditiva.
+  cover_image_alt  String?
+  tags             String[] @default([])
+  publishedAt      DateTime?
+  clientRequestId  String?  @unique
 }
 
 model AdminUser {
