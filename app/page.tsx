@@ -9,7 +9,7 @@ const SITE_URL = 'https://appsdeveloperspro.com'
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const rows = await prisma.content.findMany({ where: { section: 'seo' } })
+    const rows = await prisma.siteContent.findMany({ where: { section: 'seo' } })
     const seo = Object.fromEntries(rows.map(r => [r.key, r.value]))
     return {
       title: seo.meta_title || 'Apps Developers Pro — Desarrollo de Apps Shopify',
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   let contentMap: Record<string, Record<string, string>> | undefined
   try {
-    const rows = await prisma.content.findMany()
+    const rows = await prisma.siteContent.findMany()
     contentMap = {}
     for (const { section, key, value } of rows) {
       if (!contentMap[section]) contentMap[section] = {}
