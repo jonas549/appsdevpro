@@ -24,7 +24,7 @@ export default function Footer() {
 
   const apps = [
     { label: 'Calendify Delivery', href: 'https://apps.shopify.com/calendify-delivery' },
-    { label: 'Descuentify',        href: '#apps' },
+    { label: 'DiscountFlow',       href: '#apps' },
     { label: 'Ver todas las apps', href: '#apps' },
   ]
 
