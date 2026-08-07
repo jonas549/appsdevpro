@@ -6,8 +6,7 @@ import { prisma } from '@/lib/prisma'
 import Navbar from '@/app/components/layout/Navbar'
 import Footer from '@/src/components/layout/Footer'
 import BlogPostFaq from '@/app/blog/[slug]/BlogPostFaq'
-
-const SITE_URL = 'https://appsdeveloperspro.com'
+import { SITE_URL, serializeJsonLd, blogPostingSchema, blogBreadcrumbSchema } from '@/lib/json-ld'
 
 function readingTime(content: string) {
   const words = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length
@@ -71,7 +70,8 @@ export default async function BlogPostPage(
   const { slug } = await params
   let post: {
     id: string; title: string; slug: string; content: string; excerpt: string
-    published: boolean; createdAt: Date; featured_image: string | null
+    published: boolean; createdAt: Date; updatedAt: Date; publishedAt: Date | null
+    featured_image: string | null; tags: string[]
     meta_title: string | null; meta_description: string | null; faq_data: string | null
   } | null = null
 
@@ -161,10 +161,32 @@ export default async function BlogPostPage(
 
       <Footer />
 
+      {/* BlogPosting (§14.2) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(blogPostingSchema({
+          title: post.title,
+          slug: post.slug,
+          description: post.meta_description || post.excerpt,
+          image: post.featured_image,
+          datePublished: post.publishedAt ?? post.createdAt,
+          dateModified: post.updatedAt,
+          tags: post.tags,
+        })) }}
+      />
+
+      {/* BreadcrumbList (§14.3) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(
+          blogBreadcrumbSchema({ title: post.title, slug: post.slug })
+        ) }}
+      />
+
       {faqItems.length > 0 && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd({
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": faqItems.map(f => ({

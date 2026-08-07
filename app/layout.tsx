@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import './globals.css'
 import AnalyticsPageTracker from './components/AnalyticsPageTracker'
 import MetaPixelClient from './components/MetaPixelClient'
+import { serializeJsonLd, siteGraph } from '@/lib/json-ld'
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -63,6 +64,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${dmSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
+        {/* Organization + WebSite (§14.2) — en el layout, así va en todas las páginas */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(siteGraph()) }}
+        />
+
         {children}
 
         {/* Google Analytics 4 */}
