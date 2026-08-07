@@ -93,3 +93,15 @@ export function sanitizeInlineHtml(raw: string): string {
     allowedSchemes: ["http", "https", "mailto"],
   })
 }
+
+/**
+ * Quita todo el marcado y deja sólo el texto.
+ *
+ * Para los campos del CMS que la plantilla pinta como texto plano (títulos,
+ * badges, textos de botón): si alguien mete HTML ahí, el componente lo
+ * escaparía y el usuario vería las etiquetas en pantalla. Mejor limpiarlo al
+ * entrar que guardar basura.
+ */
+export function stripAllHtml(raw: string): string {
+  return sanitizeHtml(raw, { allowedTags: [], allowedAttributes: {} }).trim()
+}
