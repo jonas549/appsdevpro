@@ -85,9 +85,9 @@ export default function TiendasShopifyPage() {
       <LandingNav />
       <main>
         <Hero form={<LeadForm heading="Cuéntanos de tu tienda" />} />
-        <Portfolio cta={<PortfolioCta />} />
         <Marquee />
         <Specialty />
+        <Portfolio cta={<PortfolioCta />} />
         <Process />
         <Includes />
         <Testimonials />
