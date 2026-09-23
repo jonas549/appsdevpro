@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server"
+import { NextResponse, after } from "next/server"
 import { Resend } from "resend"
 import { prisma } from "@/lib/prisma"
 import { requireAuth, corsHeaders, optionsResponse } from "@/lib/auth"
+import { LANDING_SOURCE, LANDING_SOURCE_TAG, composeLandingMessage, parseLandingLead } from "@/lib/landing-leads"
+import { sendLandingLeadEmails } from "@/lib/landing-lead-emails"
 
 export const dynamic = "force-dynamic"
 
@@ -119,10 +121,54 @@ export async function GET(request: Request) {
   }
 }
 
+// Lead de la landing /tiendas-shopify: validación propia, sin columnas nuevas
+// (ver lib/landing-leads.ts) y los emails después de responder.
+async function handleLandingLead(body: Record<string, unknown>) {
+  const parsed = parseLandingLead(body)
+  if (!parsed.ok) {
+    // Honeypot: respondemos como si todo fuera bien para no darle pistas al bot.
+    if ("honeypot" in parsed) return NextResponse.json({ ok: true }, { status: 201, headers: corsHeaders })
+    return NextResponse.json({ error: parsed.error, field: parsed.field }, { status: 400, headers: corsHeaders })
+  }
+  const lead = parsed.lead
+  const receivedAt = new Date()
+
+  // Una sola respuesta automática por email cada 24 h: sin esto, cualquiera
+  // podría usar el formulario para mandar correos de nuestro dominio a terceros.
+  const recent = await prisma.lead.count({
+    where: {
+      email: lead.email,
+      message: { startsWith: LANDING_SOURCE_TAG },
+      createdAt: { gte: new Date(receivedAt.getTime() - 24 * 60 * 60 * 1000) },
+    },
+  })
+
+  const saved = await prisma.lead.create({
+    data: {
+      name: lead.name,
+      email: lead.email,
+      phone_code: lead.phone_code,
+      phone: lead.phone,
+      company: lead.storeUrl,
+      budget: null,
+      message: composeLandingMessage(lead),
+      status: "unread",
+    },
+  })
+  console.log("[leads] Landing lead saved:", saved.id)
+
+  after(() => sendLandingLeadEmails(lead, { receivedAt, autoreply: recent === 0 }))
+
+  return NextResponse.json({ ok: true, id: saved.id }, { status: 201, headers: corsHeaders })
+}
+
 export async function POST(request: Request) {
   try {
+    const body = await request.json() as Record<string, unknown>
+    if (body?.source === LANDING_SOURCE) return await handleLandingLead(body)
+
     const { name, email, phone_code, phone, company, budget, message } =
-      await request.json() as {
+      body as {
         name: string; email: string; phone_code?: string; phone: string
         company?: string; budget?: string; message: string
       }
