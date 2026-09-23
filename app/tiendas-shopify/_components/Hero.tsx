@@ -1,6 +1,7 @@
 import styles from "../landing.module.css"
 import { serif } from "../fonts"
 import { HERO_STATS } from "../content"
+import HeroVideo from "./HeroVideo"
 
 // Cada palabra entra con su propio retraso. Animación CSS pura: arranca con el
 // primer pintado, sin esperar a la hidratación (el H1 es el candidato a LCP).
@@ -11,7 +12,7 @@ const WORDS: { w: string; tone?: "accent" | "muted" }[] = [
   { w: "construyen", tone: "muted" }, { w: "las", tone: "muted" }, { w: "apps.", tone: "muted" },
 ]
 
-export default function Hero({ background, form }: { background?: React.ReactNode; form: React.ReactNode }) {
+export default function Hero({ form }: { form: React.ReactNode }) {
   let rise = 0
   const riseDelay = () => ({ animationDelay: `${500 + rise++ * 120}ms` })
 
@@ -20,7 +21,16 @@ export default function Hero({ background, form }: { background?: React.ReactNod
       id="hero"
       className="relative min-h-screen overflow-hidden px-[clamp(18px,4vw,56px)] pb-[clamp(48px,6vw,80px)] pt-[clamp(110px,12vw,150px)]"
     >
-      {background}
+      <img
+        src="/landing/hero-poster.webp"
+        alt=""
+        aria-hidden="true"
+        width={1280}
+        height={716}
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover opacity-[.42]"
+      />
+      <HeroVideo />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,9,15,.55)_0%,rgba(7,9,15,.35)_40%,#07090F_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(7,9,15,.85)_0%,rgba(7,9,15,.2)_70%)]" />
 
