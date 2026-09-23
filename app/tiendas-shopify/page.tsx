@@ -10,9 +10,11 @@ import Portfolio, { PortfolioCta } from "./_components/Portfolio"
 import Process from "./_components/Process"
 import Includes from "./_components/Includes"
 import Testimonials from "./_components/Testimonials"
-import Faq, { FaqStaticList } from "./_components/Faq"
+import Faq from "./_components/Faq"
 import FinalCta from "./_components/FinalCta"
 import FloatingCtas from "./_components/FloatingCtas"
+import LeadForm from "./_components/LeadForm"
+import RevealOnScroll from "./_components/RevealOnScroll"
 
 // Landing de creación de tiendas Shopify. Sin DB: se genera en build (○ Static).
 
@@ -77,25 +79,23 @@ const jsonLd = {
 }
 
 export default function TiendasShopifyPage() {
-  const formPlaceholder = (
-    <div className="rounded-3xl border border-white/10 bg-[#0D1117]/90 p-8 text-[#7B8DB0]">Formulario</div>
-  )
   return (
     <div className="max-w-full overflow-x-clip bg-[#07090F] pb-24 text-primary min-[860px]:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <LandingNav />
       <main>
-        <Hero form={formPlaceholder} />
+        <Hero form={<LeadForm heading="Cuéntanos de tu tienda" />} />
         <Marquee />
         <Specialty />
         <Portfolio cta={<PortfolioCta />} />
         <Process />
         <Includes />
         <Testimonials />
-        <Faq list={<FaqStaticList />} />
+        <Faq />
       </main>
-      <FinalCta form={formPlaceholder} />
+      <FinalCta form={<LeadForm heading="Empecemos tu tienda" />} />
       <FloatingCtas />
+      <RevealOnScroll />
     </div>
   )
 }

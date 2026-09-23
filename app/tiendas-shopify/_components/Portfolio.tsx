@@ -1,5 +1,6 @@
 import Accent from "./Accent"
 import ProjectCard from "./ProjectCard"
+import StackedCards from "./StackedCards"
 import { PROJECTS } from "../content"
 
 export default function Portfolio({ cta }: { cta: React.ReactNode }) {
@@ -18,11 +19,11 @@ export default function Portfolio({ cta }: { cta: React.ReactNode }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[clamp(20px,3vw,32px)]">
+        <StackedCards>
           {PROJECTS.map((p, i) => (
             <ProjectCard key={p.slug} p={p} index={i} total={PROJECTS.length} />
           ))}
-        </div>
+        </StackedCards>
 
         {cta}
       </div>
