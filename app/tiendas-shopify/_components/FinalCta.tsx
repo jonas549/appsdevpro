@@ -12,10 +12,10 @@ export default function FinalCta({ form }: { form: React.ReactNode }) {
     >
       <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-[clamp(40px,5vw,80px)]">
         <div data-reveal className="min-w-0 flex-[1.2_1_400px]">
-          <h2 className="mb-6 text-balance text-[clamp(44px,6.4vw,96px)] font-medium leading-[.92] tracking-[-0.06em] text-primary">
+          <h2 className="mb-6 text-balance text-4xl font-bold leading-tight tracking-tight text-primary md:text-5xl">
             Tu tienda puede estar <Accent>vendiendo</Accent> este mes.
           </h2>
-          <p className="mb-8 max-w-[42ch] text-lg leading-[1.55] text-[#A9B6D3]">
+          <p className="mb-8 max-w-[42ch] text-base leading-[1.7] text-white/70 md:text-lg">
             Déjanos tus datos y te escribimos con un plan concreto para tu marca. Si prefieres, hablemos directo.
           </p>
           <a

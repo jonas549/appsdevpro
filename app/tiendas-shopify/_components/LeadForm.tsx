@@ -19,9 +19,13 @@ const PRODUCT_OPTIONS = [
 
 type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore"
 
-const input =
-  "w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-[15px] text-primary placeholder:text-[#64748B] transition-[border-color,box-shadow] focus:border-accent/70 focus:outline-none focus:ring-4 focus:ring-accent/15"
-const invalid = "border-[#F87171]/70"
+// Cada campo recibe UNA sola clase por propiedad (ancho, fondo, borde, padding).
+// Mezclar p. ej. w-full con w-[118px] deja el resultado al orden del CSS
+// generado, y en desarrollo el select del prefijo acababa ocupando toda la fila.
+const BASE = "block w-full min-w-0 rounded-xl border py-3.5 text-[15px] placeholder:text-[#64748B] transition-[border-color,box-shadow] focus:border-accent/70 focus:outline-none focus:ring-4 focus:ring-accent/15"
+const field = (o: { bg?: string; border?: string; px?: string; text?: string } = {}) =>
+  [BASE, o.bg ?? "bg-white/[0.04]", o.border ?? "border-white/10", o.px ?? "px-4", o.text ?? "text-primary"].join(" ")
+const INVALID = "border-[#F87171]/70"
 
 export default function LeadForm({ heading }: { heading: string }) {
   const uid = useId()
@@ -63,7 +67,7 @@ export default function LeadForm({ heading }: { heading: string }) {
   const firstName = f.name.trim().split(/\s+/)[0] || "gracias"
   const seg = (active: boolean) =>
     `rounded-[7px] px-4 py-2 text-sm font-medium transition-colors duration-200 ${active ? "bg-primary text-[#07090F]" : "text-[#7B8DB0] hover:text-primary"}`
-  const errFor = (k: Field) => (error?.field === k ? invalid : "")
+  const errFor = (k: Field) => (error?.field === k ? INVALID : undefined)
 
   return (
     <div className="relative rounded-3xl border border-white/10 bg-[#0D1117]/[0.86] p-[clamp(22px,2.4vw,30px)] text-primary shadow-[0_40px_100px_rgba(0,0,0,.55),inset_0_1px_0_rgba(255,255,255,.06)] backdrop-blur-xl">
@@ -83,15 +87,16 @@ export default function LeadForm({ heading }: { heading: string }) {
             <div className="mb-[22px] text-[clamp(22px,2vw,26px)] font-semibold leading-[1.1] tracking-[-0.035em]">{heading}</div>
 
             <div className="grid gap-3">
-              <input aria-label="Nombre" autoComplete="name" required value={f.name} onChange={set("name")} placeholder="Nombre" className={`${input} ${errFor("name")}`} />
-              <div className="flex gap-2">
-                <select aria-label="Prefijo del país" value={f.phone_code} onChange={set("phone_code")} className={`${input} w-[118px] shrink-0 bg-[#111722] px-2.5`}>
+              <input aria-label="Nombre" autoComplete="name" required value={f.name} onChange={set("name")} placeholder="Nombre" className={field({ border: errFor("name") })} />
+              {/* Prefijo estrecho + número ancho en la misma fila. Grid con columnas fijas: no depende de anchos en las clases. */}
+              <div className="grid grid-cols-[112px_minmax(0,1fr)] gap-2">
+                <select aria-label="Prefijo del país" value={f.phone_code} onChange={set("phone_code")} className={field({ bg: "bg-[#111722]", px: "px-2.5" })}>
                   {COUNTRY_CODES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
-                <input aria-label="WhatsApp" type="tel" inputMode="tel" autoComplete="tel-national" required value={f.phone} onChange={set("phone")} placeholder="WhatsApp" className={`${input} min-w-0 flex-1 ${errFor("phone")}`} />
+                <input aria-label="WhatsApp" type="tel" inputMode="tel" autoComplete="tel-national" required value={f.phone} onChange={set("phone")} placeholder="WhatsApp" className={field({ border: errFor("phone") })} />
               </div>
-              <input aria-label="Correo" type="email" inputMode="email" autoComplete="email" required value={f.email} onChange={set("email")} placeholder="Correo" className={`${input} ${errFor("email")}`} />
-              <select aria-label="Cantidad aproximada de productos" value={f.products} onChange={set("products")} className={`${input} bg-[#111722] ${f.products ? "" : "text-[#7B8DB0]"}`}>
+              <input aria-label="Correo" type="email" inputMode="email" autoComplete="email" required value={f.email} onChange={set("email")} placeholder="Correo" className={field({ border: errFor("email") })} />
+              <select aria-label="Cantidad aproximada de productos" value={f.products} onChange={set("products")} className={field({ bg: "bg-[#111722]", text: f.products ? "text-primary" : "text-[#7B8DB0]" })}>
                 <option value="">Cantidad aproximada de productos</option>
                 {PRODUCT_OPTIONS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
               </select>
@@ -118,9 +123,9 @@ export default function LeadForm({ heading }: { heading: string }) {
                     className="overflow-hidden"
                   >
                     {f.hasStore === "si" ? (
-                      <input aria-label="Enlace de tu tienda" type="url" inputMode="url" value={f.storeUrl} onChange={set("storeUrl")} placeholder="Enlace de tu tienda" className={`${input} border-accent/40 bg-accent/[0.06] ${errFor("storeUrl")}`} />
+                      <input aria-label="Enlace de tu tienda" type="url" inputMode="url" value={f.storeUrl} onChange={set("storeUrl")} placeholder="Enlace de tu tienda" className={field({ bg: "bg-accent/[0.06]", border: errFor("storeUrl") ?? "border-accent/40" })} />
                     ) : (
-                      <textarea aria-label="Cuéntanos tu idea" rows={2} value={f.idea} onChange={set("idea")} placeholder="Cuéntanos tu idea" className={`${input} resize-y border-accent/40 bg-accent/[0.06]`} />
+                      <textarea aria-label="Cuéntanos tu idea" rows={2} value={f.idea} onChange={set("idea")} placeholder="Cuéntanos tu idea" className={`${field({ bg: "bg-accent/[0.06]", border: "border-accent/40" })} resize-y`} />
                     )}
                   </motion.div>
                 )}

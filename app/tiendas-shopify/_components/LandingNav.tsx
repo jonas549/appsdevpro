@@ -8,7 +8,7 @@ export default function LandingNav() {
   return (
     <nav
       aria-label="Secciones"
-      className="fixed left-1/2 top-3.5 z-[70] flex w-[min(1100px,calc(100%-24px))] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#07090F]/70 py-2 pl-4 pr-2 backdrop-blur-xl"
+      className="fixed left-1/2 top-3.5 z-[70] flex w-[min(1100px,calc(100%-24px))] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#07090F]/90 py-2 pl-4 pr-2 shadow-[0_8px_30px_rgba(7,9,15,.25)] backdrop-blur-xl"
     >
       <Link href="/" aria-label="Apps Developers Pro — inicio" className="flex shrink-0 items-center">
         <img src="/logo-header.png" alt="Apps Developers Pro" width={1308} height={191} className="h-6 w-auto sm:h-7" />

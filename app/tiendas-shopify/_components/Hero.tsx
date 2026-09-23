@@ -1,13 +1,13 @@
 import styles from "../landing.module.css"
-import { serif } from "../fonts"
 import { HERO_STATS } from "../content"
 import HeroVideo from "./HeroVideo"
+import { BODY, H1 } from "./type"
 
 // Cada palabra entra con su propio retraso. Animación CSS pura: arranca con el
 // primer pintado, sin esperar a la hidratación (el H1 es el candidato a LCP).
 const WORDS: { w: string; tone?: "accent" | "muted" }[] = [
   { w: "Tiendas" }, { w: "Shopify" }, { w: "que" },
-  { w: "venden", tone: "accent" }, { w: "de verdad.", tone: "accent" },
+  { w: "venden", tone: "accent" }, { w: "de", tone: "accent" }, { w: "verdad.", tone: "accent" },
   { w: "Hechas", tone: "muted" }, { w: "por", tone: "muted" }, { w: "quienes", tone: "muted" },
   { w: "construyen", tone: "muted" }, { w: "las", tone: "muted" }, { w: "apps.", tone: "muted" },
 ]
@@ -44,14 +44,11 @@ export default function Hero({ form }: { form: React.ReactNode }) {
             Creadores de DiscountFlow y Calendify Delivery
           </div>
 
-          <h1 className="mb-6 text-balance text-[clamp(44px,6.4vw,92px)] font-medium leading-[.95] tracking-[-0.055em] text-primary">
+          <h1 className={`${H1} mb-6 max-w-[17ch] text-balance text-primary`}>
             {WORDS.map(({ w, tone }, i) => (
               <span key={i}>
                 <span
-                  className={`${styles.word} ${
-                    tone === "accent" ? `${serif.className} italic font-normal tracking-[-0.02em] text-accent`
-                    : tone === "muted" ? "text-[#6B7A99]" : ""
-                  }`}
+                  className={`${styles.word} ${tone === "accent" ? "text-accent" : tone === "muted" ? "text-[#7B8DB0]" : ""}`}
                   style={{ animationDelay: `${120 + i * 55}ms` }}
                 >
                   {w}
@@ -60,10 +57,7 @@ export default function Hero({ form }: { form: React.ReactNode }) {
             ))}
           </h1>
 
-          <p
-            className={`${styles.rise} mb-10 max-w-[48ch] text-pretty text-[clamp(17px,1.4vw,19px)] leading-[1.55] text-[#A9B6D3]`}
-            style={riseDelay()}
-          >
+          <p className={`${styles.rise} ${BODY} mb-10 max-w-[48ch] text-pretty text-white/90`} style={riseDelay()}>
             Diseñamos y lanzamos tu tienda. Cuando necesitas algo que Shopify no trae de fábrica, lo programamos nosotros.
           </p>
 
@@ -71,7 +65,7 @@ export default function Hero({ form }: { form: React.ReactNode }) {
             <div className={`${styles.rise} flex max-w-[560px] flex-wrap border-t border-white/10`} style={riseDelay()}>
               {HERO_STATS.map(s => (
                 <div key={s.label} className="flex-[1_1_140px] pr-5 pt-[18px]">
-                  <div className="text-[28px] font-medium tracking-[-0.04em] text-primary">{s.value}</div>
+                  <div className="text-[28px] font-bold tracking-[-0.03em] text-primary">{s.value}</div>
                   <div className="mt-0.5 text-[13px] text-[#7B8DB0]">{s.label}</div>
                 </div>
               ))}

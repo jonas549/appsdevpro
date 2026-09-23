@@ -1,4 +1,5 @@
 import Accent from "./Accent"
+import { BODY, H2, H3 } from "./type"
 
 const STORE_POINTS = [
   "Diseño propio, no plantilla suelta",
@@ -20,10 +21,10 @@ export default function Specialty() {
     <section id="especialidad" className="scroll-mt-24 px-[clamp(18px,4vw,56px)] py-[clamp(80px,10vw,150px)]">
       <div className="mx-auto max-w-[1240px]">
         <div data-reveal className="mb-[clamp(40px,5vw,72px)] flex flex-wrap items-end justify-between gap-6">
-          <h2 className="m-0 max-w-[16ch] text-[clamp(36px,5vw,68px)] font-medium leading-[.98] tracking-[-0.05em] text-primary">
-            No solo armamos tiendas. <Accent tone="muted">Construimos las apps.</Accent>
+          <h2 className={`${H2} m-0 max-w-[20ch] text-primary`}>
+            No solo armamos tiendas. <Accent>Construimos las apps.</Accent>
           </h2>
-          <p className="m-0 max-w-[38ch] text-base leading-relaxed text-[#7B8DB0]">
+          <p className={`${BODY} m-0 max-w-[40ch] text-[#7B8DB0]`}>
             Trabajamos Shopify desde los dos lados: la tienda que ve tu cliente y el código que la extiende.
           </p>
         </div>
@@ -32,8 +33,8 @@ export default function Specialty() {
           <div data-reveal className={`${card} flex-[1_1_380px] gap-12 border border-white/[0.07] bg-[#0D1117] hover:border-white/[0.18]`}>
             <div>
               <div className="mb-[18px] text-[13px] text-[#64748B]">01 — Tiendas</div>
-              <h3 className="mb-3.5 text-[clamp(26px,2.6vw,36px)] font-medium leading-[1.05] tracking-[-0.045em] text-primary">Desarrollo de tiendas Shopify</h3>
-              <p className="m-0 max-w-[44ch] text-base leading-relaxed text-[#7B8DB0]">
+              <h3 className={`${H3} mb-3 text-primary`}>Desarrollo de tiendas Shopify</h3>
+              <p className={`${BODY} m-0 max-w-[44ch] text-[#7B8DB0]`}>
                 Tiendas hechas a medida de tu marca y de cómo compran tus clientes. Rápidas, claras y pensadas primero para móvil.
               </p>
             </div>
@@ -52,8 +53,8 @@ export default function Specialty() {
           >
             <div>
               <div className="mb-[18px] text-[13px] text-[#64748B]">02 — Apps</div>
-              <h3 className="mb-3.5 text-[clamp(26px,2.6vw,36px)] font-medium leading-[1.05] tracking-[-0.045em] text-primary">Desarrollo de apps para Shopify</h3>
-              <p className="m-0 max-w-[48ch] text-base leading-relaxed text-[#94A3B8]">
+              <h3 className={`${H3} mb-3 text-primary`}>Desarrollo de apps para Shopify</h3>
+              <p className={`${BODY} m-0 max-w-[48ch] text-[#94A3B8]`}>
                 Somos creadores de <a href="https://apps.shopify.com/discountflow" target="_blank" rel="noopener" className="text-primary underline decoration-white/20 underline-offset-4 hover:decoration-white/60">DiscountFlow</a>, publicada en el Shopify App Store. Todas las tiendas que armamos la incluyen para tus campañas de descuento.
               </p>
             </div>
