@@ -1,0 +1,46 @@
+/* Animaciones propias de la landing. Viven aquí y no en globals.css para no
+   tocar las del resto del sitio. */
+
+.word {
+  display: inline-block;
+  animation: wordIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.rise {
+  animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes wordIn {
+  from { opacity: 0.01; filter: blur(12px); transform: translateY(28px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0.01; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marqueeMask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(237, 240, 255, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word, .rise, .marqueeTrack { animation: none; }
+}
