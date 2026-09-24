@@ -27,8 +27,6 @@ export interface LandingLead {
   hasStore: "si" | "no" | null
   storeUrl: string | null
   idea: string | null
-  /** Momento en que aceptó la política de privacidad (ISO). Prueba del RGPD. */
-  privacyAcceptedAt: string
 }
 
 export type ParseResult =
@@ -78,7 +76,6 @@ export function parseLandingLead(body: Record<string, unknown>): ParseResult {
   const phoneRaw = oneLine(body.phone, 40)
   const phoneDigits = phoneRaw.replace(/\D/g, "")
 
-  if (body.privacy !== true) return { ok: false, error: "Para enviar, acepta la política de privacidad.", field: "privacy" }
   if (name.length < 2) return { ok: false, error: "Escribe tu nombre", field: "name" }
   if (!PHONE_CODE_RE.test(phone_code)) return { ok: false, error: "Prefijo no válido", field: "phone_code" }
   if (phoneDigits.length < 6 || phoneDigits.length > 15) return { ok: false, error: "Revisa tu número de WhatsApp", field: "phone" }
@@ -106,7 +103,7 @@ export function parseLandingLead(body: Record<string, unknown>): ParseResult {
 
   const idea = hasStore === "no" ? multiLine(body.idea, 2000) || null : null
 
-  return { ok: true, lead: { name, email, phone_code, phone: phoneRaw, products, hasStore, storeUrl, idea, privacyAcceptedAt: new Date().toISOString() } }
+  return { ok: true, lead: { name, email, phone_code, phone: phoneRaw, products, hasStore, storeUrl, idea } }
 }
 
 export function hasStoreLabel(lead: LandingLead): string {
@@ -121,7 +118,6 @@ export function composeLandingMessage(lead: LandingLead): string {
     LANDING_SOURCE_TAG,
     `Productos: ${lead.products ? PRODUCT_RANGES[lead.products] : "Sin responder"}`,
     `¿Tiene tienda?: ${hasStoreLabel(lead)}`,
-    `Política de privacidad aceptada: ${lead.privacyAcceptedAt}`,
   ]
   if (lead.idea) lines.push("", "Idea:", lead.idea)
   return lines.join("\n")

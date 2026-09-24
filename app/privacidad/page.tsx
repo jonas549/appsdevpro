@@ -80,7 +80,7 @@ export default function PrivacidadPage() {
             <h2 id="datos">2. Qué datos recogemos</h2>
             <p><strong>Cuando nos envías el formulario:</strong> tu nombre, tu correo, tu número de WhatsApp con su prefijo, y lo que
               quieras contarnos de tu proyecto (cantidad aproximada de productos, si ya tienes tienda, su dirección web o tu idea).
-              También guardamos la fecha y hora en que aceptaste esta política.</p>
+              También guardamos la fecha y hora del envío.</p>
             <p><strong>Cuando nos escribes por WhatsApp o por correo:</strong> los datos que tú mismo nos envías en esa conversación.</p>
             <p><strong>Mientras navegas:</strong> solo si aceptas las cookies de analítica o de publicidad, datos de uso como las páginas
               que visitas, el dispositivo y el anuncio por el que llegaste. Lo detallamos en el <a href="#cookies">apartado de cookies</a>.</p>

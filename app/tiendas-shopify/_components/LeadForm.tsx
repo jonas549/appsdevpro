@@ -19,7 +19,7 @@ const PRODUCT_OPTIONS = [
   ["menos-50", "Menos de 50"], ["50-500", "50 a 500"], ["500-2000", "500 a 2.000"], ["mas-2000", "Más de 2.000"],
 ]
 
-type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore" | "privacy"
+type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore"
 
 // Cada campo recibe UNA sola clase por propiedad (ancho, fondo, borde, padding).
 // Mezclar p. ej. w-full con w-[118px] deja el resultado al orden del CSS
@@ -32,7 +32,7 @@ const INVALID = "border-[#F87171]/70"
 
 export default function LeadForm({ heading }: { heading: string }) {
   const uid = useId()
-  const [f, setF] = useState({ name: "", phone_code: "+34", phone: "", email: "", products: "", hasStore: "", storeUrl: "", idea: "", website: "", privacy: false })
+  const [f, setF] = useState({ name: "", phone_code: "+34", phone: "", email: "", products: "", hasStore: "", storeUrl: "", idea: "", website: "" })
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle")
   const [error, setError] = useState<{ msg: string; field?: Field } | null>(null)
   // Alto del formulario mientras se cambia por la confirmación (ver onSent).
@@ -47,10 +47,6 @@ export default function LeadForm({ heading }: { heading: string }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (status === "sending") return
-    if (!f.privacy) {
-      setError({ msg: "Para enviar, acepta la política de privacidad.", field: "privacy" })
-      return
-    }
     setError(null)
     setStatus("sending")
     try {
@@ -163,23 +159,6 @@ export default function LeadForm({ heading }: { heading: string }) {
               {/* Honeypot: invisible para personas, los bots lo rellenan. */}
               <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.website} onChange={set("website")} className="absolute -left-[9999px] h-px w-px opacity-0" />
 
-              <label className="flex cursor-pointer items-start gap-3 px-1 text-sm leading-snug text-[#A9B6D3]">
-                <input
-                  type="checkbox"
-                  checked={f.privacy}
-                  onChange={e => {
-                    setF(p => ({ ...p, privacy: e.target.checked }))
-                    if (error?.field === "privacy") setError(null)
-                  }}
-                  aria-invalid={error?.field === "privacy"}
-                  className={`mt-px h-5 w-5 shrink-0 cursor-pointer accent-[#4361EE] ${error?.field === "privacy" ? "outline outline-2 outline-offset-2 outline-[#F87171]" : ""}`}
-                />
-                <span>
-                  He leído y acepto la{" "}
-                  <Link href="/privacidad" target="_blank" className="text-primary underline underline-offset-2">política de privacidad</Link>.
-                </span>
-              </label>
-
               {error && (
                 <p role="alert" className="m-0 rounded-lg border border-[#F87171]/30 bg-[#F87171]/10 px-3.5 py-2.5 text-sm text-[#FCA5A5]">{error.msg}</p>
               )}
@@ -194,9 +173,10 @@ export default function LeadForm({ heading }: { heading: string }) {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 )}
               </button>
-              <p className="m-0 text-center text-xs leading-relaxed text-[#64748B]">
-                Responsable: Apps Developers Pro. Usamos tus datos solo para responder a tu solicitud. Puedes acceder a ellos, corregirlos o pedir que los borremos. Más información en la{" "}
-                <Link href="/privacidad" target="_blank" className="text-[#94A3B8] underline underline-offset-2 hover:text-primary">política de privacidad</Link>.
+              {/* Sin casilla: los datos se tratan para presupuestar (art. 6.1.b RGPD), no por consentimiento. */}
+              <p className="m-0 text-center text-[13px] leading-relaxed text-[#7B8DB0]">
+                Al enviar aceptas nuestra{" "}
+                <Link href="/privacidad" target="_blank" className="text-[#A9B6D3] underline underline-offset-2 hover:text-primary">política de privacidad</Link>
               </p>
             </div>
           </motion.form>
