@@ -101,6 +101,8 @@ async function sendLeadEmail(data: {
   const result = await resend.emails.send({
     from: "noreply@appsdeveloperspro.com",
     to: "contacto@appsdeveloperspro.com",
+    // Copia visible: el buzón de contacto no avisa en el móvil.
+    cc: "jonasoko82@gmail.com",
     subject: `Nuevo lead: ${data.name}`,
     html: buildEmailHtml(data),
   })
