@@ -121,12 +121,12 @@ export const TESTIMONIALS: { quote: string; name: string; store: string; country
 
 // Horquilla de precios visible en el hero.
 export const PRICES = [
-  { label: "Tiendas desde", price: "900 €" },
+  { label: "Tiendas desde", price: "1.000 €" },
   { label: "Proyectos con integraciones desde", price: "1.800 €" },
 ]
 
 export const FAQS = [
-  { q: "¿Cuánto cuesta?", a: "Las tiendas empiezan en 900 € y los proyectos con integraciones, en 1.800 €. El precio exacto depende de lo que necesites y te lo damos tras la primera conversación." },
+  { q: "¿Cuánto cuesta?", a: "Las tiendas empiezan en 1.000 € y los proyectos con integraciones, en 1.800 €. El precio exacto depende de lo que necesites y te lo damos tras la primera conversación." },
   { q: "¿Cuánto tarda mi tienda?", a: "Una tienda estándar, entre 2 y 4 semanas desde que tenemos tu contenido." },
   { q: "¿Qué necesito tener antes de empezar?", a: "Tu logo, fotos de productos y la lista de precios. Si algo falta, te decimos cómo resolverlo y avanzamos igual." },
   { q: "¿Trabajan con tiendas que ya existen?", a: "Sí. Rediseñamos, optimizamos y migramos tiendas en marcha, y desarrollamos funciones nuevas sobre la que ya tienes." },
