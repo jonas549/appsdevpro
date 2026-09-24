@@ -1,5 +1,5 @@
 import styles from "../landing.module.css"
-import { HERO_STATS } from "../content"
+import { HERO_STATS, PRICES } from "../content"
 import HeroVideo from "./HeroVideo"
 import { BODY, H1 } from "./type"
 
@@ -57,8 +57,17 @@ export default function Hero({ form }: { form: React.ReactNode }) {
             ))}
           </h1>
 
-          <p className={`${styles.rise} ${BODY} mb-10 max-w-[48ch] text-pretty text-white/90`} style={riseDelay()}>
+          <p className={`${styles.rise} ${BODY} mb-6 max-w-[48ch] text-pretty text-white/90`} style={riseDelay()}>
             Diseñamos y lanzamos tu tienda. Cuando necesitas algo que Shopify no trae de fábrica, lo programamos nosotros.
+          </p>
+
+          <p className={`${styles.rise} mb-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-base text-[#A9B6D3]`} style={riseDelay()}>
+            {PRICES.map((p, i) => (
+              <span key={p.label} className="contents">
+                {i > 0 && <span aria-hidden="true" className="hidden text-[#475569] sm:inline">·</span>}
+                <span>{p.label} <strong className="font-semibold text-primary">{p.price}</strong></span>
+              </span>
+            ))}
           </p>
 
           {HERO_STATS.length > 0 && (

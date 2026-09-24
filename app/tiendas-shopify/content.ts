@@ -119,8 +119,15 @@ export const INCLUDES = [
 // Vacío = la sección no se pinta. PENDIENTE (Jonas): testimonios reales, nunca inventados.
 export const TESTIMONIALS: { quote: string; name: string; store: string; country: string }[] = []
 
+// Horquilla de precios visible en el hero.
+export const PRICES = [
+  { label: "Tiendas desde", price: "500 €" },
+  { label: "Proyectos con integraciones desde", price: "1.500 €" },
+]
+
 export const FAQS = [
-  { q: "¿Cuánto tarda mi tienda?", a: "Depende del tamaño del catálogo y de si ya tienes el contenido listo. Tras la primera conversación te damos una fecha concreta." },
+  { q: "¿Cuánto cuesta?", a: "Las tiendas empiezan en 500 € y los proyectos con integraciones, en 1.500 €. El precio exacto depende de lo que necesites y te lo damos tras la primera conversación." },
+  { q: "¿Cuánto tarda mi tienda?", a: "Una tienda estándar, entre 2 y 4 semanas desde que tenemos tu contenido." },
   { q: "¿Qué necesito tener antes de empezar?", a: "Tu logo, fotos de productos y la lista de precios. Si algo falta, te decimos cómo resolverlo y avanzamos igual." },
   { q: "¿Trabajan con tiendas que ya existen?", a: "Sí. Rediseñamos, optimizamos y migramos tiendas en marcha, y desarrollamos funciones nuevas sobre la que ya tienes." },
   { q: "¿En qué países trabajan?", a: "Trabajamos en remoto con marcas de Latinoamérica y España, en español e inglés. Hoy tenemos tiendas vendiendo en España y Chile." },
