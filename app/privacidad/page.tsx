@@ -19,12 +19,6 @@ export const metadata: Metadata = {
   openGraph: { title: `${TITLE} | Apps Developers Pro`, description: DESCRIPTION, url: URL, siteName: 'Apps Developers Pro', type: 'website' },
 }
 
-// PENDIENTE (Jonas): datos legales del responsable. Mientras falten, salen
-// resaltados en amarillo para que no se publique sin completarlos.
-function Pendiente({ children }: { children: React.ReactNode }) {
-  return <mark className="pendiente">[PENDIENTE: {children}]</mark>
-}
-
 export default function PrivacidadPage() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -60,7 +54,6 @@ export default function PrivacidadPage() {
             .policy-body table { width: 100%; border-collapse: collapse; font-size: 0.925rem; line-height: 1.5; }
             .policy-body th, .policy-body td { border: 1px solid #E2E8F0; padding: 0.6rem 0.75rem; text-align: left; vertical-align: top; }
             .policy-body th { background: #F1F4FE; font-weight: 600; color: #0F172A; }
-            .policy-body .pendiente { background: #FEF08A; color: #713F12; padding: 0 0.25rem; border-radius: 0.25rem; }
             .policy-body .cookie-btn {
               display: inline-flex; min-height: 44px; align-items: center; border-radius: 0.75rem;
               background: #4361EE; color: #fff; font-weight: 600; padding: 0 1.25rem;
@@ -78,9 +71,9 @@ export default function PrivacidadPage() {
 
             <h2 id="responsable">1. Quién es el responsable</h2>
             <ul>
-              <li><strong>Titular del sitio y responsable del tratamiento:</strong> <Pendiente>nombre completo o razón social</Pendiente>, que opera como Apps Developers Pro.</li>
-              <li><strong>Documento de identificación fiscal:</strong> <Pendiente>NIF, NIE o equivalente</Pendiente></li>
-              <li><strong>Dirección postal:</strong> <Pendiente>dirección</Pendiente></li>
+              <li><strong>Titular del sitio y responsable del tratamiento:</strong> Apps Developers Pro</li>
+              <li><strong>Cédula de identidad:</strong> V-24281309</li>
+              <li><strong>Dirección postal:</strong> Calle 93 # 13-45, Oficina 302, Chicó Norte, Bogotá D.C., Colombia, 110221</li>
               <li><strong>Correo:</strong> <a href="mailto:contacto@appsdeveloperspro.com">contacto@appsdeveloperspro.com</a></li>
             </ul>
 
