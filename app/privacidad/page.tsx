@@ -71,7 +71,7 @@ export default function PrivacidadPage() {
 
             <h2 id="responsable">1. Quién es el responsable</h2>
             <ul>
-              <li><strong>Titular del sitio y responsable del tratamiento:</strong> Apps Developers Pro</li>
+              <li><strong>Titular del sitio y responsable del tratamiento:</strong> Jonas González, que opera como Apps Developers Pro</li>
               <li><strong>Cédula de identidad:</strong> V-24281309</li>
               <li><strong>Dirección postal:</strong> Calle 93 # 13-45, Oficina 302, Chicó Norte, Bogotá D.C., Colombia, 110221</li>
               <li><strong>Correo:</strong> <a href="mailto:contacto@appsdeveloperspro.com">contacto@appsdeveloperspro.com</a></li>
