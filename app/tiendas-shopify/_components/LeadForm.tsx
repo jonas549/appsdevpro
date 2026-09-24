@@ -1,13 +1,15 @@
 'use client'
 
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
+import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
 import { trackEvent } from "@/app/lib/pixel"
+import { ADS_LEAD_SEND_TO, ADS_LEAD_VALUE, trackAdsConversion } from "@/app/lib/consent"
 import { WhatsAppIcon } from "./icons"
 import { WA_LINK } from "../content"
 
 const COUNTRY_CODES = [
-  ["+52", "🇲🇽 +52"], ["+34", "🇪🇸 +34"], ["+57", "🇨🇴 +57"], ["+54", "🇦🇷 +54"], ["+56", "🇨🇱 +56"],
+  ["+34", "🇪🇸 +34"], ["+52", "🇲🇽 +52"], ["+57", "🇨🇴 +57"], ["+54", "🇦🇷 +54"], ["+56", "🇨🇱 +56"],
   ["+51", "🇵🇪 +51"], ["+593", "🇪🇨 +593"], ["+58", "🇻🇪 +58"], ["+591", "🇧🇴 +591"], ["+595", "🇵🇾 +595"],
   ["+598", "🇺🇾 +598"], ["+502", "🇬🇹 +502"], ["+503", "🇸🇻 +503"], ["+504", "🇭🇳 +504"], ["+505", "🇳🇮 +505"],
   ["+506", "🇨🇷 +506"], ["+507", "🇵🇦 +507"], ["+1809", "🇩🇴 +1"], ["+1", "🇺🇸 +1"],
@@ -17,21 +19,25 @@ const PRODUCT_OPTIONS = [
   ["menos-50", "Menos de 50"], ["50-500", "50 a 500"], ["500-2000", "500 a 2.000"], ["mas-2000", "Más de 2.000"],
 ]
 
-type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore"
+type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore" | "privacy"
 
 // Cada campo recibe UNA sola clase por propiedad (ancho, fondo, borde, padding).
 // Mezclar p. ej. w-full con w-[118px] deja el resultado al orden del CSS
 // generado, y en desarrollo el select del prefijo acababa ocupando toda la fila.
-const BASE = "block w-full min-w-0 rounded-xl border py-3.5 text-[15px] placeholder:text-[#64748B] transition-[border-color,box-shadow] focus:border-accent/70 focus:outline-none focus:ring-4 focus:ring-accent/15"
+// text-base (16px) como mínimo: con menos, Safari en iPhone hace zoom al enfocar.
+const BASE = "block w-full min-w-0 rounded-xl border py-3.5 text-base placeholder:text-[#64748B] transition-[border-color,box-shadow] focus:border-accent/70 focus:outline-none focus:ring-4 focus:ring-accent/15"
 const field = (o: { bg?: string; border?: string; px?: string; text?: string } = {}) =>
   [BASE, o.bg ?? "bg-white/[0.04]", o.border ?? "border-white/10", o.px ?? "px-4", o.text ?? "text-primary"].join(" ")
 const INVALID = "border-[#F87171]/70"
 
 export default function LeadForm({ heading }: { heading: string }) {
   const uid = useId()
-  const [f, setF] = useState({ name: "", phone_code: "+52", phone: "", email: "", products: "", hasStore: "", storeUrl: "", idea: "", website: "" })
+  const [f, setF] = useState({ name: "", phone_code: "+34", phone: "", email: "", products: "", hasStore: "", storeUrl: "", idea: "", website: "", privacy: false })
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle")
   const [error, setError] = useState<{ msg: string; field?: Field } | null>(null)
+  // Alto del formulario mientras se cambia por la confirmación (ver onSent).
+  const [lockH, setLockH] = useState<number>()
+  const box = useRef<HTMLDivElement>(null)
 
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setF(prev => ({ ...prev, [k]: e.target.value }))
@@ -41,6 +47,10 @@ export default function LeadForm({ heading }: { heading: string }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (status === "sending") return
+    if (!f.privacy) {
+      setError({ msg: "Para enviar, acepta la política de privacidad.", field: "privacy" })
+      return
+    }
     setError(null)
     setStatus("sending")
     try {
@@ -55,8 +65,13 @@ export default function LeadForm({ heading }: { heading: string }) {
         setStatus("idle")
         return
       }
+      const { id } = (await res.json().catch(() => ({}))) as { id?: string }
       window.gtag?.("event", "generate_lead", { currency: "USD", value: 1, lead_source: "tiendas-shopify" })
+      // Conversión de Google Ads, al pasar al estado de confirmación. El id del
+      // lead va como transaction_id para que Google no cuente dos veces el mismo.
+      trackAdsConversion(ADS_LEAD_SEND_TO, ADS_LEAD_VALUE, id)
       trackEvent("Lead", { content_name: "tiendas-shopify" })
+      setLockH(box.current?.offsetHeight)
       setStatus("sent")
     } catch {
       setError({ msg: "Error de conexión. Intenta de nuevo." })
@@ -66,11 +81,25 @@ export default function LeadForm({ heading }: { heading: string }) {
 
   const firstName = f.name.trim().split(/\s+/)[0] || "gracias"
   const seg = (active: boolean) =>
-    `rounded-[7px] px-4 py-2 text-sm font-medium transition-colors duration-200 ${active ? "bg-primary text-[#07090F]" : "text-[#7B8DB0] hover:text-primary"}`
+    `min-h-[44px] min-w-[52px] rounded-[7px] px-4 text-sm font-medium transition-colors duration-200 ${active ? "bg-primary text-[#07090F]" : "text-[#7B8DB0] hover:text-primary"}`
   const errFor = (k: Field) => (error?.field === k ? INVALID : undefined)
 
+  // El formulario mide ~600px y la confirmación bastante menos. Al cambiar uno
+  // por otro el navegador mantiene fija la sección de abajo (scroll anchoring)
+  // y en móvil la confirmación quedaba por encima de la pantalla. Se conserva
+  // el alto durante el cambio y, ya pintada, se lleva la tarjeta a la vista.
+  function onSent() {
+    setLockH(undefined)
+    requestAnimationFrame(() => {
+      const el = box.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      if (r.top < 72 || r.bottom > window.innerHeight - 90) el.scrollIntoView({ block: "center", behavior: "smooth" })
+    })
+  }
+
   return (
-    <div className="relative rounded-3xl border border-white/10 bg-[#0D1117]/[0.86] p-[clamp(22px,2.4vw,30px)] text-primary shadow-[0_40px_100px_rgba(0,0,0,.55),inset_0_1px_0_rgba(255,255,255,.06)] backdrop-blur-xl">
+    <div ref={box} style={lockH ? { minHeight: lockH } : undefined} className="relative rounded-3xl border border-white/10 bg-[#0D1117]/[0.86] p-[clamp(22px,2.4vw,30px)] text-primary shadow-[0_40px_100px_rgba(0,0,0,.55),inset_0_1px_0_rgba(255,255,255,.06)] backdrop-blur-xl">
       <AnimatePresence mode="wait" initial={false}>
         {status !== "sent" ? (
           <motion.form
@@ -134,6 +163,23 @@ export default function LeadForm({ heading }: { heading: string }) {
               {/* Honeypot: invisible para personas, los bots lo rellenan. */}
               <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.website} onChange={set("website")} className="absolute -left-[9999px] h-px w-px opacity-0" />
 
+              <label className="flex cursor-pointer items-start gap-3 px-1 text-sm leading-snug text-[#A9B6D3]">
+                <input
+                  type="checkbox"
+                  checked={f.privacy}
+                  onChange={e => {
+                    setF(p => ({ ...p, privacy: e.target.checked }))
+                    if (error?.field === "privacy") setError(null)
+                  }}
+                  aria-invalid={error?.field === "privacy"}
+                  className={`mt-px h-5 w-5 shrink-0 cursor-pointer accent-[#4361EE] ${error?.field === "privacy" ? "outline outline-2 outline-offset-2 outline-[#F87171]" : ""}`}
+                />
+                <span>
+                  He leído y acepto la{" "}
+                  <Link href="/privacidad" target="_blank" className="text-primary underline underline-offset-2">política de privacidad</Link>.
+                </span>
+              </label>
+
               {error && (
                 <p role="alert" className="m-0 rounded-lg border border-[#F87171]/30 bg-[#F87171]/10 px-3.5 py-2.5 text-sm text-[#FCA5A5]">{error.msg}</p>
               )}
@@ -148,11 +194,14 @@ export default function LeadForm({ heading }: { heading: string }) {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 )}
               </button>
-              <div className="text-center text-xs text-[#64748B]">Solo usamos tus datos para contactarte por tu proyecto.</div>
+              <p className="m-0 text-center text-xs leading-relaxed text-[#64748B]">
+                Responsable: Apps Developers Pro. Usamos tus datos solo para responder a tu solicitud. Puedes acceder a ellos, corregirlos o pedir que los borremos. Más información en la{" "}
+                <Link href="/privacidad" target="_blank" className="text-[#94A3B8] underline underline-offset-2 hover:text-primary">política de privacidad</Link>.
+              </p>
             </div>
           </motion.form>
         ) : (
-          <motion.div key="sent" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} role="status">
+          <motion.div key="sent" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} onAnimationComplete={onSent} role="status">
             <div className="mb-[18px] flex items-center gap-2 text-xs text-[#3BD18A]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#3BD18A] shadow-[0_0_0_4px_rgba(59,209,138,.18)]" />
               Solicitud recibida · {firstName}
