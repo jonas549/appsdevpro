@@ -5,6 +5,7 @@ import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
 import { trackEvent } from "@/app/lib/pixel"
 import { ADS_LEAD_SEND_TO, ADS_LEAD_VALUE, trackAdsConversion } from "@/app/lib/consent"
+import { PRODUCT_RANGES } from "@/lib/landing-leads"
 import { WhatsAppIcon } from "./icons"
 import { WA_LINK } from "../content"
 
@@ -15,9 +16,8 @@ const COUNTRY_CODES = [
   ["+506", "🇨🇷 +506"], ["+507", "🇵🇦 +507"], ["+1809", "🇩🇴 +1"], ["+1", "🇺🇸 +1"],
 ]
 
-const PRODUCT_OPTIONS = [
-  ["menos-50", "Menos de 50"], ["50-500", "50 a 500"], ["500-2000", "500 a 2.000"], ["mas-2000", "Más de 2.000"],
-]
+// Las mismas opciones que valida el servidor: una sola fuente.
+const PRODUCT_OPTIONS = Object.entries(PRODUCT_RANGES)
 
 type Field = "name" | "phone" | "email" | "storeUrl" | "products" | "phone_code" | "hasStore"
 
@@ -175,7 +175,7 @@ export default function LeadForm({ heading }: { heading: string }) {
               </button>
               {/* Sin casilla: los datos se tratan para presupuestar (art. 6.1.b RGPD), no por consentimiento. */}
               <p className="m-0 text-center text-[13px] leading-relaxed text-[#7B8DB0]">
-                Al enviar aceptas nuestra{" "}
+                Tratamos tus datos según nuestra{" "}
                 <Link href="/privacidad" target="_blank" className="text-[#A9B6D3] underline underline-offset-2 hover:text-primary">política de privacidad</Link>
               </p>
             </div>

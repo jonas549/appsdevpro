@@ -11,9 +11,9 @@ export const LANDING_SOURCE_TAG = "[Origen: Landing Tiendas Shopify]"
 
 export const PRODUCT_RANGES = {
   "menos-50": "Menos de 50",
-  "50-500": "50 a 500",
-  "500-2000": "500 a 2.000",
-  "mas-2000": "Más de 2.000",
+  "50-500": "De 50 a 500",
+  "500-1000": "De 500 a 1.000",
+  "mas-1000": "Más de 1.000",
 } as const
 
 export type ProductRange = keyof typeof PRODUCT_RANGES
