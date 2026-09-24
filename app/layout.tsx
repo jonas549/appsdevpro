@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { DM_Sans, Inter, JetBrains_Mono } from 'next/font/google'
-import Script from 'next/script'
 import { Suspense } from 'react'
 import './globals.css'
 import AnalyticsPageTracker from './components/AnalyticsPageTracker'
+import ConsentManager from './components/ConsentManager'
 import MetaPixelClient from './components/MetaPixelClient'
 import { serializeJsonLd, siteGraph } from '@/lib/json-ld'
 
@@ -27,8 +27,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   display: 'swap',
 })
-
-const GA_ID = 'G-8J3B6TQM9Q'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
@@ -72,19 +70,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {children}
 
-        {/* Google Analytics 4 */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="ga-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GA_ID}');
-        `}</Script>
+        {/* GA4, Google Ads y píxel de Meta: sólo se cargan tras el consentimiento (RGPD) */}
+        <ConsentManager />
 
-        {/* GA4 page view tracker + Meta Pixel (client components need Suspense for useSearchParams) */}
+        {/* Page views en la navegación cliente (useSearchParams exige Suspense) */}
         <Suspense fallback={null}>
           <AnalyticsPageTracker />
           <MetaPixelClient />

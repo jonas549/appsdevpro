@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 declare global {
   interface Window {
@@ -10,21 +10,17 @@ declare global {
   }
 }
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
-
+// PageView en cada navegación cliente. El píxel lo carga ConsentManager (con
+// el PageView inicial) sólo si se aceptan las cookies de publicidad.
 export default function MetaPixelClient() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const last = useRef<string | null>(null)
 
   useEffect(() => {
-    if (!PIXEL_ID) return
-    if (window.fbq) return
-    const script = document.createElement('script')
-    script.text = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL_ID}');`
-    document.head.appendChild(script)
-  }, [])
-
-  useEffect(() => {
+    const url = pathname + '?' + searchParams.toString()
+    if (last.current === null || last.current === url) { last.current = url; return }
+    last.current = url
     window.fbq?.('track', 'PageView')
   }, [pathname, searchParams])
 
