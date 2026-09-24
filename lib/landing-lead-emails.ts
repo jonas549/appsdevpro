@@ -6,6 +6,8 @@ import { PRODUCT_RANGES, hasStoreLabel, type LandingLead } from "@/lib/landing-l
 
 const FROM = "Apps Developers Pro <noreply@appsdeveloperspro.com>"
 const TEAM_INBOX = "contacto@appsdeveloperspro.com"
+// Copia visible del aviso de lead nuevo: el buzón de contacto no avisa en el móvil.
+const TEAM_CC = "jonasoko82@gmail.com"
 const WA_LINK = "https://wa.link/phjdep"
 const LANDING_URL = "https://appsdeveloperspro.com/tiendas-shopify"
 
@@ -116,7 +118,17 @@ export function buildLandingAutoreplyEmail(lead: LandingLead): string {
   const summary: string[] = [`${esc(lead.phone_code)} ${esc(lead.phone)} (WhatsApp)`]
   if (lead.products) summary.push(`${esc(PRODUCT_RANGES[lead.products])} productos`)
   if (lead.hasStore === "si") summary.push(lead.storeUrl ? `Tienda actual: ${esc(lead.storeUrl)}` : "Ya tienes tienda")
-  if (lead.hasStore === "no") summary.push("Tienda nueva")
+  if (lead.hasStore === "no") summary.push("Todavía no tienes tienda")
+
+  // Dos versiones según "¿Ya tienes tienda?". Si no respondió, la de "no":
+  // habla de lo que nos contó sin dar por hecho que hay una tienda que revisar.
+  const hasStore = lead.hasStore === "si"
+  const intro = hasStore
+    ? "Gracias por escribirnos. Ya estamos revisando tu tienda para proponerte un plan concreto."
+    : "Gracias por escribirnos. Ya estamos viendo lo que nos contaste para proponerte un plan concreto."
+  const [step1Title, step1Text] = hasStore
+    ? ["Revisamos tu tienda", "Vemos tu catálogo, tu diseño actual y qué se puede mejorar."]
+    : ["Revisamos tu proyecto", "Vemos qué vendes y qué necesita tu tienda para arrancar."]
 
   const step = (n: string, title: string, text: string) => `
     <tr><td style="padding:0 0 18px">
@@ -128,10 +140,10 @@ export function buildLandingAutoreplyEmail(lead: LandingLead): string {
 
   const body = `
     <p style="margin:0 0 10px;font-size:24px;font-weight:800;color:#EDF0FF;letter-spacing:-0.02em">Hola ${esc(firstName(lead.name))}, recibimos tu solicitud.</p>
-    <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#94A3B8">Gracias por contarnos de tu tienda. Ya la estamos revisando para proponerte un plan concreto para tu marca.</p>
+    <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#94A3B8">${intro}</p>
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;border-top:1px solid #1E293B;padding-top:24px">
-      ${step("1", "Revisamos tu proyecto", "Vemos tu catálogo, lo que vendes y lo que necesitas.")}
+      ${step("1", step1Title, step1Text)}
       ${step("2", "Te escribimos por WhatsApp", "Al número que nos dejaste, para conversar y resolver dudas.")}
       ${step("3", "Te proponemos alcance y plazo", "Con una fecha concreta de entrega, sin letra pequeña.")}
     </table>
@@ -163,10 +175,11 @@ export async function sendLandingLeadEmails(
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) { console.error("[resend] RESEND_API_KEY not set — skipping landing emails"); return }
 
-  const emails = [
+  const emails: Parameters<Resend["batch"]["send"]>[0] = [
     {
       from: FROM,
       to: TEAM_INBOX,
+      cc: TEAM_CC,
       replyTo: lead.email,
       subject: `Nuevo lead [Tiendas Shopify]: ${lead.name}`,
       html: buildLandingTeamEmail(lead, opts.receivedAt),
